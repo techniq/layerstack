@@ -1,0 +1,11 @@
+node_modules/
+dist/
+tsconfig.tsbuildinfo
+coverage/
+.next/
+.idea/
+.svelte-kit/
+.env
+.DS_Store
+
+test-*

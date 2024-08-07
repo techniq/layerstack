@@ -1,0 +1,24 @@
+{
+  "name": "layerstack-monorepo",
+  "version": "0.0.1",
+  "author": "Sean Lynch <techniq35@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test:unit": "pnpm -r test:unit",
+    "build": "rimraf packages/*/dist && pnpm -r build",
+    "check": "pnpm -r check",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:release": "changeset publish",
+    "up-deps": "pnpm update -r -i --latest"
+  },
+  "devDependencies": {
+    "@changesets/cli": "2.27.7",
+    "@svitejs/changesets-changelog-github-compact": "^1.1.0",
+    "rimraf": "5.0.7"
+  },
+  "packageManager": "pnpm@9.6.0"
+}
