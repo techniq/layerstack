@@ -18,7 +18,6 @@ export * from './logger.js';
 export { round, clamp } from './number.js';
 export * from './promise.js';
 export * from './sort.js';
-export { cls } from './styles.js';
 export * from './string.js';
 
 // aliased exports to remove conflicts (and make imports less noisy from top-level)
@@ -45,4 +44,3 @@ export * as rollup from './rollup.js';
 export * as routing from './routing.js';
 export * as serialize from './serialize.js';
 export * as styles from './styles.js';
-export * as table from './table.js';
