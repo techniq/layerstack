@@ -1,4 +1,4 @@
-import source from '$lib/utils/string.ts?raw';
+import source from '$utils/string.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

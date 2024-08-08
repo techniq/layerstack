@@ -1,4 +1,4 @@
-import source from '$lib/utils/duration.ts?raw';
+import source from '$utils/duration.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

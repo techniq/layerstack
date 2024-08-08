@@ -1,4 +1,4 @@
-import source from '$lib/utils/json.ts?raw';
+import source from '$utils/json.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {

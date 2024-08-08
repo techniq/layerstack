@@ -1,4 +1,4 @@
-import source from '$lib/utils/styles.ts?raw';
+import source from '$utils/styles.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {

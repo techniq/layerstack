@@ -20,9 +20,8 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      // 'svelte-ux': 'src/lib/index.js',
-      // '@layerchart/utils': 'src/lib/index.js',
       $docs: 'src/docs',
+      $utils: '../../packages/utils/src/lib',
     },
   },
 };

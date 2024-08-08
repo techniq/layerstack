@@ -1,4 +1,4 @@
-import source from '$lib/utils/logger.ts?raw';
+import source from '$utils/logger.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {
