@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { TextField, styleProps } from 'svelte-ux';
+  import { TextField } from 'svelte-ux';
+  import { styleProps } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

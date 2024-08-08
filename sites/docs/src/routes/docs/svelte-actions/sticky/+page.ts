@@ -1,4 +1,4 @@
-import source from '$lib/actions/sticky.ts?raw';
+import source from '$svelte-actions/sticky.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

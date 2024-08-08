@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { RangeField, uniqueId, truncate, toTitleCase } from 'svelte-ux';
+  import { RangeField } from 'svelte-ux';
+  import { uniqueId, truncate, toTitleCase } from '@layerstack/utils';
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
 

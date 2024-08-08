@@ -55,8 +55,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@floating-ui/dom": "^1.6.7",
     "@fortawesome/fontawesome-common-types": "^6.5.2",
+    "@layerstack/svelte-actions": "workspace:^",
+    "@layerstack/svelte-stores": "workspace:^",
     "@layerstack/utils": "workspace:*",
     "@mdi/js": "^7.4.47",
     "clsx": "^2.1.1",
@@ -64,7 +65,6 @@
     "d3-array": "^3.2.4",
     "d3-scale": "^4.0.2",
     "date-fns": "^3.6.0",
-    "immer": "^10.1.1",
     "lodash-es": "^4.17.21",
     "prism-svelte": "^0.5.0",
     "prism-themes": "^1.9.0",

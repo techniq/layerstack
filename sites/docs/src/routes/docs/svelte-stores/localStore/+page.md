@@ -2,15 +2,15 @@
 	import Preview from '$docs/Preview.svelte';
 	import Code from '$docs/Code.svelte';
 
-	import localStore from '$lib/stores/localStore';
-	import testSource from '$lib/utils/object.test.ts?raw'
+	import localStore from '$svelte-stores/localStore';
+	import testSource from '$utils/object.test.ts?raw'
 </script>
 
 <h1>Usage</h1>
 
 ```svelte
 <script>
-  import { localStore } from '@layerchart/svelte-stores';
+  import { localStore } from '@layerstack/svelte-stores';
   import { addDays } from 'date-fns';
 
   const store = localStore('some-key', defaultValue, { expiry: addDays(new Date(), 1) });

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { subDays, subMonths } from 'date-fns';
 
-	import { Switch, timerStore } from 'svelte-ux';
+	import { Switch } from 'svelte-ux';
+	import { timerStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
   const dateTimer = timerStore({ initial: new Date(), onTick: () => new Date() })

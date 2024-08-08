@@ -18,6 +18,134 @@ importers:
         specifier: 5.0.7
         version: 5.0.7
 
+  packages/svelte-actions:
+    dependencies:
+      '@layerstack/utils':
+        specifier: workspace:^
+        version: link:../utils
+      d3-array:
+        specifier: ^3.2.4
+        version: 3.2.4
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@floating-ui/dom':
+        specifier: ^1.6.7
+        version: 1.6.9
+      '@sveltejs/package':
+        specifier: ^2.3.2
+        version: 2.3.2(svelte@4.2.18)(typescript@5.5.3)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.1.1
+        version: 3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10))
+      '@types/d3-array':
+        specifier: ^3.2.1
+        version: 3.2.1
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@vitest/coverage-v8':
+        specifier: ^2.0.2
+        version: 2.0.2(vitest@2.0.2(@types/node@20.14.10))
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      prettier-plugin-svelte:
+        specifier: ^3.2.5
+        version: 3.2.5(prettier@3.3.2)(svelte@4.2.18)
+      rimraf:
+        specifier: 5.0.7
+        version: 5.0.7
+      svelte:
+        specifier: ^4.2.18
+        version: 4.2.18
+      svelte-check:
+        specifier: ^3.8.4
+        version: 3.8.4(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(svelte@4.2.18)
+      svelte2tsx:
+        specifier: ^0.7.13
+        version: 0.7.13(svelte@4.2.18)(typescript@5.5.3)
+      tslib:
+        specifier: ^2.6.3
+        version: 2.6.3
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      vite:
+        specifier: ^5.3.3
+        version: 5.3.3(@types/node@20.14.10)
+      vitest:
+        specifier: ^2.0.2
+        version: 2.0.2(@types/node@20.14.10)
+
+  packages/svelte-stores:
+    dependencies:
+      '@layerstack/utils':
+        specifier: workspace:^
+        version: link:../utils
+      d3-array:
+        specifier: ^3.2.4
+        version: 3.2.4
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@sveltejs/package':
+        specifier: ^2.3.2
+        version: 2.3.2(svelte@4.2.18)(typescript@5.5.3)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.1.1
+        version: 3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10))
+      '@types/d3-array':
+        specifier: ^3.2.1
+        version: 3.2.1
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@vitest/coverage-v8':
+        specifier: ^2.0.2
+        version: 2.0.2(vitest@2.0.2(@types/node@20.14.10))
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      prettier-plugin-svelte:
+        specifier: ^3.2.5
+        version: 3.2.5(prettier@3.3.2)(svelte@4.2.18)
+      rimraf:
+        specifier: 5.0.7
+        version: 5.0.7
+      svelte:
+        specifier: ^4.2.18
+        version: 4.2.18
+      svelte-check:
+        specifier: ^3.8.4
+        version: 3.8.4(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(svelte@4.2.18)
+      svelte2tsx:
+        specifier: ^0.7.13
+        version: 0.7.13(svelte@4.2.18)(typescript@5.5.3)
+      tslib:
+        specifier: ^2.6.3
+        version: 2.6.3
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      vite:
+        specifier: ^5.3.3
+        version: 5.3.3(@types/node@20.14.10)
+      vitest:
+        specifier: ^2.0.2
+        version: 2.0.2(@types/node@20.14.10)
+
   packages/utils:
     dependencies:
       d3-array:
@@ -78,12 +206,15 @@ importers:
 
   sites/docs:
     dependencies:
-      '@floating-ui/dom':
-        specifier: ^1.6.7
-        version: 1.6.9
       '@fortawesome/fontawesome-common-types':
         specifier: ^6.5.2
         version: 6.6.0
+      '@layerstack/svelte-actions':
+        specifier: workspace:^
+        version: link:../../packages/svelte-actions
+      '@layerstack/svelte-stores':
+        specifier: workspace:^
+        version: link:../../packages/svelte-stores
       '@layerstack/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -105,9 +236,6 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1697,10 +1825,6 @@ packages:
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
-
-  minipass@7.1.1:
-    resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
-    engines: {node: '>=16 || 14 >=14.17'}
 
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
@@ -3990,8 +4114,6 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minipass@7.1.1: {}
-
   minipass@7.1.2: {}
 
   mkdirp@0.5.6:
@@ -4097,7 +4219,7 @@ snapshots:
   path-scurry@1.11.1:
     dependencies:
       lru-cache: 10.2.2
-      minipass: 7.1.1
+      minipass: 7.1.2
 
   path-to-regexp@6.2.2: {}
 

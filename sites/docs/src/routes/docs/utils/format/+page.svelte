@@ -3,11 +3,10 @@
     TextField,
     DatePickerField,
     MenuField,
-    DateToken,
-    type FormatNumberStyle,
-    PeriodType,
+    // TODO: move/update
     settings,
   } from 'svelte-ux';
+  import { PeriodType, type FormatNumberStyle, DateToken } from '@layerstack/utils';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

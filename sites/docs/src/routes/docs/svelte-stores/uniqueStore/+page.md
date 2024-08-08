@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Checkbox, TextField, uniqueStore } from 'svelte-ux';
+	import { Checkbox, TextField } from 'svelte-ux';
+	import { uniqueStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
 	const data = Array.from({ length: 5 }).map((_,i) => {
@@ -14,7 +15,7 @@
 <h1>Usage</h1>
 
 ```js
-import { uniqueStore } from '@layerchart/svelte-stores';
+import { uniqueStore } from '@layerstack/svelte-stores';
 
 const store = uniqueStore();
 // $store.has(value)

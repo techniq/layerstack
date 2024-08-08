@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Preview from '$docs/Preview.svelte';
 
-	import { queryParamsStore } from '$lib/stores/queryParamsStore';
+	import { queryParamsStore } from '$svelte-stores/queryParamsStore';
 </script>
 
 <h1>queryParamStore()</h1>
@@ -9,7 +9,7 @@
 Manage a single query param
 
 ```js
-import { queryParamStore } from '@layerchart/svelte-stores';
+import { queryParamStore } from '@layerstack/svelte-stores';
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 
@@ -34,7 +34,7 @@ $: setDataRange = (value) => {
 If `goto` is passed, store can be set directly
 
 ```js
-import { queryParamsStore } from '@layerchart/svelte-stores';
+import { queryParamsStore } from '@layerstack/svelte-stores';
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 
@@ -57,7 +57,7 @@ $dataRange = newValue;
 Manage all query params as a single store
 
 ```js
-import { queryParamsStore } from '@layerchart/svelte-stores';
+import { queryParamsStore } from '@layerstack/svelte-stores';
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 
@@ -92,7 +92,7 @@ $: setFilters = (newFilters) => {
 If `goto` is passed, store can be set directly
 
 ```js
-import { queryParamsStore } from '@layerchart/svelte-stores';
+import { queryParamsStore } from '@layerstack/svelte-stores';
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 

@@ -1,4 +1,4 @@
-import source from '$lib/actions/portal.ts?raw';
+import source from '$svelte-actions/portal.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

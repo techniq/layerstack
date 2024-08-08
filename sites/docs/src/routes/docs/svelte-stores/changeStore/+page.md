@@ -1,7 +1,8 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
 
-  import { Button, Pagination, TextField, changeStore, paginationStore } from 'svelte-ux';
+  import { Button, Pagination, TextField } from 'svelte-ux';
+  import { changeStore, paginationStore } from '@layerstack/svelte-stores'
 
 	import Preview from '$docs/Preview.svelte';
 
@@ -17,7 +18,7 @@
 ```svelte
 <script>
   import { writable } from 'svelte/store';
-  import { changeStore } from '@layerchart/svelte-stores';
+  import { changeStore } from '@layerstack/svelte-stores';
 
   const value = writable('');
   const changed = changeStore(value, (value) => console.log('changed', value));

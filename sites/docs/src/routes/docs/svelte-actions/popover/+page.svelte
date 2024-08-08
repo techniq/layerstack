@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { popover } from 'svelte-ux';
+  import { popover } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Blockquote from '$docs/Blockquote.svelte';

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
 
-	import { Button, TextField, dirtyStore } from 'svelte-ux';
+	import { Button, TextField } from 'svelte-ux';
+	import { dirtyStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
   const value = writable('');
@@ -13,7 +14,7 @@
 ```svelte
 <script>
   import { writable } from 'svelte/store';
-  import { dirtyStore } from '@layerchart/svelte-stores';
+  import { dirtyStore } from '@layerstack/svelte-stores';
 
   const value = writable('');
   const isDirty = dirtyStore(value);

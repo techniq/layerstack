@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Checkbox, Radio, selectionStore } from 'svelte-ux';
+	import { Checkbox, Radio } from 'svelte-ux';
+	import { selectionStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
   const data = Array.from({ length: 5 }).map((_,i) => {

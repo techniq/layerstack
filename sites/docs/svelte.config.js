@@ -21,6 +21,8 @@ const config = {
     adapter: adapter(),
     alias: {
       $docs: 'src/docs',
+      '$svelte-actions': '../../packages/svelte-actions/src/lib',
+      '$svelte-stores': '../../packages/svelte-stores/src/lib',
       $utils: '../../packages/utils/src/lib',
     },
   },

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
-  import { Toggle, resize, intersection, mutate } from 'svelte-ux';
+  import { Toggle } from 'svelte-ux';
+  import { intersection, resize } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Blockquote from '$docs/Blockquote.svelte';

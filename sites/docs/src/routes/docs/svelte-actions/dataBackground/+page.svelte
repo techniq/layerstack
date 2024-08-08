@@ -9,9 +9,11 @@
     ToggleGroup,
     ToggleOption,
     TweenedValue,
+    // TODO: move/update
     cls,
-    dataBackground,
   } from 'svelte-ux';
+
+  import { dataBackground } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

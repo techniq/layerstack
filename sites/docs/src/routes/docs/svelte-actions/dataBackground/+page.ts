@@ -1,4 +1,4 @@
-import source from '$lib/actions/dataBackground.ts?raw';
+import source from '$svelte-actions/dataBackground.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

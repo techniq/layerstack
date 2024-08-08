@@ -1,7 +1,8 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
 
-	import { TextField, debounceStore } from 'svelte-ux';
+	import { TextField } from 'svelte-ux';
+	import { debounceStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
   const value = writable(null);
@@ -13,7 +14,7 @@
 ```svelte
 <script>
   import { writable } from 'svelte/store';
-  import { debounceStore } from '@layerchart/svelte-stores';
+  import { debounceStore } from '@layerstack/svelte-stores';
 
   const value = writable('');
   const debouncedValue = debounceStore(value);

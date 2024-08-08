@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { multi } from 'svelte-ux';
+  import { multi } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

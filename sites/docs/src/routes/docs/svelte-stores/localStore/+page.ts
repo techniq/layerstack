@@ -1,4 +1,4 @@
-import source from '$lib/stores/localStore.ts?raw';
+import source from '$svelte-stores/localStore.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {

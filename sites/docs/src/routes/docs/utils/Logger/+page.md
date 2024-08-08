@@ -6,7 +6,7 @@
 
 ```svelte
 <script>
-  import { Logger } from 'svelte-ux';
+  import { Logger } from '@layerstack/utils';
   const logger = new Logger('MyComponent');
 
   logger.trace('...');

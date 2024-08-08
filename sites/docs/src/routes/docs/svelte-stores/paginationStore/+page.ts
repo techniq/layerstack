@@ -1,4 +1,4 @@
-import source from '$lib/stores/paginationStore.ts?raw';
+import source from '$svelte-stores/paginationStore.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {

@@ -1,4 +1,4 @@
-import source from '$lib/actions/scroll.ts?raw';
+import source from '$svelte-actions/scroll.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

@@ -1,4 +1,4 @@
-import source from '$lib/actions/mouse.ts?raw';
+import source from '$svelte-actions/mouse.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

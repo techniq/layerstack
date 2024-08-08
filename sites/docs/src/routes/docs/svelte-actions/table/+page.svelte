@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tableCell } from 'svelte-ux';
+  import { tableCell } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

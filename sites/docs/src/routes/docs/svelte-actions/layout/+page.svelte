@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Button, remainingViewportHeight, remainingViewportWidth, overflow } from 'svelte-ux';
+  import {
+    Button,
+    remainingViewportHeight,
+    remainingViewportWidth,
+    overflow,
+  } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

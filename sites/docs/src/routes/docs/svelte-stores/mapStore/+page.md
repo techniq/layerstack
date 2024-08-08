@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Checkbox, TextField, mapStore } from 'svelte-ux';
+	import { Checkbox, TextField } from 'svelte-ux';
+	import { mapStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
 
 	const items = Array.from({ length: 5 }).map((_,i) => {
@@ -14,7 +15,7 @@
 <h1>Usage</h1>
 
 ```js
-import { mapStore } from '@layerchart/svelte-stores';
+import { mapStore } from '@layerstack/svelte-stores';
 
 const store = mapStore();
 

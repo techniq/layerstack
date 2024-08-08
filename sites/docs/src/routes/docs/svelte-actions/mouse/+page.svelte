@@ -1,6 +1,6 @@
 <script lang="ts">
   import { spring } from 'svelte/motion';
-  import { longpress, movable } from 'svelte-ux';
+  import { longpress, movable } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

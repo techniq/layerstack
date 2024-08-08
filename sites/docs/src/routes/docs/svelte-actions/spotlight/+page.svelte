@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { spotlight, cls } from 'svelte-ux';
+  import { cls } from 'svelte-ux';
+  import { spotlight } from '@layerstack/svelte-actions';
 
   import Code from '$docs/Code.svelte';
   import Preview from '$docs/Preview.svelte';

@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { autoFocus, autoHeight, blurOnEscape, selectOnFocus, debounceEvent } from 'svelte-ux';
+  import {
+    autoFocus,
+    autoHeight,
+    blurOnEscape,
+    selectOnFocus,
+    debounceEvent,
+  } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

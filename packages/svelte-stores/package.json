@@ -1,0 +1,60 @@
+{
+  "name": "@layerstack/svelte-stores",
+  "description": "TODO",
+  "author": "Sean Lynch <techniq35@gmail.com>",
+  "license": "MIT",
+  "repository": "techniq/layerstack",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "preview": "vite preview",
+    "package": "svelte-package",
+    "prepublishOnly": "svelte-package",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "test:unit": "TZ=UTC+4 vitest",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.3.2",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@types/d3-array": "^3.2.1",
+    "@types/lodash-es": "^4.17.12",
+    "@vitest/coverage-v8": "^2.0.2",
+    "prettier": "^3.3.2",
+    "prettier-plugin-svelte": "^3.2.5",
+    "rimraf": "5.0.7",
+    "svelte": "^4.2.18",
+    "svelte-check": "^3.8.4",
+    "svelte2tsx": "^0.7.13",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
+    "vitest": "^2.0.2"
+  },
+  "type": "module",
+  "dependencies": {
+    "@layerstack/utils": "workspace:^",
+    "d3-array": "^3.2.4",
+    "date-fns": "^3.6.0",
+    "immer": "^10.1.1",
+    "lodash-es": "^4.17.21"
+  },
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "svelte": "./dist/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "svelte": "./dist/index.js"
+}

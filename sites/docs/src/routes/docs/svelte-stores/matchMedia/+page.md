@@ -1,8 +1,9 @@
 <script lang="ts">
   import { mdiCheckCircle, mdiCloseCircle } from '@mdi/js';
 
-	import {
-    Icon,
+	import { Icon } from 'svelte-ux';
+
+  import {
     matchMedia,
     matchMediaWidth,
     smScreen,
@@ -14,10 +15,9 @@
     print,
     darkColorScheme,
     motionReduce
-   } from 'svelte-ux';
+  } from '@layerstack/svelte-stores';
 
-	import Preview from '$docs/Preview.svelte';
-
+  import Preview from '$docs/Preview.svelte';
 
   let innerWidth = 0;
 </script>
@@ -28,7 +28,7 @@
 
 ```svelte
 <script>
-  import { matchMedia } from 'svelte-ux';
+  import { matchMedia } from '@layerstack/svelte-stores';
   const isLargeScreen = matchMedia('(min-width: 768px)');
 </script>
 
@@ -41,7 +41,7 @@
 
 ```svelte
 <script>
-  import { matchMediaWidth } from 'svelte-ux';
+  import { matchMediaWidth } from '@layerstack/svelte-stores';
   const isLargeScreen = matchMediaWidth(768);
 </script>
 
@@ -54,7 +54,7 @@
 
 ```svelte
 <script>
-  import { mdScreen } from 'svelte-ux';
+  import { mdScreen } from '@layerstack/svelte-stores';
 </script>
 
 {#if $mdScreen}
@@ -64,7 +64,7 @@
 
 ```svelte
 <script>
-  import { print } from 'svelte-ux';
+  import { print } from '@layerstack/svelte-stores';
 </script>
 
 {#if $print}

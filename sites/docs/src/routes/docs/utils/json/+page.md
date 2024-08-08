@@ -9,7 +9,7 @@
 
 ```svelte
 <script>
-  import { parse, stringify } from 'svelte-ux';
+  import { parse, stringify } from '@layerstack/utils';
 </script>
 ```
 
