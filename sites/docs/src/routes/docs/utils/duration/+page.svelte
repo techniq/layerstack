@@ -3,7 +3,7 @@
 
   import Preview from '$docs/Preview.svelte';
 
-  import { getDuration, humanizeDuration, DurationUnits } from '$lib/utils/duration.js';
+  import { getDuration, humanizeDuration, DurationUnits } from '@layerstack/utils';
 </script>
 
 <h1>Examples</h1>

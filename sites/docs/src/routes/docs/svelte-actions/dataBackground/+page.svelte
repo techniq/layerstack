@@ -16,7 +16,7 @@
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
 
-  import { randomInteger } from '$lib/utils/number.js';
+  import { randomInteger } from '@layerstack/utils';
 
   const originalDomain: [number, number] = [-100, 100];
 

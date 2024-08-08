@@ -1,7 +1,6 @@
 <script lang="ts">
   import { mdiInformation } from '@mdi/js';
-  import { Icon } from 'svelte-ux';
-  import { cls } from '$lib/utils/styles.js';
+  import { Icon, cls } from 'svelte-ux';
 </script>
 
 <div

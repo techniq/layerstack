@@ -1,5 +1,5 @@
 import type { ActionReturn } from 'svelte/action';
-import { delay } from '$lib/utils/promise.js';
+import { delay } from '@layerstack/utils';
 
 export function focusMove(
   node: HTMLElement | SVGElement,
