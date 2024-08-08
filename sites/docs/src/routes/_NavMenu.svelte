@@ -43,7 +43,7 @@
 </script>
 
 <NavItem text="Getting Started" icon={mdiHome} currentUrl={$page.url} path="/" />
-<NavItem text="Changelog" icon={mdiFormatListBulleted} currentUrl={$page.url} path="/changelog" />
+<!-- <NavItem text="Changelog" icon={mdiFormatListBulleted} currentUrl={$page.url} path="/changelog" /> -->
 
 <h1>svelte-actions</h1>
 {#each actions as item}
