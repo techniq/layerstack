@@ -6,4 +6,7 @@
 ![](https://img.shields.io/github/license/layerstack?style=flat)
 [![](https://dcbadge.vercel.app/api/server/697JhMPD3t?style=flat)](https://discord.gg/697JhMPD3t)
 
-See also the companion libraries [LayerChart](https://layerchart.com) for a large collection of composable chart components to build a wide range of visualizations, and [Svelte UX](https://svelte-ux.techniq.dev/) for a collection of components to build highly interactive applications.
+## Companion libraries
+
+- [LayerChart](https://layerchart.com) - composable chart components to build a wide range of visualizations
+- [Svelte UX](https://svelte-ux.techniq.dev/) - components to build highly interactive applications.
