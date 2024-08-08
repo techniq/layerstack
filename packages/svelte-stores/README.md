@@ -1,4 +1,4 @@
-# LayerStack utils
+# LayerStack svelte-stores
 
 ![](https://img.shields.io/github/license/techniq/layerstack?style=flat)
 [![](https://img.shields.io/github/actions/workflow/status/techniq/layerstack/ci.yml?style=flat)](https://github.com/techniq/layerstack/actions/workflows/ci.yml)
