@@ -37,4 +37,4 @@ jobs:
         env:
           CI: true
 
-      - run: pnpm build
+      - run: pnpm --filter "./sites/*" build
