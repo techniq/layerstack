@@ -94,7 +94,7 @@ importers:
   packages/svelte-stores:
     dependencies:
       '@layerstack/utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../utils
       d3-array:
         specifier: ^3.2.4
