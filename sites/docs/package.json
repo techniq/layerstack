@@ -3,6 +3,7 @@
   "description": "A collection of Svelte actions, stores and general utils",
   "author": "Sean Lynch <techniq35@gmail.com>",
   "license": "MIT",
+  "private": true,
   "repository": "techniq/layerstack",
   "version": "0.0.1",
   "scripts": {
