@@ -29,7 +29,6 @@
     "@tailwindcss/typography": "^0.5.13",
     "@types/culori": "^2.1.1",
     "@types/d3-array": "^3.2.1",
-    "@types/d3-scale": "^4.0.8",
     "@types/lodash-es": "^4.17.12",
     "@types/prismjs": "^1.26.4",
     "@vitest/coverage-v8": "^2.0.2",
@@ -56,22 +55,21 @@
   "type": "module",
   "dependencies": {
     "@fortawesome/fontawesome-common-types": "^6.5.2",
-    "@layerstack/svelte-actions": "workspace:^",
-    "@layerstack/svelte-stores": "workspace:^",
+    "@layerstack/svelte-actions": "workspace:*",
+    "@layerstack/svelte-stores": "workspace:*",
+    "@layerstack/svelte-table": "workspace:*",
     "@layerstack/utils": "workspace:*",
     "@mdi/js": "^7.4.47",
     "clsx": "^2.1.1",
     "culori": "^4.0.1",
     "d3-array": "^3.2.4",
-    "d3-scale": "^4.0.2",
     "date-fns": "^3.6.0",
     "lodash-es": "^4.17.21",
     "prism-svelte": "^0.5.0",
     "prism-themes": "^1.9.0",
     "prismjs": "^1.29.0",
     "sveld": "^0.20.0",
-    "tailwind-merge": "^2.4.0",
-    "zod": "^3.23.8"
+    "tailwind-merge": "^2.4.0"
   },
   "peerDependencies": {
     "svelte": "^3.56.0 || ^4.0.0 || ^5.0.0-next.120"
@@ -81,13 +79,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "svelte": "./dist/index.js"
-    },
-    "./utils/*": {
-      "types": "./dist/utils/*.d.ts",
-      "svelte": "./dist/utils/*.js"
-    },
-    "./plugins/*": "./dist/plugins/*",
-    "./styles/*": "./dist/styles/*"
+    }
   },
   "files": [
     "dist"

@@ -2,14 +2,13 @@ import type { Action } from 'svelte/action';
 import { merge } from 'lodash-es';
 import { extent, max, min } from 'd3-array';
 
-import type { ColumnDef, ResolveContext } from '../types/table.js';
-import type tableOrderStore from '../stores/tableOrderStore.js';
+import type { tableOrderStore } from './stores.js';
+import type { ColumnDef, ResolveContext } from './types.js';
+import { getCellValue } from './utils.js';
 
-import { dataBackground } from './dataBackground.js';
-import { sticky } from './sticky.js';
-import { getCellValue } from '../types/table.js';
-import DomTracker from './_domTracker.js';
+import { dataBackground, sticky } from '@layerstack/svelte-actions';
 import { entries } from '@layerstack/utils';
+import DomTracker from '@layerstack/svelte-actions/domTracker';
 
 type TableCellOptions = {
   column?: ColumnDef;

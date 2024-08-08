@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Button } from 'svelte-ux';
   import {
-    Button,
     remainingViewportHeight,
     remainingViewportWidth,
     overflow,

@@ -18,6 +18,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@sveltejs/kit": "^2.5.18",
     "@sveltejs/package": "^2.3.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@types/d3-array": "^3.2.1",
@@ -40,7 +41,8 @@
     "d3-array": "^3.2.4",
     "date-fns": "^3.6.0",
     "immer": "^10.1.1",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "zod": "^3.23.8"
   },
   "main": "./dist/index.js",
   "exports": {

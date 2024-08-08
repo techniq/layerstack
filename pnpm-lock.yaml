@@ -20,12 +20,18 @@ importers:
 
   packages/svelte-actions:
     dependencies:
+      '@floating-ui/dom':
+        specifier: ^1.6.7
+        version: 1.6.9
       '@layerstack/utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../utils
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
+      d3-scale:
+        specifier: ^4.0.2
+        version: 4.0.2
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
@@ -33,9 +39,6 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
-      '@floating-ui/dom':
-        specifier: ^1.6.7
-        version: 1.6.9
       '@sveltejs/package':
         specifier: ^2.3.2
         version: 2.3.2(svelte@4.2.18)(typescript@5.5.3)
@@ -45,6 +48,9 @@ importers:
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
+      '@types/d3-scale':
+        specifier: ^4.0.8
+        version: 4.0.8
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -96,6 +102,76 @@ importers:
       immer:
         specifier: ^10.1.1
         version: 10.1.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@sveltejs/kit':
+        specifier: ^2.5.18
+        version: 2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10)))(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10))
+      '@sveltejs/package':
+        specifier: ^2.3.2
+        version: 2.3.2(svelte@4.2.18)(typescript@5.5.3)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.1.1
+        version: 3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10))
+      '@types/d3-array':
+        specifier: ^3.2.1
+        version: 3.2.1
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@vitest/coverage-v8':
+        specifier: ^2.0.2
+        version: 2.0.2(vitest@2.0.2(@types/node@20.14.10))
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      prettier-plugin-svelte:
+        specifier: ^3.2.5
+        version: 3.2.5(prettier@3.3.2)(svelte@4.2.18)
+      rimraf:
+        specifier: 5.0.7
+        version: 5.0.7
+      svelte:
+        specifier: ^4.2.18
+        version: 4.2.18
+      svelte-check:
+        specifier: ^3.8.4
+        version: 3.8.4(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(svelte@4.2.18)
+      svelte2tsx:
+        specifier: ^0.7.13
+        version: 0.7.13(svelte@4.2.18)(typescript@5.5.3)
+      tslib:
+        specifier: ^2.6.3
+        version: 2.6.3
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      vite:
+        specifier: ^5.3.3
+        version: 5.3.3(@types/node@20.14.10)
+      vitest:
+        specifier: ^2.0.2
+        version: 2.0.2(@types/node@20.14.10)
+
+  packages/svelte-table:
+    dependencies:
+      '@layerstack/svelte-actions':
+        specifier: workspace:*
+        version: link:../svelte-actions
+      '@layerstack/utils':
+        specifier: workspace:*
+        version: link:../utils
+      d3-array:
+        specifier: ^3.2.4
+        version: 3.2.4
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -210,11 +286,14 @@ importers:
         specifier: ^6.5.2
         version: 6.6.0
       '@layerstack/svelte-actions':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/svelte-actions
       '@layerstack/svelte-stores':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/svelte-stores
+      '@layerstack/svelte-table':
+        specifier: workspace:*
+        version: link:../../packages/svelte-table
       '@layerstack/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -230,9 +309,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      d3-scale:
-        specifier: ^4.0.2
-        version: 4.0.2
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
@@ -254,9 +330,6 @@ importers:
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.7
@@ -288,9 +361,6 @@ importers:
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
-      '@types/d3-scale':
-        specifier: ^4.0.8
-        version: 4.0.8
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button, Toggle } from 'svelte-ux';
-  import { portal, type PortalOptions } from '@layerstack/svelte-actions';
+  import { portal } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

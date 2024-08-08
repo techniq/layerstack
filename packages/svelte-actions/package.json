@@ -18,10 +18,10 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@floating-ui/dom": "^1.6.7",
     "@sveltejs/package": "^2.3.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@types/d3-array": "^3.2.1",
+    "@types/d3-scale": "^4.0.8",
     "@types/lodash-es": "^4.17.12",
     "@vitest/coverage-v8": "^2.0.2",
     "prettier": "^3.3.2",
@@ -37,8 +37,10 @@
   },
   "type": "module",
   "dependencies": {
-    "@layerstack/utils": "workspace:^",
+    "@floating-ui/dom": "^1.6.7",
+    "@layerstack/utils": "workspace:*",
     "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
     "date-fns": "^3.6.0",
     "lodash-es": "^4.17.21"
   },
@@ -54,7 +56,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src/**/*.d.ts"
   ],
   "svelte": "./dist/index.js"
 }

@@ -1,5 +1,4 @@
-import type { DataBackgroundOptions } from '../actions/dataBackground.js';
-import type { Edge } from '../actions/sticky.js';
+import type { DataBackgroundOptions, Edge } from '@layerstack/svelte-actions';
 import type { FormatType } from '@layerstack/utils';
 
 export type ResolveContext<TData = any> = {

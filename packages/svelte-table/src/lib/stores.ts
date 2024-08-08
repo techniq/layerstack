@@ -4,9 +4,9 @@ import { isFunction } from 'lodash-es';
 import { index } from 'd3-array';
 
 import { sortFunc } from '@layerstack/utils';
-import type { ColumnDef } from '../types/table.js';
+import type { ColumnDef } from './types.js';
 // import Table from '../components/Table.svelte';
-import { getRowColumns } from '$lib/utils/table.js';
+import { getRowColumns } from './utils.js';
 
 type SortFunc = (a: any, b: any) => number;
 type OrderDirection = 'asc' | 'desc';
@@ -25,7 +25,7 @@ export type TableOrderProps = {
   columns?: ColumnDef[];
 };
 
-export default function tableOrderStore(props?: TableOrderProps) {
+export function tableOrderStore(props?: TableOrderProps) {
   const { initialBy, initialDirection, initialHandler, columns } = props ?? {};
   const columnsByName = columns ? index(getRowColumns(columns), (d) => d.name) : null;
 
