@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - sites/docs/**
+      - packages/**
 
 jobs:
   deploy-production:
