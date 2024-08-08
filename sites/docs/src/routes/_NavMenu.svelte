@@ -39,6 +39,8 @@
     'uniqueStore',
   ];
 
+  const table = ['actions', 'stores'];
+
   const utils = ['cls', 'duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
@@ -53,6 +55,11 @@
 <h1>svelte-stores</h1>
 {#each stores as item}
   <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-stores/{item}" />
+{/each}
+
+<h1>svelte-table</h1>
+{#each table as item}
+  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-table/{item}" />
 {/each}
 
 <h1>utils</h1>

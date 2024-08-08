@@ -1,4 +1,4 @@
-import source from '$svelte-stores/tableOrderStore.ts?raw';
+import source from '$svelte-table/stores.ts?raw';
 import pageSource from './+page.md?raw';
 
 export async function load() {
@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'Manage table column sorting selection and direction.  Compliments Table component',
-      related: ['actions/table', 'components/Table'],
+      related: ['svelte-table/actions', 'components/Table'],
     },
   };
 }

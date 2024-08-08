@@ -1,4 +1,4 @@
-import source from '$svelte-actions/table.ts?raw';
+import source from '$svelte-table/actions.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {

@@ -7,4 +7,4 @@
 
 <h1>Usage</h1>
 
-<Code source={`import { tableCell } from '@layerstack/svelte-actions';`} language="javascript" />
+<Code source={`import { tableCell } from '@layerstack/svelte-table';`} language="javascript" />
