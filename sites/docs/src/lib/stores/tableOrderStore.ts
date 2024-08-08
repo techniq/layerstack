@@ -3,7 +3,7 @@ import type { ComponentEvents } from 'svelte';
 import { isFunction } from 'lodash-es';
 import { index } from 'd3-array';
 
-import { sortFunc } from '../utils/sort.js';
+import { sortFunc } from '@layerstack/utils';
 import type { ColumnDef } from '../types/table.js';
 // import Table from '../components/Table.svelte';
 import { getRowColumns } from '$lib/utils/table.js';

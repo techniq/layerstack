@@ -6,8 +6,8 @@
   "repository": "techniq/layerstack",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
@@ -25,6 +25,7 @@
     "@vitest/coverage-v8": "^2.0.2",
     "prettier": "^3.3.2",
     "prettier-plugin-svelte": "^3.2.5",
+    "rimraf": "5.0.7",
     "svelte": "^4.2.18",
     "svelte-check": "^3.8.4",
     "svelte2tsx": "^0.7.13",
@@ -44,6 +45,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "svelte": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "svelte": "./dist/*.js"
     }
   },
   "files": [

@@ -2,9 +2,10 @@ import { setContext, getContext } from 'svelte';
 import { writable } from 'svelte/store';
 import { merge } from 'lodash-es';
 
+import { parse, stringify } from '@layerstack/utils';
+
 import fetchStore, { initFetchClient } from './fetchStore.js';
 import type { FetchConfig } from './fetchStore.js';
-import { parse, stringify } from '../utils/json.js';
 
 type ClientConfig = {
   url: string;

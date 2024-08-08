@@ -7,9 +7,9 @@ import type tableOrderStore from '../stores/tableOrderStore.js';
 
 import { dataBackground } from './dataBackground.js';
 import { sticky } from './sticky.js';
-import { getCellValue } from '../utils/table.js';
+import { getCellValue } from '../types/table.js';
 import DomTracker from './_domTracker.js';
-import { entries } from '../types/typeHelpers.js';
+import { entries } from '@layerstack/utils';
 
 type TableCellOptions = {
   column?: ColumnDef;

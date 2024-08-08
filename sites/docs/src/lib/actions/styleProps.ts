@@ -1,5 +1,5 @@
-import { entries, keys } from '../types/typeHelpers.js';
 import type { Action } from 'svelte/action';
+import { entries, keys } from '@layerstack/utils';
 
 type CSSProps = { [key: string]: string | number | boolean | null | undefined };
 

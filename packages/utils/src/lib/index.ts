@@ -15,10 +15,11 @@ export {
 } from './format.js';
 export * from './json.js';
 export * from './logger.js';
-export { round, clamp } from './number.js';
+export { round, clamp, randomInteger } from './number.js';
 export * from './promise.js';
 export * from './sort.js';
 export * from './string.js';
+export * from './typeHelpers.js';
 
 // aliased exports to remove conflicts (and make imports less noisy from top-level)
 export * as array from './array.js';

@@ -1,6 +1,6 @@
 import type { Action } from 'svelte/action';
 
-import { keys } from '../types/typeHelpers.js';
+import { keys } from '@layerstack/utils';
 import DomTracker from './_domTracker.js';
 
 export type Edge = 'top' | 'bottom' | 'left' | 'right';

@@ -1,5 +1,5 @@
 import { readable, writable } from 'svelte/store';
-import { browser } from '../utils/env.js';
+import { browser } from '@layerstack/utils/env';
 
 export function matchMedia(queryString: string) {
   if (browser) {

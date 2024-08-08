@@ -57,6 +57,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.6.7",
     "@fortawesome/fontawesome-common-types": "^6.5.2",
+    "@layerstack/utils": "workspace:*",
     "@mdi/js": "^7.4.47",
     "clsx": "^2.1.1",
     "culori": "^4.0.1",

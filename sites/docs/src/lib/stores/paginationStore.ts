@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { clamp } from '../utils/number.js';
+import { clamp } from '@layerstack/utils';
 
 export type PaginationProps = {
   page?: number;

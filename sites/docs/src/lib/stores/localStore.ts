@@ -1,10 +1,10 @@
 import { writable } from 'svelte/store';
 import { isFunction } from 'lodash-es';
 
-import { parse, stringify } from '../utils/json.js';
-import { expireObject } from '../utils/object.js';
-import type { Expiry } from '../utils/object.js';
-import { browser } from '../utils/env.js';
+import { parse, stringify } from '@layerstack/utils';
+import { browser } from '@layerstack/utils/env';
+import { expireObject } from '@layerstack/utils/object';
+import type { Expiry } from '@layerstack/utils/object';
 
 type LocalStoreOptions<Value> = {
   expiry?: Expiry | ((previousExpiry: Expiry | undefined | null) => Expiry);
