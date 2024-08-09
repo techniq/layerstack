@@ -199,14 +199,14 @@
     <script
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon={JSON.stringify({ token: '1848f3c15bf0441f8cd02fe0c4acb3ce' })}
+      data-cf-beacon={JSON.stringify({ token: 'a9bb144411004657989216361774b0e7' })}
     ></script>
 
     <script
       async
       defer
       src="https://us.umami.is/script.js"
-      data-website-id="f26cb766-3d47-4af4-a7a7-1cc519810b8f"
+      data-website-id="e2c58ad6-4f28-4429-aecc-746e2cdf7a90"
     ></script>
   {/if}
 </svelte:head>
