@@ -1,4 +1,4 @@
-import { colors } from "./theme.js";
+import { colors } from './theme.js';
 
 export type TailwindColors =
   | 'red'
