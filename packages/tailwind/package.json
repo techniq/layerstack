@@ -11,8 +11,8 @@
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "check": "tsc --noEmit",
+    "check:watch": "tsc --noEmit --watch",
     "test:unit": "TZ=UTC+4 vitest",
     "lint": "prettier --check .",
     "format": "prettier --write ."
