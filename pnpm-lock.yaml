@@ -425,9 +425,6 @@ importers:
       '@types/prismjs':
         specifier: ^1.26.4
         version: 1.26.4
-      '@vitest/coverage-v8':
-        specifier: ^2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@22.1.0))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.4.41)
@@ -479,9 +476,6 @@ importers:
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@22.1.0)
-      vitest:
-        specifier: ^2.0.5
-        version: 2.0.5(@types/node@22.1.0)
 
 packages:
 
