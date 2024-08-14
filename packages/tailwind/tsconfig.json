@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noErrorTruncation": true,
+    "incremental": true,
+    "outDir": "./dist",
+    "target": "esnext",
+    "lib": ["es2021", "DOM"],
+    "sourceMap": true,
+    "alwaysStrict": true,
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["./src/**/*.ts"]
+}

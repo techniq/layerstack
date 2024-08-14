@@ -1,8 +1,8 @@
 const plugin = require('tailwindcss/plugin');
 
-const { createThemeColors, injectThemes } = require('./tailwind/theme.cjs');
-const colorMix = require('./tailwind/colorMix.cjs');
-const elevation = require('./tailwind/elevation.cjs');
+const { createThemeColors, injectThemes } = require('./plugin/theme.cjs');
+const colorMix = require('./plugin/colorMix.cjs');
+const elevation = require('./plugin/elevation.cjs');
 
 // TODO: Type options (convert to Typescript and use generic argument, or use jsdoc?)
 module.exports = plugin.withOptions(

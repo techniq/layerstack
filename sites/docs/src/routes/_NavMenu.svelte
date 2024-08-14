@@ -40,7 +40,7 @@
   ];
 
   const table = ['actions', 'stores'];
-
+  const tailwind = ['utils'];
   const utils = ['cls', 'duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
@@ -60,6 +60,11 @@
 <h1>svelte-table</h1>
 {#each table as item}
   <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-table/{item}" />
+{/each}
+
+<h1>tailwind</h1>
+{#each tailwind as item}
+  <NavItem text={item} currentUrl={$page.url} path="/docs/tailwind/{item}" />
 {/each}
 
 <h1>utils</h1>

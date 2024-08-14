@@ -225,6 +225,67 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.1.0)
 
+  packages/tailwind:
+    dependencies:
+      '@layerstack/utils':
+        specifier: workspace:^
+        version: link:../utils
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      culori:
+        specifier: ^4.0.1
+        version: 4.0.1
+      d3-array:
+        specifier: ^3.2.4
+        version: 3.2.4
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      tailwind-merge:
+        specifier: ^2.4.0
+        version: 2.4.0
+      tailwindcss:
+        specifier: ^3.4.9
+        version: 3.4.9
+    devDependencies:
+      '@skeletonlabs/tw-plugin':
+        specifier: ^0.4.0
+        version: 0.4.0(tailwindcss@3.4.9)
+      '@types/culori':
+        specifier: ^2.1.1
+        version: 2.1.1
+      '@types/d3-array':
+        specifier: ^3.2.1
+        version: 3.2.1
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      daisyui:
+        specifier: ^4.12.10
+        version: 4.12.10(postcss@8.4.41)
+      prettier:
+        specifier: ^3.3.3
+        version: 3.3.3
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
+      tslib:
+        specifier: ^2.6.3
+        version: 2.6.3
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@22.1.0)
+      vitest:
+        specifier: ^2.0.5
+        version: 2.0.5(@types/node@22.1.0)
+
   packages/utils:
     dependencies:
       d3-array:
@@ -297,6 +358,9 @@ importers:
       '@layerstack/svelte-table':
         specifier: workspace:*
         version: link:../../packages/svelte-table
+      '@layerstack/tailwind':
+        specifier: workspace:*
+        version: link:../../packages/tailwind
       '@layerstack/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -306,9 +370,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      culori:
-        specifier: ^4.0.1
-        version: 4.0.1
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
@@ -340,9 +401,6 @@ importers:
       '@fortawesome/free-solid-svg-icons':
         specifier: ^6.5.2
         version: 6.6.0
-      '@skeletonlabs/tw-plugin':
-        specifier: ^0.4.0
-        version: 0.4.0(tailwindcss@3.4.9)
       '@sveltejs/adapter-cloudflare':
         specifier: ^4.7.0
         version: 4.7.0(@sveltejs/kit@2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.4.0(@types/node@22.1.0)))(svelte@4.2.18)(vite@5.4.0(@types/node@22.1.0)))(wrangler@3.69.1(@cloudflare/workers-types@4.20240806.0))
@@ -358,9 +416,6 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.14
         version: 0.5.14(tailwindcss@3.4.9)
-      '@types/culori':
-        specifier: ^2.1.1
-        version: 2.1.1
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
@@ -376,9 +431,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.4.41)
-      daisyui:
-        specifier: ^4.12.10
-        version: 4.12.10(postcss@8.4.41)
       marked:
         specifier: ^14.0.0
         version: 14.0.0

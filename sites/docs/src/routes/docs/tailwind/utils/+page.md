@@ -6,7 +6,7 @@
 
 ```svelte
 <script>
-  import { cls } from 'svelte-ux';
+  import { cls } from '@layerstack/tailwind';
 </script>
 
 <Button class={cls('...')} />

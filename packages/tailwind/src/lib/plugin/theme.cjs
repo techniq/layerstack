@@ -1,5 +1,5 @@
 const colors = require('tailwindcss/colors');
-const { createThemeColors, processThemeColors } = require('../../styles/theme');
+const { createThemeColors, processThemeColors } = require('../theme');
 const { entries } = require('@layerstack/utils');
 
 const defaultThemes = {

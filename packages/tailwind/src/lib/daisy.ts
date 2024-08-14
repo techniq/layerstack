@@ -1,6 +1,6 @@
 import daisyThemes from 'daisyui/src/theming/themes.js';
 // import { themeOrder } from 'daisyui/src/theming/themeDefaults'; // breaks build
-import { sortFunc, entries, fromEntries } from '@layerstack/utils';
+import { entries, fromEntries, sortFunc } from '@layerstack/utils';
 import type { Theme } from 'daisyui';
 
 const themeNames = [

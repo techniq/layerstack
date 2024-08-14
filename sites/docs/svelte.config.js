@@ -24,6 +24,7 @@ const config = {
       '$svelte-actions': '../../packages/svelte-actions/src/lib',
       '$svelte-stores': '../../packages/svelte-stores/src/lib',
       '$svelte-table': '../../packages/svelte-table/src/lib',
+      $tailwind: '../../packages/tailwind/src/lib',
       $utils: '../../packages/utils/src/lib',
     },
   },
