@@ -7,7 +7,7 @@
   "version": "0.0.2",
   "scripts": {
     "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist",
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
@@ -45,7 +45,7 @@
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./plugin": "./src/lib/plugin.cjs"
+    "./plugin": "./dist/plugin.cjs"
   },
   "files": [
     "dist"
