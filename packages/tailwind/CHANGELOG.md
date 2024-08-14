@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 0.0.4
+
+### Patch Changes
+
+- Fix plugin export ([`f219fe52b1c5c3cfd3f88b2aeaa5da5889404403`](https://github.com/techniq/layerstack/commit/f219fe52b1c5c3cfd3f88b2aeaa5da5889404403))
+
 ## 0.0.3
 
 ### Patch Changes
