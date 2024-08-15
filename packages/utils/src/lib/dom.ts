@@ -1,3 +1,5 @@
+import { isSVGElement, isSVGGraphicsElement, isSVGSVGElement, isTouchEvent } from './typeGuards.js';
+
 /**
  * Find the closest scrollable parent
  * - see: https://stackoverflow.com/questions/35939886/find-first-scrollable-parent
@@ -5,8 +7,8 @@
  */
 export function getScrollParent(node: HTMLElement): HTMLElement {
   const isElement = node instanceof HTMLElement;
-  const overflowX = isElement ? (window?.getComputedStyle(node).overflowX ?? 'visible') : 'unknown';
-  const overflowY = isElement ? (window?.getComputedStyle(node).overflowY ?? 'visible') : 'unknown';
+  const overflowX = isElement ? window?.getComputedStyle(node).overflowX ?? 'visible' : 'unknown';
+  const overflowY = isElement ? window?.getComputedStyle(node).overflowY ?? 'visible' : 'unknown';
   const isHorizontalScrollable =
     !['visible', 'hidden'].includes(overflowX) && node.scrollWidth > node.clientWidth;
   const isVerticalScrollable =
@@ -30,8 +32,8 @@ export function scrollIntoView(node: HTMLElement) {
   const removeScrollParentOffset = scrollParent != node.offsetParent; // ignore `position: absolute` parent, for example
 
   const nodeOffset = {
-    top: node.offsetTop - (removeScrollParentOffset ? (scrollParent?.offsetTop ?? 0) : 0),
-    left: node.offsetLeft - (removeScrollParentOffset ? (scrollParent?.offsetLeft ?? 0) : 0),
+    top: node.offsetTop - (removeScrollParentOffset ? scrollParent?.offsetTop ?? 0 : 0),
+    left: node.offsetLeft - (removeScrollParentOffset ? scrollParent?.offsetLeft ?? 0 : 0),
   };
 
   const optionCenter = {
@@ -60,4 +62,57 @@ export function isVisibleInScrollParent(node: HTMLElement) {
   const parentRect = scrollParent.getBoundingClientRect();
   const isVisible = nodeRect.top > parentRect.top && nodeRect.bottom < parentRect.bottom;
   return isVisible;
+}
+
+/**
+ * Get pointer coordinates relative to node/container
+ * Matches event.layerX/Y, but is deprecated (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/layerX).
+ * Also similar but not identical to event.offsetX/Y
+ */
+export function localPoint(node: Element, event: MouseEvent | TouchEvent | PointerEvent) {
+  if (!node || !event) return null;
+
+  const coords = getPointFromEvent(event);
+
+  // find top-most SVG
+  const svg = isSVGElement(node) ? node.ownerSVGElement : node;
+  const screenCTM = isSVGGraphicsElement(svg) ? svg.getScreenCTM() : null;
+
+  if (isSVGSVGElement(svg) && screenCTM) {
+    let point = svg.createSVGPoint();
+    point.x = coords.x;
+    point.y = coords.y;
+    point = point.matrixTransform(screenCTM.inverse());
+
+    return {
+      x: point.x,
+      y: point.y,
+    };
+  }
+
+  // fall back to bounding box
+  const rect = node.getBoundingClientRect();
+
+  return {
+    x: coords.x - rect.left - node.clientLeft,
+    y: coords.y - rect.top - node.clientTop,
+  };
+}
+
+function getPointFromEvent(event?: MouseEvent | TouchEvent | PointerEvent) {
+  if (!event) return { x: 0, y: 0 };
+
+  if (isTouchEvent(event)) {
+    return event.changedTouches.length > 0
+      ? {
+          x: event.changedTouches[0].clientX,
+          y: event.changedTouches[0].clientY,
+        }
+      : { x: 0, y: 0 };
+  }
+
+  return {
+    x: event.clientX,
+    y: event.clientY,
+  };
 }
