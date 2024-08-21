@@ -1,17 +1,9 @@
 <script lang="ts">
-  import {
-    TextField,
-    DatePickerField,
-    MenuField,
-    // TODO: move/update
-    settings,
-  } from 'svelte-ux';
-  import { PeriodType, type FormatNumberStyle, DateToken } from '@layerstack/utils';
+  import { TextField, DatePickerField, MenuField } from 'svelte-ux';
+  import { format, PeriodType, type FormatNumberStyle, DateToken } from '@layerstack/utils';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
-
-  const { locale, format } = settings({});
 
   let value = 1234.56;
   let style: FormatNumberStyle = 'decimal';
@@ -20,13 +12,14 @@
 
   let myDate = new Date('1982-03-30T07:11:00');
 
-  const locales = ['en', 'de', 'fr', 'it', 'es', 'jp', 'zh'];
+  const locales = ['en', 'de', 'fr', 'it', 'es', 'jp', 'zh'] as const;
+  let locale: (typeof locales)[number] = 'en';
 </script>
 
 <h1>Usage</h1>
 
 <Code
-  source={"const { format } = getSettings();\n$format(123.456, 'decimal');"}
+  source={"import { format } from '@layerstack/utils';\nformat(123.456, 'decimal');"}
   language="javascript"
   class="mb-4"
 />
@@ -62,7 +55,7 @@
 
   <MenuField
     label="locale"
-    bind:value={$locale}
+    bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
   />
 
@@ -77,7 +70,7 @@
 </div>
 
 <Preview>
-  <div>{$format(value, style, { currency, notation })}</div>
+  <div>{format(value, style, { currency, notation })}</div>
 </Preview>
 
 <h2>Playground dates</h2>
@@ -87,13 +80,13 @@
 
   <MenuField
     label="locale"
-    bind:value={$locale}
+    bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
   />
 </div>
 
 <Preview>
-  <div>{$format(myDate, PeriodType.Day)}</div>
+  <div>{format(myDate, PeriodType.Day)}</div>
 </Preview>
 
 <h1>Numbers</h1>
@@ -101,14 +94,14 @@
 <h2>Number Formats (default settings)</h2>
 
 <Preview showCode>
-  <div>{$format(1234.56, 'integer')}</div>
-  <div>{$format(1234.56, 'decimal')}</div>
-  <div>{$format(1234.56, 'currency')}</div>
-  <div>{$format(0.5678, 'percent')}</div>
-  <div>{$format(0.5678, 'percentRound')}</div>
-  <div>{$format(1_234_567, 'metric')}</div>
-  <div>{$format(1_200_000, 'metric')}</div>
-  <div>{$format(0.5678, 'percent')}</div>
+  <div>{format(1234.56, 'integer')}</div>
+  <div>{format(1234.56, 'decimal')}</div>
+  <div>{format(1234.56, 'currency')}</div>
+  <div>{format(0.5678, 'percent')}</div>
+  <div>{format(0.5678, 'percentRound')}</div>
+  <div>{format(1_234_567, 'metric')}</div>
+  <div>{format(1_200_000, 'metric')}</div>
+  <div>{format(0.5678, 'percent')}</div>
 </Preview>
 
 <h2>number formats (additional options)</h2>
@@ -118,16 +111,16 @@
 </span>
 
 <Preview showCode>
-  <div>{$format(1234.56, 'integer', { maximumSignificantDigits: 2 })}</div>
-  <div>{$format(1234.56, 'decimal', { maximumSignificantDigits: 5 })}</div>
-  <div>{$format(1234.56, 'currency', { currency: 'EUR' })}</div>
+  <div>{format(1234.56, 'integer', { maximumSignificantDigits: 2 })}</div>
+  <div>{format(1234.56, 'decimal', { maximumSignificantDigits: 5 })}</div>
+  <div>{format(1234.56, 'currency', { currency: 'EUR' })}</div>
   <div>
-    {$format(123_456_789.99, 'currency', { notation: 'compact', maximumSignificantDigits: 3 })}
+    {format(123_456_789.99, 'currency', { notation: 'compact', maximumSignificantDigits: 3 })}
   </div>
-  <div>{$format(0.5678, 'percent', { signDisplay: 'always' })}</div>
-  <div>{$format(0.5678, 'percentRound', { signDisplay: 'always' })}</div>
-  <div>{$format(1_234_567, 'metric', { minimumSignificantDigits: 12 })}</div>
-  <div>{$format(0.5678, 'percent', { fractionDigits: 1 })}</div>
+  <div>{format(0.5678, 'percent', { signDisplay: 'always' })}</div>
+  <div>{format(0.5678, 'percentRound', { signDisplay: 'always' })}</div>
+  <div>{format(1_234_567, 'metric', { minimumSignificantDigits: 12 })}</div>
+  <div>{format(0.5678, 'percent', { fractionDigits: 1 })}</div>
 </Preview>
 
 <h1>Dates</h1>
@@ -138,7 +131,7 @@
   <div>
     <h3>With format string</h3>
     <Preview>
-      {$format(myDate, PeriodType.Custom, {
+      {format(myDate, PeriodType.Custom, {
         custom: 'eee, MMMM do',
       })}
     </Preview>
@@ -146,7 +139,7 @@
   <div>
     <h3>With descriptive tokens</h3>
     <Preview>
-      {$format(myDate, PeriodType.Custom, {
+      {format(myDate, PeriodType.Custom, {
         custom: [DateToken.DayOfWeek_short, DateToken.Month_long, DateToken.DayOfMonth_withOrdinal],
       })}
     </Preview>
@@ -154,7 +147,7 @@
   <div>
     <h3>With full intl</h3>
     <Preview>
-      {$format(myDate, PeriodType.Custom, {
+      {format(myDate, PeriodType.Custom, {
         custom: { weekday: 'short', month: 'long', day: 'numeric', withOrdinal: true },
       })}
     </Preview>
@@ -167,7 +160,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.Day, {
+      {format(myDate, PeriodType.Day, {
         variant: 'short',
       })}
     </Preview>
@@ -175,7 +168,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.Day, {
+      {format(myDate, PeriodType.Day, {
         // variant: 'default',
       })}
     </Preview>
@@ -183,7 +176,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.Day, {
+      {format(myDate, PeriodType.Day, {
         variant: 'long',
       })}
     </Preview>
@@ -196,7 +189,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.DayTime, {
+      {format(myDate, PeriodType.DayTime, {
         variant: 'short',
       })}
     </Preview>
@@ -204,7 +197,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.DayTime, {
+      {format(myDate, PeriodType.DayTime, {
         // variant: 'default',
       })}
     </Preview>
@@ -212,7 +205,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.DayTime, {
+      {format(myDate, PeriodType.DayTime, {
         variant: 'long',
       })}
     </Preview>
@@ -225,7 +218,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.TimeOnly, {
+      {format(myDate, PeriodType.TimeOnly, {
         variant: 'short',
       })}
     </Preview>
@@ -233,7 +226,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.TimeOnly, {
+      {format(myDate, PeriodType.TimeOnly, {
         // variant: 'default',
       })}
     </Preview>
@@ -241,7 +234,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.TimeOnly, {
+      {format(myDate, PeriodType.TimeOnly, {
         variant: 'long',
       })}
     </Preview>
@@ -259,7 +252,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.Week, {
+      {format(myDate, PeriodType.Week, {
         variant: 'short',
       })}
     </Preview>
@@ -267,7 +260,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.Week, {
+      {format(myDate, PeriodType.Week, {
         // variant: 'default',
       })}
     </Preview>
@@ -275,7 +268,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.Week, {
+      {format(myDate, PeriodType.Week, {
         variant: 'long',
       })}
     </Preview>
@@ -293,7 +286,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.BiWeek1, {
+      {format(myDate, PeriodType.BiWeek1, {
         variant: 'short',
       })}
     </Preview>
@@ -301,7 +294,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.BiWeek1, {
+      {format(myDate, PeriodType.BiWeek1, {
         // variant: 'default',
       })}
     </Preview>
@@ -309,7 +302,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.BiWeek1, {
+      {format(myDate, PeriodType.BiWeek1, {
         variant: 'long',
       })}
     </Preview>
@@ -322,7 +315,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.Month, {
+      {format(myDate, PeriodType.Month, {
         variant: 'short',
       })}
     </Preview>
@@ -330,7 +323,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.Month, {
+      {format(myDate, PeriodType.Month, {
         // variant: 'default',
       })}
     </Preview>
@@ -338,7 +331,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.Month, {
+      {format(myDate, PeriodType.Month, {
         variant: 'long',
       })}
     </Preview>
@@ -351,7 +344,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.Quarter, {
+      {format(myDate, PeriodType.Quarter, {
         variant: 'short',
       })}
     </Preview>
@@ -359,7 +352,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.Quarter, {
+      {format(myDate, PeriodType.Quarter, {
         // variant: 'default',
       })}
     </Preview>
@@ -367,7 +360,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.Quarter, {
+      {format(myDate, PeriodType.Quarter, {
         variant: 'long',
       })}
     </Preview>
@@ -380,7 +373,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.CalendarYear, {
+      {format(myDate, PeriodType.CalendarYear, {
         variant: 'short',
       })}
     </Preview>
@@ -388,7 +381,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.CalendarYear, {
+      {format(myDate, PeriodType.CalendarYear, {
         // variant: 'default',
       })}
     </Preview>
@@ -396,7 +389,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.CalendarYear, {
+      {format(myDate, PeriodType.CalendarYear, {
         variant: 'long',
       })}
     </Preview>
@@ -409,7 +402,7 @@
   <div>
     <h3>short</h3>
     <Preview>
-      {$format(myDate, PeriodType.FiscalYearOctober, {
+      {format(myDate, PeriodType.FiscalYearOctober, {
         variant: 'short',
       })}
     </Preview>
@@ -417,7 +410,7 @@
   <div>
     <h3>default</h3>
     <Preview>
-      {$format(myDate, PeriodType.FiscalYearOctober, {
+      {format(myDate, PeriodType.FiscalYearOctober, {
         // variant: 'default',
       })}
     </Preview>
@@ -425,7 +418,7 @@
   <div>
     <h3>long</h3>
     <Preview>
-      {$format(myDate, PeriodType.FiscalYearOctober, {
+      {format(myDate, PeriodType.FiscalYearOctober, {
         variant: 'long',
       })}
     </Preview>
