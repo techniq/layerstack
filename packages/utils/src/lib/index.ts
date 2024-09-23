@@ -20,6 +20,7 @@ export { round, clamp, randomInteger } from './number.js';
 export * from './promise.js';
 export * from './sort.js';
 export * from './string.js';
+export * from './typeGuards.js';
 export * from './typeHelpers.js';
 
 // aliased exports to remove conflicts (and make imports less noisy from top-level)
