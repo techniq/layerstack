@@ -1,5 +1,13 @@
 # @layerstack/utils
 
+## 0.0.4
+
+### Patch Changes
+
+- feat: Add typeGuards to top-level exports ([`84160d60076ad6e3e22b9ee5190a1a5325cf3fcb`](https://github.com/techniq/layerstack/commit/84160d60076ad6e3e22b9ee5190a1a5325cf3fcb))
+
+- Add localPoint() dom util ([`048a5ac2f0a31570bbef1465bcdc5d2351c1d723`](https://github.com/techniq/layerstack/commit/048a5ac2f0a31570bbef1465bcdc5d2351c1d723))
+
 ## 0.0.3
 
 ### Patch Changes
