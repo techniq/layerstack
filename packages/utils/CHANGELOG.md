@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 0.0.5
+
+### Patch Changes
+
+- Update dependencies ([`f19a9c4a6a499e4449aeeb2b0325e450fd7d7abd`](https://github.com/techniq/layerstack/commit/f19a9c4a6a499e4449aeeb2b0325e450fd7d7abd))
+
 ## 0.0.4
 
 ### Patch Changes
