@@ -1,5 +1,11 @@
 # @layerstack/svelte-stores
 
+## 0.0.6
+
+### Patch Changes
+
+- fix: Add themeStore to exports ([`1f6746f32379577cadc778f3af020ff0f4edbaf5`](https://github.com/techniq/layerstack/commit/1f6746f32379577cadc778f3af020ff0f4edbaf5))
+
 ## 0.0.5
 
 ### Patch Changes
