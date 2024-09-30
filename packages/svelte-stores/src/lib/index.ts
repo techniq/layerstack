@@ -10,6 +10,7 @@ export * from './matchMedia.js';
 export { default as paginationStore } from './paginationStore.js';
 export * from './promiseStore.js';
 export { default as selectionStore } from './selectionStore.js';
+export * from './themeStore.js';
 export { default as timerStore } from './timerStore.js';
 export { default as uniqueStore } from './uniqueStore.js';
 export * from './queryParamsStore.js';
