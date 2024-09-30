@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'Store to manage unique values using `Set` with improves ergonomics and better control of updates',
-      related: ['stores/selectionStore', 'stores/mapStore', 'components/MultiSelect'],
+      related: ['svelte-stores/selectionStore', 'svelte-stores/mapStore', 'components/MultiSelect'],
     },
   };
 }

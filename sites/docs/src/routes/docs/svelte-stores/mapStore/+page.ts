@@ -7,7 +7,7 @@ export async function load() {
       source,
       pageSource,
       description: 'Store to wrap `Map` to simplify syncing state (set, delete, clear) with Svelte',
-      related: ['stores/uniqueStore'],
+      related: ['svelte-stores/uniqueStore'],
     },
   };
 }

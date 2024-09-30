@@ -6,8 +6,7 @@ export async function load() {
     meta: {
       source,
       pageSource,
-      description:
-        'Wrapper around `tailwind-merge` and `clsx` for easy style overriding.  Used internally by all components',
+      description: 'Wrapper around `tailwind-merge` and `clsx` for easy style overriding',
       related: ['https://github.com/dcastil/tailwind-merge', 'https://github.com/lukeed/clsx'],
     },
   };

@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'Fetch request as a store, with support for body parsing (json, text, arrayBuffer, etc), out of order responses, context configuration, and global errors',
-      related: ['stores/graphStore'],
+      related: ['svelte-stores/graphStore'],
     },
   };
 }

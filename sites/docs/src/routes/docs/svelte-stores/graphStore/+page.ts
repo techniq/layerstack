@@ -7,7 +7,7 @@ export async function load() {
       source,
       pageSource,
       description: ['GraphQL requests powered by fetchStore'],
-      related: ['stores/fetchStore'],
+      related: ['svelte-stores/fetchStore'],
     },
   };
 }

@@ -6,7 +6,7 @@ export async function load() {
     meta: {
       source,
       pageSource,
-      related: ['components/Table', 'actions/table'],
+      related: ['components/Table', 'svelte-table/actions/table'],
     },
   };
 }

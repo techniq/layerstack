@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'Set background gradient based on data, similar to Excel.  Typically used within a table',
-      related: ['components/Table', 'actions/table'],
+      related: ['components/Table', 'svelte-table/actions/table'],
     },
   };
 }

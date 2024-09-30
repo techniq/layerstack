@@ -77,9 +77,15 @@
       }
     } else if (r.startsWith('/')) {
       return { type: 'docs', name: toTitleCase(r.slice(1)), url: r };
+    } else if (r.startsWith('components')) {
+      return {
+        type: 'Svelte UX',
+        name: r.split('/')[1],
+        url: new URL(`https://svelte-ux.techniq.dev/docs/${r}`),
+      };
     } else {
       const [type, name] = r.split('/');
-      return { type, name, url: `/docs/${type}/${name}` };
+      return { type: `@layerstack/${type}`, name, url: `/docs/${type}/${name}` };
     }
   }
 
