@@ -4,7 +4,7 @@
   "author": "Sean Lynch <techniq35@gmail.com>",
   "license": "MIT",
   "repository": "techniq/layerstack",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
     "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist",
