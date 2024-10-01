@@ -1,7 +1,8 @@
 import daisyThemes from 'daisyui/src/theming/themes.js';
-// import { themeOrder } from 'daisyui/src/theming/themeDefaults'; // breaks build
-import { entries, fromEntries, sortFunc } from '@layerstack/utils';
 import type { Theme } from 'daisyui';
+// import { themeOrder } from 'daisyui/src/theming/themeDefaults'; // breaks build
+
+import { entries, fromEntries, sortFunc } from '@layerstack/utils';
 
 const themeNames = [
   'light',
