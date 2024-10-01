@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 0.0.8
+
+### Patch Changes
+
+- fix: Add daisy and skeleton exports ([`9e21367153e32fbcecc8e15e3087899e34bf32db`](https://github.com/techniq/layerstack/commit/9e21367153e32fbcecc8e15e3087899e34bf32db))
+
 ## 0.0.7
 
 ### Patch Changes
