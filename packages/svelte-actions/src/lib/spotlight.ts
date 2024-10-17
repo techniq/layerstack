@@ -46,35 +46,39 @@ export const spotlight: Action<HTMLElement, SpotlightOptions> = (node, options) 
   }
 
   node.classList.add(
-    'relative',
-    'isolate',
+    ...[
+      'relative',
+      'isolate',
 
-    options?.radius ? '[--spotlight-radius:var(--default-spotlight-radius)]' : '',
-    options?.borderWidth ? '[--spotlight-border-width:var(--default-spotlight-border-width)]' : '',
-    options?.borderColorStops
-      ? '[--spotlight-border-color-stops:var(--default-spotlight-border-color-stops)]'
-      : '',
-    options?.surfaceColorStops
-      ? '[--spotlight-surface-color-stops:var(--default-spotlight-surface-color-stops)]'
-      : '',
+      options?.radius ? '[--spotlight-radius:var(--default-spotlight-radius)]' : '',
+      options?.borderWidth
+        ? '[--spotlight-border-width:var(--default-spotlight-border-width)]'
+        : '',
+      options?.borderColorStops
+        ? '[--spotlight-border-color-stops:var(--default-spotlight-border-color-stops)]'
+        : '',
+      options?.surfaceColorStops
+        ? '[--spotlight-surface-color-stops:var(--default-spotlight-surface-color-stops)]'
+        : '',
 
-    options?.hover?.radius ? 'hover:[--spotlight-radius:var(--hover-spotlight-radius)]' : '',
-    options?.hover?.borderWidth
-      ? 'hover:[--spotlight-border-width:var(--hover-spotlight-border-width)]'
-      : '',
-    options?.hover?.borderColorStops
-      ? 'hover:[--spotlight-border-color-stops:var(--hover-spotlight-border-color-stops)]'
-      : '',
-    options?.hover?.surfaceColorStops
-      ? 'hover:[--spotlight-surface-color-stops:var(--hover-spotlight-surface-color-stops)]'
-      : '',
+      options?.hover?.radius ? 'hover:[--spotlight-radius:var(--hover-spotlight-radius)]' : '',
+      options?.hover?.borderWidth
+        ? 'hover:[--spotlight-border-width:var(--hover-spotlight-border-width)]'
+        : '',
+      options?.hover?.borderColorStops
+        ? 'hover:[--spotlight-border-color-stops:var(--hover-spotlight-border-color-stops)]'
+        : '',
+      options?.hover?.surfaceColorStops
+        ? 'hover:[--spotlight-surface-color-stops:var(--hover-spotlight-surface-color-stops)]'
+        : '',
 
-    // Spotlight applied as :after element with 2 background gradients.  padding-box for surface, and border-box for border
-    'before:absolute',
-    'before:inset-0',
-    'before:z-[-1]',
-    'before:[border:var(--spotlight-border-width)_solid_transparent]',
-    'before:[background:fixed_padding-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-surface-color-stops)),fixed_border-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-border-color-stops))]'
+      // Spotlight applied as :after element with 2 background gradients.  padding-box for surface, and border-box for border
+      'before:absolute',
+      'before:inset-0',
+      'before:z-[-1]',
+      'before:[border:var(--spotlight-border-width)_solid_transparent]',
+      'before:[background:fixed_padding-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-surface-color-stops)),fixed_border-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-border-color-stops))]',
+    ].filter((cls) => cls)
   );
 
   return {
