@@ -1,5 +1,13 @@
 # @layerstack/svelte-actions
 
+## 0.0.6
+
+### Patch Changes
+
+- fix(movable): Stop propagating `click` if moved ([`702d42ac4c92442ad8adabaf83c76ba5c7bcd430`](https://github.com/techniq/layerstack/commit/702d42ac4c92442ad8adabaf83c76ba5c7bcd430))
+
+- fix(spotlight): Filter empty class strings before calling node.classList.add(...) to fix SyntaxError (recent browser change?) ([`c59596ec5f593155481c4c2bf6c8a59ecf56e16b`](https://github.com/techniq/layerstack/commit/c59596ec5f593155481c4c2bf6c8a59ecf56e16b))
+
 ## 0.0.5
 
 ### Patch Changes
