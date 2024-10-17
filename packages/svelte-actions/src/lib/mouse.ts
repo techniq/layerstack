@@ -76,7 +76,10 @@ type MovableOptions = {
 /**
  * Track mouse position changes from mouse down on node to mouse up
  */
-export const movable: Action<HTMLElement, MovableOptions | undefined> = (node, options = {}) => {
+export const movable: Action<HTMLElement & SVGElement, MovableOptions | undefined> = (
+  node,
+  options = {}
+) => {
   let lastX = 0;
   let lastY = 0;
   let moved = false;
