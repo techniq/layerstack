@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 0.0.9
+
+### Patch Changes
+
+- refactor: Move daisy and skeleton modules from top-level to named exports, fixing unnecessary dependencies (ex. `import { themes } from '@layerstack/tailwind/daisy'`) ([`59f8e6eb378e20fc060598f14df706bc762dbefe`](https://github.com/techniq/layerstack/commit/59f8e6eb378e20fc060598f14df706bc762dbefe))
+
 ## 0.0.8
 
 ### Patch Changes
