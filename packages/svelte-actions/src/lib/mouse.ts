@@ -76,7 +76,7 @@ type MovableOptions = {
 /**
  * Track mouse position changes from mouse down on node to mouse up
  */
-export const movable: Action<HTMLElement & SVGElement, MovableOptions | undefined> = (
+export const movable: Action<HTMLElement | SVGElement, MovableOptions | undefined> = (
   node,
   options = {}
 ) => {
@@ -98,7 +98,7 @@ export const movable: Action<HTMLElement & SVGElement, MovableOptions | undefine
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   }
-  node.addEventListener('mousedown', onMouseDown);
+  (node as HTMLElement).addEventListener('mousedown', onMouseDown);
 
   function onMouseMove(event: MouseEvent) {
     moved = true;
@@ -180,12 +180,12 @@ export const movable: Action<HTMLElement & SVGElement, MovableOptions | undefine
       event.stopImmediatePropagation();
     }
   }
-  node.addEventListener('click', onClick);
+  (node as HTMLElement).addEventListener('click', onClick);
 
   return {
     destroy() {
-      node.removeEventListener('mousedown', onMouseDown);
-      node.removeEventListener('click', onClick);
+      (node as HTMLElement).removeEventListener('mousedown', onMouseDown);
+      (node as HTMLElement).removeEventListener('click', onClick);
     },
   };
 };
