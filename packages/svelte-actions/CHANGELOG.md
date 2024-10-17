@@ -1,5 +1,11 @@
 # @layerstack/svelte-actions
 
+## 0.0.7
+
+### Patch Changes
+
+- fix(movable): Fix typing to allow action to be used with SVGElement (as well as HTMLElement) ([`468d011928c326b0670980e977dae466be549c53`](https://github.com/techniq/layerstack/commit/468d011928c326b0670980e977dae466be549c53))
+
 ## 0.0.6
 
 ### Patch Changes
