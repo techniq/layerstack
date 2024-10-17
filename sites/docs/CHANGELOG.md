@@ -1,5 +1,12 @@
 # @layerstack/docs
 
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies [[`59f8e6eb378e20fc060598f14df706bc762dbefe`](https://github.com/techniq/layerstack/commit/59f8e6eb378e20fc060598f14df706bc762dbefe)]:
+  - @layerstack/tailwind@0.0.9
+
 ## 0.0.12
 
 ### Patch Changes
