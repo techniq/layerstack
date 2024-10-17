@@ -79,10 +79,12 @@ type MovableOptions = {
 export const movable: Action<HTMLElement, MovableOptions | undefined> = (node, options = {}) => {
   let lastX = 0;
   let lastY = 0;
+  let moved = false;
 
   function onMouseDown(event: MouseEvent) {
     lastX = event.clientX;
     lastY = event.clientY;
+    moved = false;
 
     node.dispatchEvent(
       new CustomEvent('movestart', {
@@ -93,8 +95,11 @@ export const movable: Action<HTMLElement, MovableOptions | undefined> = (node, o
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   }
+  node.addEventListener('mousedown', onMouseDown);
 
   function onMouseMove(event: MouseEvent) {
+    moved = true;
+
     // TODO: Handle page scroll?  clientX/Y is based on viewport (apply to parent?)
     let dx = event.clientX - lastX;
     let dy = event.clientY - lastY;
@@ -167,11 +172,17 @@ export const movable: Action<HTMLElement, MovableOptions | undefined> = (node, o
     window.removeEventListener('mouseup', onMouseUp);
   }
 
-  node.addEventListener('mousedown', onMouseDown);
+  function onClick(event: MouseEvent) {
+    if (moved) {
+      event.stopImmediatePropagation();
+    }
+  }
+  node.addEventListener('click', onClick);
 
   return {
     destroy() {
       node.removeEventListener('mousedown', onMouseDown);
+      node.removeEventListener('click', onClick);
     },
   };
 };
