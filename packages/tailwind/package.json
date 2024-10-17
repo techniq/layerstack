@@ -45,6 +45,8 @@
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
+    "./daisy": "./dist/daisy.js",
+    "./skeleton": "./dist/skeleton.js",
     "./plugin": "./dist/plugin.cjs"
   },
   "files": [
