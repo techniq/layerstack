@@ -1,5 +1,11 @@
 # @layerstack/svelte-stores
 
+## 0.0.7
+
+### Patch Changes
+
+- feat(selectionStore): Add `setSelection()` method to override selection (or (re-)initialize after creation) ([`9cb86b81a192055cddffb7a33a3543c547f10b91`](https://github.com/techniq/layerstack/commit/9cb86b81a192055cddffb7a33a3543c547f10b91))
+
 ## 0.0.6
 
 ### Patch Changes
