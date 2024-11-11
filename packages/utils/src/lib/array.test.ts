@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { sumObjects } from './array.js';
+import { greatestAbs, sumObjects } from './array.js';
 import { testDate } from './date.test.js';
 
 describe('sumObjects', () => {
@@ -24,6 +24,20 @@ describe('sumObjects', () => {
       startDate: +new Date(testDate),
     };
 
+    expect(actual).toEqual(expected);
+  });
+});
+
+describe('greatestAbs', () => {
+  it('should return negative number when greatest abs value', () => {
+    const actual = greatestAbs([10, -13, 0]);
+    const expected = -13;
+    expect(actual).toEqual(expected);
+  });
+
+  it('should return positive number when greatest abs value', () => {
+    const actual = greatestAbs([20, -13, 0]);
+    const expected = 20;
     expect(actual).toEqual(expected);
   });
 });
