@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 0.0.6
+
+### Patch Changes
+
+- Add common array and object utils to top-level export including `flatten()`, `unique()`, `isLiteralObject()`, `omit()`, and `pick()` ([`f180c69ab1969775df25b55f64faf223f9db0171`](https://github.com/techniq/layerstack/commit/f180c69ab1969775df25b55f64faf223f9db0171))
+
 ## 0.0.5
 
 ### Patch Changes
