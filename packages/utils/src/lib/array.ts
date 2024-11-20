@@ -4,9 +4,10 @@ import { propAccessor } from './object.js';
 import type { PropAccessorArg } from './object.js';
 import { entries, fromEntries } from './typeHelpers.js';
 
-// Helper until Array.flat is more mainstream - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
-// See also: https://lodash.com/docs/4.17.11#flatten
-// https://stackoverflow.com/a/55345130/191902
+/**
+ * Useful until Array.flat is more mainstream - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
+ * see also: https://lodash.com/docs/4.17.11#flatten and https://stackoverflow.com/a/55345130/191902
+ */
 export function flatten<T>(items: T[][]): T[] {
   return items.reduce((prev, next) => prev.concat(next), []);
 }
@@ -283,7 +284,7 @@ export function removeItem(array: any[], index: number) {
 }
 
 /**
- * Get the greatest absolute value in an array of numbers
+ * Get the greatest absolute value in an array of numbers, and maintain sign of value
  */
 export function greatestAbs(array: number[]) {
   return greatest(array, (a, b) => Math.abs(a) - Math.abs(b));

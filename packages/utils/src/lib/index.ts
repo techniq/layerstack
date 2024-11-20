@@ -1,4 +1,5 @@
 // top-level exports
+export { flatten, unique, greatestAbs } from './array.js';
 export { formatDate, getDateFuncsByPeriodType } from './date.js';
 export { PeriodType, DayOfWeek, DateToken } from './date_types.js';
 export * from './date_types.js';
@@ -17,6 +18,7 @@ export {
 export * from './json.js';
 export * from './logger.js';
 export { round, clamp, randomInteger } from './number.js';
+export { isEmptyObject, isLiteralObject, omit, pick } from './object.js';
 export * from './promise.js';
 export * from './sort.js';
 export * from './string.js';
