@@ -27,6 +27,7 @@
       href="https://layerchart.com"
       target="_blank">LayerChart</a
     >
-    and <a href="https://svelte-ux.techniq.dev" target="_blank">Svelte UX</a>
+    and <a href="https://svelte-ux.techniq.dev" target="_blank">Svelte UX</a> which utilize many of these
+    packages.
   </p>
 </div>
