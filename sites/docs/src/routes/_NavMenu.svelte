@@ -2,7 +2,7 @@
   import { NavItem } from 'svelte-ux';
 
   import { page } from '$app/stores';
-  import { mdiCog, mdiFormatListBulleted, mdiHome, mdiPalette } from '@mdi/js';
+  import { mdiHome } from '@mdi/js';
 
   const actions = [
     'dataBackground',
@@ -40,12 +40,11 @@
   ];
 
   const table = ['actions', 'stores'];
-  const tailwind = ['utils'];
+  const tailwind = ['plugin', 'utils'];
   const utils = ['duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
-<NavItem text="Getting Started" icon={mdiHome} currentUrl={$page.url} path="/" />
-<!-- <NavItem text="Changelog" icon={mdiFormatListBulleted} currentUrl={$page.url} path="/changelog" /> -->
+<NavItem text="Introduction" icon={mdiHome} currentUrl={$page.url} path="/" />
 
 <h1>svelte-actions</h1>
 {#each actions as item}
