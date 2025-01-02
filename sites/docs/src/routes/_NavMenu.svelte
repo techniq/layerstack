@@ -17,7 +17,6 @@
     'spotlight',
     'sticky',
     'styles',
-    'table',
   ];
 
   const stores = [
