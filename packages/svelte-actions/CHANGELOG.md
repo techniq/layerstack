@@ -1,5 +1,11 @@
 # @layerstack/svelte-actions
 
+## 0.0.10
+
+### Patch Changes
+
+- feat: Add `computedStyles` to retrieve all computed styles for element. Useful to resolve CSS variable values or working with `<canvas>` ([`1630974`](https://github.com/techniq/layerstack/commit/1630974600010b077a99e63ef9fcf1c09b468e60))
+
 ## 0.0.9
 
 ### Patch Changes
