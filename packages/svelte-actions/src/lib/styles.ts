@@ -2,7 +2,6 @@ import type { Action } from 'svelte/action';
 import { entries, keys } from '@layerstack/utils';
 
 type CSSProps = { [key: string]: string | number | boolean | null | undefined };
-
 export const styleProps: Action<HTMLElement, CSSProps> = (node, props) => {
   entries(props ?? {}).forEach(([key, value]) => {
     // Ignore if null or undefined
@@ -34,4 +33,13 @@ export const styleProps: Action<HTMLElement, CSSProps> = (node, props) => {
       lastProps = newProps;
     },
   };
+};
+
+type ComputedStylesCallback = (styles: CSSStyleDeclaration) => void;
+export const computedStyles: Action<HTMLElement | SVGElement, ComputedStylesCallback> = (
+  node,
+  callback
+) => {
+  const computedStyles: CSSStyleDeclaration = window.getComputedStyle(node);
+  callback(computedStyles);
 };

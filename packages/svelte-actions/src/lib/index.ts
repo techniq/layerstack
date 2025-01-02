@@ -9,4 +9,4 @@ export * from './portal.js';
 export * from './scroll.js';
 export * from './spotlight.js';
 export * from './sticky.js';
-export * from './styleProps.js';
+export * from './styles.js';

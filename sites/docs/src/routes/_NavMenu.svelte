@@ -16,7 +16,7 @@
     'scroll',
     'spotlight',
     'sticky',
-    'styleProps',
+    'styles',
     'table',
   ];
 

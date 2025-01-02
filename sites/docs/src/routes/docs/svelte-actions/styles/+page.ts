@@ -1,4 +1,4 @@
-import source from '$svelte-actions/styleProps.ts?raw';
+import source from '$svelte-actions/styles.ts?raw';
 import pageSource from './+page.svelte?raw';
 
 export async function load() {
@@ -6,7 +6,7 @@ export async function load() {
     meta: {
       source,
       pageSource,
-      description: 'Reactively set style properties using a single object.',
+      description: 'Actions to conveniently work with CSS styles',
     },
   };
 }
