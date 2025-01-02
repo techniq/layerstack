@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TextField } from 'svelte-ux';
+  import { cls, Field, TextField, ToggleGroup, ToggleOption } from 'svelte-ux';
   import { computedStyles, styleProps } from '@layerstack/svelte-actions';
 
   import Preview from '$docs/Preview.svelte';
@@ -7,6 +7,9 @@
   import Json from '$docs/Json.svelte';
 
   let _styles: CSSStyleDeclaration;
+  let backgroundClass = 'bg-primary';
+  let outlineStyle = 'solid';
+
   let background = '#ddd';
   let border = '1px solid #aaa';
 </script>
@@ -27,8 +30,41 @@
 </h2>
 
 <Preview>
-  <div class="bg-primary" use:computedStyles={(styles) => (_styles = styles)}></div>
-  <Json value={_styles} defaultExpandedPaths={[]} />
+  <div class="grid gap-3">
+    <div
+      use:computedStyles={(styles) => (_styles = styles)}
+      class={cls('size-10 rounded outline-offset-2', backgroundClass)}
+      style:outline-style={outlineStyle}
+    ></div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <Field label="Background Class">
+        <ToggleGroup bind:value={backgroundClass} variant="outline" inset>
+          <ToggleOption value="bg-primary">primary</ToggleOption>
+          <ToggleOption value="bg-secondary">secondary</ToggleOption>
+        </ToggleGroup>
+      </Field>
+
+      <Field label="Outline Style">
+        <ToggleGroup bind:value={outlineStyle} variant="outline" inset>
+          <ToggleOption value="solid">solid</ToggleOption>
+          <ToggleOption value="dashed">dashed</ToggleOption>
+          <ToggleOption value="dotted">dotted</ToggleOption>
+        </ToggleGroup>
+      </Field>
+    </div>
+
+    <Field label="Focal styles">
+      <Json
+        value={{ backgroundColor: _styles?.backgroundColor, outlineStyle: _styles?.outlineStyle }}
+        defaultExpandedPaths={[]}
+      />
+    </Field>
+
+    <Field label="All styles">
+      <Json value={_styles} defaultExpandedPaths={[]} />
+    </Field>
+  </div>
 </Preview>
 
 <h2>styleProps <small>Reactively set style properties using a single object.</small></h2>
@@ -37,7 +73,7 @@
   {@const styles = { '--background': background, '--border': border }}
   <div class="grid gap-4" use:styleProps={styles}>
     <div
-      class="w-10 h-10 rounded"
+      class="size-10 rounded"
       style:background-color="var(--background)"
       style:border="var(--border)"
     ></div>

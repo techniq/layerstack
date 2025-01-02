@@ -40,6 +40,16 @@ export const computedStyles: Action<HTMLElement | SVGElement, ComputedStylesCall
   node,
   callback
 ) => {
-  const computedStyles: CSSStyleDeclaration = window.getComputedStyle(node);
-  callback(computedStyles);
+  callback(window.getComputedStyle(node));
+
+  let mutationObserver = new MutationObserver((entries, observer) => {
+    callback(window.getComputedStyle(node));
+  });
+  mutationObserver.observe(node, { attributes: true, attributeFilter: ['class', 'style'] });
+
+  return {
+    destroy() {
+      mutationObserver.disconnect();
+    },
+  };
 };
