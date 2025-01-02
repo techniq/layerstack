@@ -1,5 +1,11 @@
 # @layerstack/svelte-actions
 
+## 0.0.11
+
+### Patch Changes
+
+- fix(computedStyles): Add attribution MutationObserver to respond to `class` and `style` changes ([`697c790`](https://github.com/techniq/layerstack/commit/697c790dbfd11a141c22955469129da486e6cc19))
+
 ## 0.0.10
 
 ### Patch Changes

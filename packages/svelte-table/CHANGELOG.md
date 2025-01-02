@@ -1,5 +1,12 @@
 # @layerstack/svelte-table
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`697c790`](https://github.com/techniq/layerstack/commit/697c790dbfd11a141c22955469129da486e6cc19)]:
+  - @layerstack/svelte-actions@0.0.11
+
 ## 0.0.11
 
 ### Patch Changes
