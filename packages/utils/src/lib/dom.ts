@@ -69,8 +69,12 @@ export function isVisibleInScrollParent(node: HTMLElement) {
  * Matches event.layerX/Y, but is deprecated (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/layerX).
  * Also similar but not identical to event.offsetX/Y
  */
-export function localPoint(node: Element, event: MouseEvent | TouchEvent | PointerEvent) {
-  if (!node || !event) return null;
+export function localPoint(event: MouseEvent | TouchEvent | PointerEvent, node?: Element) {
+  if (!node) {
+    node = (event.currentTarget as Element) ?? (event.target as Element);
+  }
+
+  if (!node || !event) return { x: 0, y: 0 };
 
   const coords = getPointFromEvent(event);
 
