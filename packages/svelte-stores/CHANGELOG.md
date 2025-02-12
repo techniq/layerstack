@@ -1,5 +1,11 @@
 # @layerstack/svelte-stores
 
+## 0.0.10
+
+### Patch Changes
+
+- Resolve negative counts in paginationStore ([#21](https://github.com/techniq/layerstack/pull/21))
+
 ## 0.0.9
 
 ### Patch Changes
