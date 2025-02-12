@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 0.1.0
+
+### Minor Changes
+
+- refactor(localPoint): Swap `node` and `event` arguments and allow `node` to be optional, defaulting to `event.currentTarget ?? event.target` if not defined ([`8f8815a`](https://github.com/techniq/layerstack/commit/8f8815a0c74df91882a32436c2d905a801421c54))
+
 ## 0.0.7
 
 ### Patch Changes
