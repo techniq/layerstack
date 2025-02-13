@@ -38,10 +38,10 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  $: [type, name] = $page.url.pathname.split('/').slice(2) ?? [];
+  $: [packageName, name] = $page.url.pathname.split('/').slice(2) ?? [];
   $: title = $page.data.meta?.title ?? name;
-  $: pageUrl = `src/routes/docs/${type}/${name}/+page.svelte?plain=1`;
-  $: sourceUrl = `src/lib/${type}/${name}.${type === 'components' ? 'svelte' : 'ts'}`;
+  $: pageUrl = `${packageName}/${name}/+page.svelte?plain=1`;
+  $: sourceUrl = `${packageName}/src/lib/${name}.ts`;
   $: ({
     description,
     features,
@@ -101,7 +101,7 @@
       <div class="inline-block text-xs font-bold text-surface-content/50 capitalize">Docs</div>
       <Icon data={mdiChevronRight} class="divider opacity-25" />
       <div class="inline-block text-xs font-bold text-primary capitalize">
-        {type}
+        {packageName}
       </div>
     </div>
 
@@ -131,7 +131,7 @@
         label="Source"
         {source}
         href={sourceUrl
-          ? `https://github.com/techniq/svelte-ux/blob/main/packages/svelte-ux/${sourceUrl}`
+          ? `https://github.com/techniq/layerstack/blob/main/packages/${sourceUrl}`
           : ''}
         icon={mdiCodeTags}
       />
@@ -140,7 +140,7 @@
         label="Page source"
         source={pageSource}
         href={pageUrl
-          ? `https://github.com/techniq/svelte-ux/blob/main/packages/svelte-ux/${pageUrl}`
+          ? `https://github.com/techniq/layerstack/blob/main/sites/docs/src/routes/docs/${pageUrl}`
           : ''}
         icon={mdiFileDocumentEditOutline}
       />
