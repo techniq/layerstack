@@ -261,9 +261,10 @@ export function themeStylesString(theme: NestedColors, colorSpace: SupportedColo
  * but it's the only way to inject the `darkThemes` array into the function.
  **/
 export function createHeadSnippet(darkThemes: string[]) {
-  function _applyInitialStyle(darkThemes: string[]) {
+  const applyInitialStyle = `
+  function applyInitialStyle(darkThemes) {
     let theme = localStorage.getItem('theme');
-    // Ignore if no dark things registered (default `dark` removed)
+    // Ignore if no dark things registered (default 'dark' removed)
     if (darkThemes.length > 0) {
       if (theme) {
         document.documentElement.dataset.theme = theme;
@@ -275,8 +276,9 @@ export function createHeadSnippet(darkThemes: string[]) {
       }
     }
   }
+  `;
 
   let darkThemeList = darkThemes.map((theme) => `'${theme}'`).join(', ');
 
-  return `<script>(${_applyInitialStyle.toString()})([${darkThemeList}])</script>`;
+  return `<script>${applyInitialStyle}([${darkThemeList}])</script>`;
 }
