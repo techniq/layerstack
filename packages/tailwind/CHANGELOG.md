@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 0.0.13
+
+### Patch Changes
+
+- fix(createHeadSnippet): Resolve `[svelte] hydration_html_changed` issue. Resolves #25 ([#26](https://github.com/techniq/layerstack/pull/26))
+
 ## 0.0.12
 
 ### Patch Changes
