@@ -8,8 +8,9 @@ export function autoFocus(
   node: HTMLElement | SVGElement,
   options?: Parameters<typeof focusMove>['1']
 ) {
-  // Delay by 1ms by default since Dialog/Drawer/Menu also call `focusMove` but with default `0ms` delay, and we want to focus last
-  return focusMove(node, { delay: 1, ...options });
+  // Delay by 5ms by default since Dialog/Drawer/Menu also call `focusMove` but with default `0ms` delay, and we want to focus last
+  // Chrome works with `1ms`, but Firefox required `2ms` and Safari required `3ms`, so using `5ms` as a buffer
+  return focusMove(node, { delay: 5, ...options });
 }
 
 /**
