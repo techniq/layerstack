@@ -1,5 +1,11 @@
 # @layerstack/svelte-actions
 
+## 0.0.13
+
+### Patch Changes
+
+- fix(autoFocus): Increase default delay from `1ms` to `5ms` to resolve Firefox/Safari timing issues ([`d07ed3d`](https://github.com/techniq/layerstack/commit/d07ed3dfb0d21c756d5ccb1eb9ec28b70ff1df01))
+
 ## 0.0.12
 
 ### Patch Changes
