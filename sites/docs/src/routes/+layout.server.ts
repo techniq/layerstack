@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 
 import { env } from '$env/dynamic/private';
 
-import themes from '../../themes.json';
+import themes from '../../themes.json' assert { type: 'json' };
 import { getThemeNames } from '@layerstack/tailwind';
 
 export async function load({ url }) {
