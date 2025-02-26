@@ -10,10 +10,10 @@
     ToggleOption,
     TweenedValue,
     // TODO: move/update
-    cls,
   } from 'svelte-ux';
 
   import { dataBackground } from '@layerstack/svelte-actions';
+  import { cls } from '@layerstack/tailwind';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
