@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { cls, Field, TextField, ToggleGroup, ToggleOption } from 'svelte-ux';
+  import { Field, TextField, ToggleGroup, ToggleOption } from 'svelte-ux';
   import { computedStyles, styleProps } from '@layerstack/svelte-actions';
+  import { cls } from '@layerstack/tailwind';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';

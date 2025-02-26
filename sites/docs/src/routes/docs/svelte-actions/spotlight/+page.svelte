@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cls } from 'svelte-ux';
+  import { cls } from '@layerstack/tailwind';
   import { spotlight } from '@layerstack/svelte-actions';
 
   import Code from '$docs/Code.svelte';

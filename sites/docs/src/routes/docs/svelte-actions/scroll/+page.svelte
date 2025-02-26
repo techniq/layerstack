@@ -1,7 +1,8 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
-  import { Button, cls } from 'svelte-ux';
+  import { Button } from 'svelte-ux';
   import { scrollIntoView, scrollFade, scrollShadow } from '@layerstack/svelte-actions';
+  import { cls } from '@layerstack/tailwind';
 
   import Code from '$docs/Code.svelte';
   import Preview from '$docs/Preview.svelte';

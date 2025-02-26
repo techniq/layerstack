@@ -24,13 +24,13 @@
     ListItem,
     TableOfContents,
     // TODO: move/update
-    cls,
     settings,
     getSettings,
   } from 'svelte-ux';
 
   import { xlScreen } from '@layerstack/svelte-stores';
   import { toTitleCase } from '@layerstack/utils';
+  import { cls } from '@layerstack/tailwind';
 
   import Code from '$docs/Code.svelte';
   import ViewSourceButton from '$docs/ViewSourceButton.svelte';
