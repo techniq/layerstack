@@ -1,5 +1,15 @@
 # @layerstack/utils
 
+## 1.0.0
+
+### Major Changes
+
+- Version 1.0 (Svelte 3-5 and Tailwind 3 compatible) ([`7ff8c3a`](https://github.com/techniq/layerstack/commit/7ff8c3a82e93ffb64257880d901deb56706d37cb))
+
+### Patch Changes
+
+- Update dependencies ([#29](https://github.com/techniq/layerstack/pull/29))
+
 ## 0.1.0
 
 ### Minor Changes

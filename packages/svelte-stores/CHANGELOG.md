@@ -1,5 +1,18 @@
 # @layerstack/svelte-stores
 
+## 1.0.0
+
+### Major Changes
+
+- Version 1.0 (Svelte 3-5 and Tailwind 3 compatible) ([`7ff8c3a`](https://github.com/techniq/layerstack/commit/7ff8c3a82e93ffb64257880d901deb56706d37cb))
+
+### Patch Changes
+
+- Update dependencies ([#29](https://github.com/techniq/layerstack/pull/29))
+
+- Updated dependencies [[`2842669`](https://github.com/techniq/layerstack/commit/284266956ef4e04b8233dd6f959f24d913ab16cc), [`7ff8c3a`](https://github.com/techniq/layerstack/commit/7ff8c3a82e93ffb64257880d901deb56706d37cb)]:
+  - @layerstack/utils@1.0.0
+
 ## 0.0.11
 
 ### Patch Changes
