@@ -26,7 +26,7 @@
   }
 </script>
 
-<div class={cls('Preview border rounded bg-surface-100', $$props.class)}>
+<div class={cls('Preview border rounded-sm bg-surface-100', $$props.class)}>
   <div class="p-4">
     <slot />
   </div>
@@ -55,9 +55,9 @@
     <Dialog
       {open}
       on:close={toggle}
-      class="max-h-[98dvh] md:max-h-[90dvh] max-w-[98vw] md:max-w-[90vw] grid grid-rows-[auto,1fr,auto]"
+      class="max-h-[98dvh] md:max-h-[90dvh] max-w-[98vw] md:max-w-[90vw] grid grid-rows-[auto_1fr_auto]"
     >
-      <div class="grid grid-cols-[1fr,auto] gap-3 items-center p-4">
+      <div class="grid grid-cols-[1fr_auto] gap-3 items-center p-4">
         <div class="overflow-auto">
           <div class="text-lg font-semibold">Chart data</div>
         </div>

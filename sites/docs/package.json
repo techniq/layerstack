@@ -25,6 +25,7 @@
     "@sveltejs/kit": "^2.17.3",
     "@sveltejs/package": "^2.3.10",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tailwindcss/postcss": "^4.0.9",
     "@tailwindcss/typography": "^0.5.16",
     "@types/d3-array": "^3.2.1",
     "@types/lodash-es": "^4.17.12",
@@ -38,9 +39,9 @@
     "svelte": "^5.20.4",
     "svelte-check": "^4.1.4",
     "svelte-json-tree": "^2.2.0",
-    "svelte-ux": "^1.0.0",
+    "svelte-ux": "https://pkg.pr.new/svelte-ux@562",
     "svelte2tsx": "^0.7.34",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^4.0.9",
     "tslib": "^2.8.1",
     "typescript": "^5.7.3",
     "unist-util-visit": "^5.0.0",
@@ -63,7 +64,7 @@
     "prism-themes": "^1.9.0",
     "prismjs": "^1.29.0",
     "sveld": "^0.22.1",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^3.0.2"
   },
   "peerDependencies": {
     "svelte": "^3.56.0 || ^4.0.0 || ^5.0.0-next.120"
