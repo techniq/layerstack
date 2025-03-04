@@ -39,12 +39,10 @@ export const colorNames = [
 ];
 
 /**
- * Generate theme colors (ex. { primary: hsl(var(--color-primary) / <alpha-value>), ... })
+ * Generate theme colors (ex. { primary: hsl(var(--color-primary)), ... })
  */
 export function createThemeColors(colorSpace: SupportedColorSpace) {
-  return fromEntries(
-    colorNames.map((color) => [color, `${colorSpace}(var(--color-${color}) / <alpha-value>)`])
-  );
+  return fromEntries(colorNames.map((color) => [color, `${colorSpace}(var(--color-${color}))`]));
 }
 
 /**
@@ -153,8 +151,8 @@ export function processThemeColors(themeColors: NestedColors, colorSpace: Suppor
   const result = fromEntries(
     entries(colors).map(([name, value]) => {
       if (colorNames.includes(String(name))) {
-        // Add space separated color variables for each color
-        return [`--color-${name}`, colorVariableValue(value, colorSpace)];
+        // Convert each color to common colorspace and add variable
+        return [`--color-${name}`, convertColor(value, colorSpace)];
       } else {
         // Additional properties such as `color-scheme` or CSS variable
         return [name, value];
@@ -212,29 +210,25 @@ function darkenColor(color: Color | string, percentage: number) {
 /**
  * Convert color to space separated components string
  */
-export function colorVariableValue(
-  color: Color | string,
-  colorSpace: SupportedColorSpace,
-  decimals = 4
-) {
+export function convertColor(color: Color | string, colorSpace: SupportedColorSpace, decimals = 4) {
   try {
     if (colorSpace === 'rgb') {
       const computedColor = typeof color === 'string' ? rgb(color) : (color as Rgb);
       if (computedColor) {
         const { r, g, b } = computedColor;
-        return `${round(r * 255, decimals)} ${round(g * 255, decimals)} ${round(b * 255, decimals)}`;
+        return `rgb(${round(r * 255, decimals)} ${round(g * 255, decimals)} ${round(b * 255, decimals)})`;
       }
     } else if (colorSpace === 'hsl') {
       const computedColor = typeof color === 'string' ? hsl(clampRgb(color)) : (color as Hsl);
       if (computedColor) {
         const { h, s, l } = computedColor;
-        return `${round(h ?? 0, decimals)} ${round(s * 100, decimals)}% ${round(l * 100, decimals)}%`;
+        return `hsl(${round(h ?? 0, decimals)} ${round(s * 100, decimals)}% ${round(l * 100, decimals)}%)`;
       }
     } else if (colorSpace === 'oklch') {
       const computedColor = typeof color === 'string' ? oklch(clampRgb(color)) : (color as Oklch);
       if (computedColor) {
         const { l, c, h } = computedColor;
-        return `${round(l, decimals)} ${round(c, decimals)} ${round(h ?? 0, decimals)}`;
+        return `oklch(${round(l, decimals)} ${round(c, decimals)} ${round(h ?? 0, decimals)})`;
       }
     }
   } catch (e) {
