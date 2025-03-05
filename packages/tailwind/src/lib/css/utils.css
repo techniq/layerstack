@@ -5,6 +5,23 @@
   }
 }
 
+/* Grid column classes (RAM) */
+@utility grid-cols-xs {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+@utility grid-cols-sm {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@utility grid-cols-md {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+@utility grid-cols-lg {
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+}
+
 /* Hide scrollbar */
 @utility scrollbar-none {
   -ms-overflow-style: none;
