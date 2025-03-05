@@ -4,8 +4,6 @@
 @import '@layerstack/tailwind/themes/all.css';
 @import '@layerstack/tailwind/utils.css';
 
-/* @config '../../tailwind.config.cjs'; */
-
 @source '../../node_modules/svelte-ux/dist';
 @plugin '@tailwindcss/typography';
 

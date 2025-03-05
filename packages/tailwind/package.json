@@ -7,7 +7,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
-    "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist && pnpm build:css && cp -r ./src/lib/css dist",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && pnpm build:css && cp -r ./src/lib/css dist",
     "build:css": "tsc --noEmit && tsx ./src/lib/cli.ts",
     "preview": "vite preview",
     "package": "svelte-package",
@@ -49,7 +49,6 @@
     ".": "./dist/index.js",
     "./daisy": "./dist/daisy.js",
     "./skeleton": "./dist/skeleton.js",
-    "./plugin": "./dist/plugin.cjs",
     "./*.css": "./dist/css/*.css",
     "./themes/*.css": "./dist/css/generated/*.css"
   },
