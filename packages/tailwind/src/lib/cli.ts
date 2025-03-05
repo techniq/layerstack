@@ -1,6 +1,5 @@
-import { parseArgs } from 'node:util';
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname } from 'node:path';
 import { format } from 'prettier';
 
 import { entries } from '@layerstack/utils';
@@ -14,18 +13,6 @@ import {
 } from './theme.js';
 import { themes as daisyThemes } from './daisy.js';
 import { themes as skeletonThemes } from './skeleton.js';
-
-const options = {
-  daisy: {
-    type: 'boolean',
-    short: 'd',
-  },
-  skeleton: {
-    type: 'string',
-  },
-} as const;
-
-const { values, positionals } = parseArgs({ args: process.argv, options, allowPositionals: true });
 
 /**
  * Build theme CSS variables
@@ -42,7 +29,7 @@ function buildThemeCss(colorSpace: SupportedColorSpace) {
 
   result.push('}');
 
-  return format(result.join('\n\n'), { parser: 'css' });
+  return format(result.join('\n'), { parser: 'css' });
 }
 
 /**
@@ -87,13 +74,13 @@ function writeFile(filePath: string, data: string) {
 }
 
 const themeCss = await buildThemeCss('hsl');
-writeFile(join('dist/css', 'theme.css'), themeCss);
+writeFile('src/lib/css/theme.css', themeCss);
 
 const daisyCss = await buildThemesCss(daisyThemes, 'hsl');
-writeFile('dist/css/daisy.css', daisyCss);
+writeFile('src/lib/css/daisy.css', daisyCss);
 
 const skeletonCss = await buildThemesCss(skeletonThemes, 'hsl');
-writeFile('dist/css/skeleton.css', skeletonCss);
+writeFile('src/lib/css/skeleton.css', skeletonCss);
 
 const allThemes = {
   ...daisyThemes,
@@ -102,4 +89,4 @@ const allThemes = {
   ),
 };
 const allThemesCss = await buildThemesCss(allThemes, 'hsl');
-writeFile('dist/css/themes.css', allThemesCss);
+writeFile('src/lib/css/themes.css', allThemesCss);
