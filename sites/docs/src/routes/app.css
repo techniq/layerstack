@@ -1,11 +1,10 @@
 @import 'tailwindcss';
 
 @import '@layerstack/tailwind/theme.css';
-@import '@layerstack/tailwind/themes.css';
+@import '@layerstack/tailwind/themes/all.css';
 @import '@layerstack/tailwind/utils.css';
 
 /* @config '../../tailwind.config.cjs'; */
-@custom-variant dark (&:where(.dark, .dark *));
 
 @source '../../node_modules/svelte-ux/dist';
 @plugin '@tailwindcss/typography';
