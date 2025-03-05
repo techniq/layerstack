@@ -4,17 +4,16 @@ import { dirname, join } from 'node:path';
 import { format } from 'prettier';
 
 import { entries } from '@layerstack/utils';
+import { mapKeys } from '@layerstack/utils/object';
 
 import {
   colorNames,
-  createThemeColors,
-  processThemeColors,
   themeStylesString,
   type NestedColors,
   type SupportedColorSpace,
 } from './theme.js';
 import { themes as daisyThemes } from './daisy.js';
-import { themes as skeletonThemes } from './skeleton/index.js';
+import { themes as skeletonThemes } from './skeleton.js';
 
 const options = {
   daisy: {
@@ -93,5 +92,14 @@ writeFile(join('dist/css', 'theme.css'), themeCss);
 const daisyCss = await buildThemesCss(daisyThemes, 'hsl');
 writeFile('dist/css/daisy.css', daisyCss);
 
-// const skeletonCss = await buildThemesCss(skeletonThemes, 'hsl');
-// writeFile('dist/css/skeleton.css', skeletonCss);
+const skeletonCss = await buildThemesCss(skeletonThemes, 'hsl');
+writeFile('dist/css/skeleton.css', skeletonCss);
+
+const allThemes = {
+  ...daisyThemes,
+  ...mapKeys(skeletonThemes, (key: string) =>
+    key === 'light' ? 'skeleton-light' : key === 'dark' ? 'skeleton-dark' : key
+  ),
+};
+const allThemesCss = await buildThemesCss(allThemes, 'hsl');
+writeFile('dist/css/themes.css', allThemesCss);

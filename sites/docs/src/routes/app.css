@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import '@layerstack/tailwind/css/theme.css' layer(theme);
-@import '@layerstack/tailwind/css/daisy.css' layer(theme);
+@import '@layerstack/tailwind/css/themes.css' layer(theme);
 
 /* @config '../../tailwind.config.cjs'; */
 @custom-variant dark (&:where(.dark, .dark *));
