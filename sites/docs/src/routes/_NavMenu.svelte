@@ -39,7 +39,7 @@
   ];
 
   const table = ['actions', 'stores'];
-  const tailwind = ['plugin', 'utils'];
+  const tailwind = ['utils'];
   const utils = ['duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
