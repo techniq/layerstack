@@ -7,7 +7,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
-    "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist && pnpm cli",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist && pnpm build:css && cp -r ./src/lib/css dist",
+    "build:css": "tsc --noEmit && tsx ./src/lib/cli.ts",
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
@@ -15,8 +16,7 @@
     "check:watch": "tsc --noEmit --watch",
     "test:unit": "TZ=UTC+4 vitest",
     "lint": "prettier --check .",
-    "format": "prettier --write .",
-    "cli": "tsc --noEmit && tsx ./src/lib/cli.ts"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@skeletonlabs/tw-plugin": "^0.4.1",
@@ -50,7 +50,7 @@
     "./daisy": "./dist/daisy.js",
     "./skeleton": "./dist/skeleton.js",
     "./plugin": "./dist/plugin.cjs",
-    "./css/*": "./dist/css/*"
+    "./*.css": "./dist/css/*.css"
   },
   "files": [
     "dist"
