@@ -103,3 +103,25 @@
 
 /* Use `<html class="dark">` to activate `dark:` variant */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Tailwind CSS Typography plugin overrides
+*/
+.prose {
+  --tw-prose-body: var(--color-surface-content);
+  --tw-prose-headings: var(--color-surface-content);
+  --tw-prose-lead: var(--color-surface-content);
+  --tw-prose-links: var(--color-surface-content);
+  --tw-prose-bold: var(--color-surface-content);
+  --tw-prose-counters: var(--color-surface-content/30%);
+  --tw-prose-bullets: var(--color-surface-content/30%);
+  --tw-prose-hr: var(--color-surface-content/20%);
+  --tw-prose-quotes: var(--color-surface-content);
+  --tw-prose-quote-borders: var(--color-surface-content);
+  --tw-prose-captions: var(--color-surface-content);
+  --tw-prose-code: var(--color-surface-content);
+  --tw-prose-pre-code: var(--color-surface-content);
+  --tw-prose-pre-bg: var(--color-surface-content);
+  --tw-prose-th-borders: var(--color-surface-300);
+  --tw-prose-td-borders: var(--color-surface-300);
+}
