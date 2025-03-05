@@ -100,6 +100,3 @@
   --color-surface-300: hsl(0 0 0);
   --color-surface-content: hsl(0 0 0);
 }
-
-/* Use `<html class="dark">` to activate `dark:` variant */
-@custom-variant dark (&:where(.dark, .dark *));
