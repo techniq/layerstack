@@ -48,10 +48,13 @@ export function createThemeStore(options: ThemeStoreOptions): ThemeStore {
   let darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 
   function resolveSystemTheme({ matches }: { matches: boolean }) {
-    if (matches && options.dark.length) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    // Only manage dark mode (`<html class="dark">`) if there are any dark themes defined
+    if (options.dark.length) {
+      if (matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
 
     store.set(new CurrentTheme(null, matches));
