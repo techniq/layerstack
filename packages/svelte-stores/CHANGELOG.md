@@ -1,5 +1,11 @@
 # @layerstack/svelte-stores
 
+## 1.0.1
+
+### Patch Changes
+
+- fix(themeStore): Only manage system dark mode (`<html class="dark">`) if there are any dark themes defined ([#33](https://github.com/techniq/layerstack/pull/33))
+
 ## 1.0.0
 
 ### Major Changes
