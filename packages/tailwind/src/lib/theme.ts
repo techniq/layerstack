@@ -46,19 +46,29 @@ export function createThemeColors(colorSpace: SupportedColorSpace) {
 }
 
 /**
- * Get themes names split into light and dark collections determined by `color-scheme` property
+ * Get themes names (`[data-theme="..."]`) split into light and dark collections determined by `color-scheme` property
  */
-export function getThemeNames(themes: Record<string, any>) {
-  const light: string[] = [];
-  const dark: string[] = [];
+export function getThemeNames(cssContent: string) {
+  const themeBlocks = cssContent.split(/\[data-theme=/);
 
-  entries(themes).map(([themeName, props]) => {
-    if (props['color-scheme'] === 'dark') {
+  const light = [];
+  const dark = [];
+
+  // Skip first element as it's content before first theme
+  for (let i = 1; i < themeBlocks.length; i++) {
+    const block = themeBlocks[i];
+
+    // Extract theme name
+    const nameMatch = block.match(/^"([^"]+)"/);
+    if (!nameMatch) continue;
+    const themeName = nameMatch[1];
+
+    if (block.includes('color-scheme: dark')) {
       dark.push(themeName);
     } else {
       light.push(themeName);
     }
-  });
+  }
 
   return { light, dark };
 }
