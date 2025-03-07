@@ -5,12 +5,7 @@ import { format } from 'prettier';
 import { entries } from '@layerstack/utils';
 import { mapKeys } from '@layerstack/utils/object';
 
-import {
-  colorNames,
-  themeStylesString,
-  type NestedColors,
-  type SupportedColorSpace,
-} from './theme.js';
+import { colorNames, themeStylesString, type Colors, type SupportedColorSpace } from './theme.js';
 import { themes as daisyThemes } from './daisy.js';
 import { themes as skeletonThemes } from './skeleton.js';
 
@@ -35,32 +30,28 @@ function buildThemeCss(colorSpace: SupportedColorSpace) {
 /**
  * Build themes as CSS files
  */
-async function buildThemesCss(themes: NestedColors, colorSpace: SupportedColorSpace) {
+async function buildThemesCss(themes: Record<string, Colors>, colorSpace: SupportedColorSpace) {
   let result: string[] = [];
 
   let rootThemeName: string = '';
   entries(themes).map(([themeName, themeColors], index) => {
     if (index === 0) {
       // Root / default theme
-      result.push(`:root { ${themeStylesString(themeColors as NestedColors, colorSpace)} }`);
+      result.push(`:root { ${themeStylesString(themeColors, colorSpace)} }`);
       rootThemeName = themeName;
     } else if (index === 1) {
       // Dark theme
       result.push(`@media (prefers-color-scheme: dark) {
-        :root { ${themeStylesString(themeColors as NestedColors, colorSpace)} }
+        :root { ${themeStylesString(themeColors, colorSpace)} }
       }`);
 
       // Also register first and second theme by name AFTER @media for precedence
       result.push(
-        `[data-theme=${rootThemeName}] { ${themeStylesString(themes[rootThemeName] as NestedColors, colorSpace)} }`
+        `[data-theme=${rootThemeName}] { ${themeStylesString(themes[rootThemeName], colorSpace)} }`
       );
-      result.push(
-        `[data-theme=${themeName}] { ${themeStylesString(themeColors as NestedColors, colorSpace)} }`
-      );
+      result.push(`[data-theme=${themeName}] { ${themeStylesString(themeColors, colorSpace)} }`);
     } else {
-      result.push(
-        `[data-theme=${themeName}] { ${themeStylesString(themeColors as NestedColors, colorSpace)} }`
-      );
+      result.push(`[data-theme=${themeName}] { ${themeStylesString(themeColors, colorSpace)} }`);
     }
   });
 
