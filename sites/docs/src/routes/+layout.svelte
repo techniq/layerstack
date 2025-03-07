@@ -165,11 +165,7 @@
       />
 
       <div class="border-r border-primary-content/20 pr-2">
-        {#if data.themes.light.length > 1 || data.themes.dark.length > 1}
-          <ThemeSelect keyboardShortcuts />
-        {:else}
-          <ThemeSwitch classes={{ switch: 'bg-black/10' }} />
-        {/if}
+        <ThemeSelect keyboardShortcuts />
       </div>
 
       {#if $lgScreen}
