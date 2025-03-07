@@ -16,6 +16,7 @@ import {
 import { entries, fromEntries, keys } from '@layerstack/utils';
 
 export type SupportedColorSpace = 'rgb' | 'hsl' | 'oklch';
+export type Colors = Record<string, string>;
 
 export const semanticColors = ['primary', 'secondary', 'accent', 'neutral'] as const;
 export const stateColors = ['info', 'success', 'warning', 'danger'] as const;
@@ -39,14 +40,7 @@ export const colorNames = [
 ];
 
 /**
- * Generate theme colors (ex. { primary: hsl(var(--color-primary)), ... })
- */
-export function createThemeColors(colorSpace: SupportedColorSpace) {
-  return fromEntries(colorNames.map((color) => [color, `${colorSpace}(var(--color-${color}))`]));
-}
-
-/**
- * Get themes names (`[data-theme="..."]`) split into light and dark collections determined by `color-scheme` property
+ * Get themes names (`[data-theme="..."]`) split into `light` and `dark` collections determined by `color-scheme` property
  */
 export function getThemeNames(cssContent: string) {
   const themeBlocks = cssContent.split(/\[data-theme=/);
@@ -73,34 +67,10 @@ export function getThemeNames(cssContent: string) {
   return { light, dark };
 }
 
-export interface NestedColors {
-  [key: string]: string | NestedColors;
-}
-
 /**
- * Flatten nested color objects into a single-level color object with concatenated keys
+ * Generate missing theme colors (if needed), convert names to CSS variables and to a common color space (hsl, oklch, etc)
  */
-export function flattenThemeColors(
-  themeColors: NestedColors,
-  keys: (string | number)[] = [],
-  memo?: Record<string, string>
-) {
-  return entries(themeColors).reduce<Record<string, string>>((memo, [key, value]) => {
-    if (typeof value === 'string') {
-      memo[(key === 'DEFAULT' ? keys : [...keys, key]).join('-')] = value;
-    } else if (value) {
-      flattenThemeColors(value, [...keys, key], memo);
-    }
-    return memo;
-  }, memo ?? {});
-}
-
-/**
- * Convert names to CSS variables and color values common color space (hsl, oklch, etc) and space separated
- */
-export function processThemeColors(themeColors: NestedColors, colorSpace: SupportedColorSpace) {
-  const colors = flattenThemeColors(themeColors);
-
+export function processThemeColors(colors: Colors, colorSpace: SupportedColorSpace) {
   // TODO: make all semanatic colors optional as well
 
   // Generate optional semanatic colors
@@ -249,8 +219,8 @@ export function convertColor(color: Color | string, colorSpace: SupportedColorSp
 /**
  * Process theme to style variables
  */
-export function themeStylesString(theme: NestedColors, colorSpace: SupportedColorSpace) {
-  const styleProperties = processThemeColors(theme, colorSpace);
+export function themeStylesString(colors: Colors, colorSpace: SupportedColorSpace) {
+  const styleProperties = processThemeColors(colors, colorSpace);
   return entries(styleProperties)
     .map(([key, value]) => {
       return `${key}: ${value};`;
