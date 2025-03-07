@@ -1,18 +1,9 @@
-import { redirect } from '@sveltejs/kit';
-
 import { env } from '$env/dynamic/private';
 
 import themes from '../../themes.json' assert { type: 'json' };
 import { getThemeNames } from '@layerstack/tailwind';
 
-export async function load({ url }) {
-  // Redirect `svelte-ux.vercel.app` to `svelte-ux.techniq.dev`
-  if (url.host === 'svelte-ux.vercel.app') {
-    const newUrl = new URL(url);
-    newUrl.host = 'svelte-ux.techniq.dev';
-    redirect(302, newUrl.toString());
-  }
-
+export async function load() {
   return {
     themes: getThemeNames(themes),
     // themes: { light: ['light'], dark: ['dark'] },
