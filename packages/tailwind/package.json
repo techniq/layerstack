@@ -7,7 +7,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
-    "build": "rimraf dist && tsc -p tsconfig.build.json && cp -r ./src/lib/plugin* dist",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && pnpm build:css && cp -r ./src/lib/css dist",
+    "build:css": "tsc --noEmit && tsx ./src/lib/cli.ts",
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
@@ -27,6 +28,7 @@
     "prettier": "^3.5.2",
     "rimraf": "6.0.1",
     "tslib": "^2.8.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "vite": "^6.2.0",
     "vitest": "^3.0.7"
@@ -39,15 +41,16 @@
     "d3-array": "^3.2.4",
     "date-fns": "^4.1.0",
     "lodash-es": "^4.17.21",
-    "tailwind-merge": "^2.5.4",
-    "tailwindcss": "^3.4.15"
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^4.0.9"
   },
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./daisy": "./dist/daisy.js",
     "./skeleton": "./dist/skeleton.js",
-    "./plugin": "./dist/plugin.cjs"
+    "./*.css": "./dist/css/*.css",
+    "./themes/*.css": "./dist/css/generated/*.css"
   },
   "files": [
     "dist"
