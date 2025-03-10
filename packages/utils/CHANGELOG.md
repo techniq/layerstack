@@ -1,5 +1,17 @@
 # @layerstack/utils
 
+## 1.1.0-next.0
+
+### Minor Changes
+
+- Tailwind 4 support ([#32](https://github.com/techniq/layerstack/pull/32))
+
+### Patch Changes
+
+- feat: Add `mapKeys()` and `mapValues()` object utils ([#32](https://github.com/techniq/layerstack/pull/32))
+
+- feat: Add `NestedRecord` type ([#32](https://github.com/techniq/layerstack/pull/32))
+
 ## 1.0.0
 
 ### Major Changes
