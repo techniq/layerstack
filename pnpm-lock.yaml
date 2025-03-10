@@ -462,8 +462,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(svelte@5.20.4)
       svelte-ux:
-        specifier: https://pkg.pr.new/svelte-ux@562
-        version: https://pkg.pr.new/svelte-ux@562(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.0))(postcss@8.5.3)(svelte@5.20.4)(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.7.3))
+        specifier: ^1.0.0
+        version: 1.0.0(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.0))(postcss@8.5.3)(svelte@5.20.4)(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.7.3))
       svelte2tsx:
         specifier: ^0.7.34
         version: 0.7.34(svelte@5.20.4)(typescript@5.7.3)
@@ -2887,9 +2887,8 @@ packages:
       typescript:
         optional: true
 
-  svelte-ux@https://pkg.pr.new/svelte-ux@562:
-    resolution: {tarball: https://pkg.pr.new/svelte-ux@562}
-    version: 1.0.0
+  svelte-ux@1.0.0:
+    resolution: {integrity: sha512-9ANwk4C3L1dTYT2bx2AkXlq7eXcclGp/Myvo4CkcZNrG1GOItIemkYU5MHkAg3BT+D4jSPsWBiup2j1Hq4FAfA==}
     peerDependencies:
       svelte: ^3.56.0 || ^4.0.0 || ^5.0.0
 
@@ -5457,7 +5456,7 @@ snapshots:
       postcss-load-config: 6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.0)
       typescript: 5.7.3
 
-  svelte-ux@https://pkg.pr.new/svelte-ux@562(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.0))(postcss@8.5.3)(svelte@5.20.4)(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.7.3)):
+  svelte-ux@1.0.0(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(yaml@2.7.0))(postcss@8.5.3)(svelte@5.20.4)(ts-node@10.9.2(@types/node@22.13.8)(typescript@5.7.3)):
     dependencies:
       '@floating-ui/dom': 1.6.13
       '@fortawesome/fontawesome-common-types': 6.7.2
