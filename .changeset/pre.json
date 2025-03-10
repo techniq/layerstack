@@ -9,5 +9,9 @@
     "@layerstack/utils": "1.0.0",
     "@layerstack/docs": "1.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "fresh-pants-accept",
+    "odd-yaks-see",
+    "solid-lands-shine"
+  ]
 }
