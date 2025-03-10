@@ -8,7 +8,12 @@ import seafoam from './seafoam.js';
 import skeleton from './skeleton.js';
 import vintage from './vintage.js';
 import wintry from './wintry.js';
-import type { CSSRuleObject } from 'tailwindcss/types/config.js';
+
+// `CSSRuleObject` copied from tailwindcss/types/config.js (no longer available in v4 - https://github.com/tailwindlabs/tailwindcss/blob/v3.4.17/types/config.d.ts#L15)
+interface RecursiveKeyValuePair<K extends keyof any = string, V = string> {
+  [key: string]: V | RecursiveKeyValuePair<K, V>;
+}
+type CSSRuleObject = RecursiveKeyValuePair<string, null | string | string[] | CSSRuleObject[]>;
 
 export const themes = {
   crimson,

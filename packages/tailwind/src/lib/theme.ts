@@ -16,6 +16,7 @@ import {
 import { entries, fromEntries, keys } from '@layerstack/utils';
 
 export type SupportedColorSpace = 'rgb' | 'hsl' | 'oklch';
+export type Colors = Record<string, string>;
 
 export const semanticColors = ['primary', 'secondary', 'accent', 'neutral'] as const;
 export const stateColors = ['info', 'success', 'warning', 'danger'] as const;
@@ -39,60 +40,37 @@ export const colorNames = [
 ];
 
 /**
- * Generate theme colors (ex. { primary: hsl(var(--color-primary) / <alpha-value>), ... })
+ * Get themes names (`[data-theme="..."]`) split into `light` and `dark` collections determined by `color-scheme` property
  */
-export function createThemeColors(colorSpace: SupportedColorSpace) {
-  return fromEntries(
-    colorNames.map((color) => [color, `${colorSpace}(var(--color-${color}) / <alpha-value>)`])
-  );
-}
+export function getThemeNames(cssContent: string) {
+  const themeBlocks = cssContent.split(/\[data-theme=/);
 
-/**
- * Get themes names split into light and dark collections determined by `color-scheme` property
- */
-export function getThemeNames(themes: Record<string, any>) {
-  const light: string[] = [];
-  const dark: string[] = [];
+  const light = [];
+  const dark = [];
 
-  entries(themes).map(([themeName, props]) => {
-    if (props['color-scheme'] === 'dark') {
+  // Skip first element as it's content before first theme
+  for (let i = 1; i < themeBlocks.length; i++) {
+    const block = themeBlocks[i];
+
+    // Extract theme name
+    const nameMatch = block.match(/^"([^"]+)"/);
+    if (!nameMatch) continue;
+    const themeName = nameMatch[1];
+
+    if (block.includes('color-scheme: dark')) {
       dark.push(themeName);
     } else {
       light.push(themeName);
     }
-  });
+  }
 
   return { light, dark };
 }
 
-export interface NestedColors {
-  [key: string]: string | NestedColors;
-}
-
 /**
- * Flatten nested color objects into a single-level color object with concatenated keys
+ * Generate missing theme colors (if needed), convert names to CSS variables and to a common color space (hsl, oklch, etc)
  */
-export function flattenThemeColors(
-  themeColors: NestedColors,
-  keys: (string | number)[] = [],
-  memo?: Record<string, string>
-) {
-  return entries(themeColors).reduce<Record<string, string>>((memo, [key, value]) => {
-    if (typeof value === 'string') {
-      memo[(key === 'DEFAULT' ? keys : [...keys, key]).join('-')] = value;
-    } else if (value) {
-      flattenThemeColors(value, [...keys, key], memo);
-    }
-    return memo;
-  }, memo ?? {});
-}
-
-/**
- * Convert names to CSS variables and color values common color space (hsl, oklch, etc) and space separated
- */
-export function processThemeColors(themeColors: NestedColors, colorSpace: SupportedColorSpace) {
-  const colors = flattenThemeColors(themeColors);
-
+export function processThemeColors(colors: Colors, colorSpace: SupportedColorSpace) {
   // TODO: make all semanatic colors optional as well
 
   // Generate optional semanatic colors
@@ -153,8 +131,8 @@ export function processThemeColors(themeColors: NestedColors, colorSpace: Suppor
   const result = fromEntries(
     entries(colors).map(([name, value]) => {
       if (colorNames.includes(String(name))) {
-        // Add space separated color variables for each color
-        return [`--color-${name}`, colorVariableValue(value, colorSpace)];
+        // Convert each color to common colorspace and add variable
+        return [`--color-${name}`, convertColor(value, colorSpace)];
       } else {
         // Additional properties such as `color-scheme` or CSS variable
         return [name, value];
@@ -212,29 +190,25 @@ function darkenColor(color: Color | string, percentage: number) {
 /**
  * Convert color to space separated components string
  */
-export function colorVariableValue(
-  color: Color | string,
-  colorSpace: SupportedColorSpace,
-  decimals = 4
-) {
+export function convertColor(color: Color | string, colorSpace: SupportedColorSpace, decimals = 4) {
   try {
     if (colorSpace === 'rgb') {
       const computedColor = typeof color === 'string' ? rgb(color) : (color as Rgb);
       if (computedColor) {
         const { r, g, b } = computedColor;
-        return `${round(r * 255, decimals)} ${round(g * 255, decimals)} ${round(b * 255, decimals)}`;
+        return `rgb(${round(r * 255, decimals)} ${round(g * 255, decimals)} ${round(b * 255, decimals)})`;
       }
     } else if (colorSpace === 'hsl') {
       const computedColor = typeof color === 'string' ? hsl(clampRgb(color)) : (color as Hsl);
       if (computedColor) {
         const { h, s, l } = computedColor;
-        return `${round(h ?? 0, decimals)} ${round(s * 100, decimals)}% ${round(l * 100, decimals)}%`;
+        return `hsl(${round(h ?? 0, decimals)} ${round(s * 100, decimals)}% ${round(l * 100, decimals)}%)`;
       }
     } else if (colorSpace === 'oklch') {
       const computedColor = typeof color === 'string' ? oklch(clampRgb(color)) : (color as Oklch);
       if (computedColor) {
         const { l, c, h } = computedColor;
-        return `${round(l, decimals)} ${round(c, decimals)} ${round(h ?? 0, decimals)}`;
+        return `oklch(${round(l, decimals)} ${round(c, decimals)} ${round(h ?? 0, decimals)})`;
       }
     }
   } catch (e) {
@@ -245,8 +219,8 @@ export function colorVariableValue(
 /**
  * Process theme to style variables
  */
-export function themeStylesString(theme: NestedColors, colorSpace: SupportedColorSpace) {
-  const styleProperties = processThemeColors(theme, colorSpace);
+export function themeStylesString(colors: Colors, colorSpace: SupportedColorSpace) {
+  const styleProperties = processThemeColors(colors, colorSpace);
   return entries(styleProperties)
     .map(([key, value]) => {
       return `${key}: ${value};`;
