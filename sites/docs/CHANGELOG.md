@@ -1,5 +1,12 @@
 # @layerstack/docs
 
+## 1.1.0-next.1
+
+### Patch Changes
+
+- Updated dependencies [[`46c12ab`](https://github.com/techniq/layerstack/commit/46c12ab8d3848611d73d8fddb06e0039351f827c)]:
+  - @layerstack/tailwind@2.0.0-next.1
+
 ## 1.1.0-next.0
 
 ### Minor Changes

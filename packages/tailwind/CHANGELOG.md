@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.1
+
+### Patch Changes
+
+- fix(theme.css): Apply tailwind typography `.prose` css variable overrides within `@layer utilities` to fix deployment. Properly set opacity for some variables ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.0
 
 ### Major Changes
