@@ -107,21 +107,23 @@
 /*
   Tailwind CSS Typography plugin overrides
 */
-.prose {
-  --tw-prose-body: var(--color-surface-content);
-  --tw-prose-headings: var(--color-surface-content);
-  --tw-prose-lead: var(--color-surface-content);
-  --tw-prose-links: var(--color-surface-content);
-  --tw-prose-bold: var(--color-surface-content);
-  --tw-prose-counters: var(--color-surface-content/30%);
-  --tw-prose-bullets: var(--color-surface-content/30%);
-  --tw-prose-hr: var(--color-surface-content/20%);
-  --tw-prose-quotes: var(--color-surface-content);
-  --tw-prose-quote-borders: var(--color-surface-content);
-  --tw-prose-captions: var(--color-surface-content);
-  --tw-prose-code: var(--color-surface-content);
-  --tw-prose-pre-code: var(--color-surface-content);
-  --tw-prose-pre-bg: var(--color-surface-content);
-  --tw-prose-th-borders: var(--color-surface-300);
-  --tw-prose-td-borders: var(--color-surface-300);
+@layer utilities {
+  .prose {
+    --tw-prose-body: var(--color-surface-content);
+    --tw-prose-headings: var(--color-surface-content);
+    --tw-prose-lead: var(--color-surface-content);
+    --tw-prose-links: var(--color-surface-content);
+    --tw-prose-bold: var(--color-surface-content);
+    --tw-prose-counters: color-mix(in oklab, var(--color-surface-content) 30%, transparent);
+    --tw-prose-bullets: color-mix(in oklab, var(--color-surface-content) 20%, transparent);
+    --tw-prose-hr: color-mix(in oklab, var(--color-surface-content) 20%, transparent);
+    --tw-prose-quotes: var(--color-surface-content);
+    --tw-prose-quote-borders: var(--color-surface-content);
+    --tw-prose-captions: var(--color-surface-content);
+    --tw-prose-code: var(--color-surface-content);
+    --tw-prose-pre-code: var(--color-surface-content);
+    --tw-prose-pre-bg: var(--color-surface-content);
+    --tw-prose-th-borders: var(--color-surface-300);
+    --tw-prose-td-borders: var(--color-surface-300);
+  }
 }
