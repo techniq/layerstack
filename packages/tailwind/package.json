@@ -50,7 +50,8 @@
     "./daisy": "./dist/daisy.js",
     "./skeleton": "./dist/skeleton.js",
     "./*.css": "./dist/css/*.css",
-    "./themes/*.css": "./dist/css/generated/*.css"
+    "./themes/basic.css": "./dist/css/themes/basic.css",
+    "./themes/*.css": "./dist/css/themes/generated/*.css"
   },
   "files": [
     "dist"

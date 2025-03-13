@@ -1,11 +1,17 @@
 @import 'tailwindcss';
 
-@import '@layerstack/tailwind/theme.css';
+@import '@layerstack/tailwind/core.css';
+/* @import '@layerstack/tailwind/themes/basic.css'; */
 @import '@layerstack/tailwind/themes/all.css';
 @import '@layerstack/tailwind/utils.css';
 
 @source '../../node_modules/svelte-ux/dist';
 @plugin '@tailwindcss/typography';
+
+/* Useful with `basic.css` */
+/* :root {
+  --color-primary: light-dark(var(--color-emerald-600), var(--color-indigo-700));
+} */
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,

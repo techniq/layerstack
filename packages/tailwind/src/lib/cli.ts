@@ -65,10 +65,10 @@ function writeFile(filePath: string, data: string) {
 }
 
 const daisyCss = await buildThemesCss(daisyThemes, 'hsl');
-writeFile('src/lib/css/generated/daisy.css', daisyCss);
+writeFile('src/lib/css/themes/generated/daisy.css', daisyCss);
 
 const skeletonCss = await buildThemesCss(skeletonThemes, 'hsl');
-writeFile('src/lib/css/generated/skeleton.css', skeletonCss);
+writeFile('src/lib/css/themes/generated/skeleton.css', skeletonCss);
 
 const allThemes = {
   ...daisyThemes,
@@ -77,4 +77,4 @@ const allThemes = {
   ),
 };
 const allThemesCss = await buildThemesCss(allThemes, 'hsl');
-writeFile('src/lib/css/generated/all.css', allThemesCss);
+writeFile('src/lib/css/themes/generated/all.css', allThemesCss);
