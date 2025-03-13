@@ -64,9 +64,6 @@ function writeFile(filePath: string, data: string) {
   console.log(`Wrote ${filePath}`);
 }
 
-const themeCss = await buildThemeCss('hsl');
-writeFile('src/lib/css/generated/theme.css', themeCss);
-
 const daisyCss = await buildThemesCss(daisyThemes, 'hsl');
 writeFile('src/lib/css/generated/daisy.css', daisyCss);
 
