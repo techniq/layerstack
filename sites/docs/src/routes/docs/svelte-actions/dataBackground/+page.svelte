@@ -143,7 +143,7 @@
             <td
               class={cls(
                 'text-right border tabular-nums',
-                value > 0 ? 'from-success-300 to-success-500' : 'from-danger to-danger-300'
+                value > 0 ? 'from-success-100 to-success-500' : 'from-danger-500 to-danger-100'
               )}
               use:dataBackground={{
                 value,
