@@ -1,5 +1,15 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.2
+
+### Patch Changes
+
+- breaking: Rename `theme.css` to `core.css` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- feat: Add `themes/basic.css` for simple light/dark use cases ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- fix(theme.css): Provide default colors (instead of black) for all theme variables. Use `color-mix()` to derive `-50`:`-950` shades of all theme colors (primary-100, success-700, etc) ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.1
 
 ### Patch Changes
