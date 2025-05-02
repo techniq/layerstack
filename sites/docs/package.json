@@ -21,7 +21,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@sveltejs/adapter-cloudflare": "^7.0.2",
+    "@sveltejs/adapter-cloudflare": "^4.7.4",
     "@sveltejs/kit": "^2.20.8",
     "@sveltejs/package": "^2.3.11",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
