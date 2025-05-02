@@ -1,5 +1,14 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.3
+
+### Patch Changes
+
+- Update dependencies ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Updated dependencies [[`b7ca80b`](https://github.com/techniq/layerstack/commit/b7ca80b6a8a07c53ec4a99864ec6b9fd1ecab0b4)]:
+  - @layerstack/utils@1.1.0-next.1
+
 ## 2.0.0-next.2
 
 ### Patch Changes

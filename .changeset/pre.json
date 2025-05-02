@@ -7,14 +7,17 @@
     "@layerstack/svelte-table": "1.0.0",
     "@layerstack/tailwind": "1.0.0",
     "@layerstack/utils": "1.0.0",
-    "@layerstack/docs": "1.0.1"
+    "@layerstack/docs": "1.0.1",
+    "@layerstack/svelte-state": "0.0.0"
   },
   "changesets": [
+    "fluffy-eggs-joke",
     "fresh-pants-accept",
     "khaki-bars-smell",
     "modern-hairs-open",
     "odd-yaks-see",
     "ripe-pens-raise",
-    "solid-lands-shine"
+    "solid-lands-shine",
+    "swift-clocks-warn"
   ]
 }

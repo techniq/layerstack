@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 1.1.0-next.1
+
+### Patch Changes
+
+- Update dependencies ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 1.1.0-next.0
 
 ### Minor Changes
