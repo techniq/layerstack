@@ -1,2 +1,2 @@
-export { selectionState, type SelectionState } from './selectionState.svelte.js';
-export { uniqueState } from './uniqueState.svelte.js';
+export { SelectionState } from './selectionState.svelte.js';
+export { UniqueState } from './uniqueState.svelte.js';

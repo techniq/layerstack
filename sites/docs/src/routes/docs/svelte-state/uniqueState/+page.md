@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Checkbox, TextField } from 'svelte-ux';
-	import { uniqueState } from '@layerstack/svelte-state';
+	import { UniqueState } from '@layerstack/svelte-state';
 	import Preview from '$docs/Preview.svelte';
 
 	const data = Array.from({ length: 5 }).map((_,i) => {
@@ -9,7 +9,7 @@
     }
   });
 
-	const state = uniqueState();
+	const state = new UniqueState();
 </script>
 
 <h1>Usage</h1>
@@ -17,7 +17,7 @@
 ```js
 import { uniqueState } from '@layerstack/svelte-state';
 
-const state = uniqueState();
+const state = new UniqueState();
 // state.current.has(value)
 // state.current.size
 // state.add(value);

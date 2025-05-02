@@ -1,4 +1,4 @@
-import { uniqueState } from './uniqueState.svelte.js';
+import { UniqueState } from './uniqueState.svelte.js';
 
 export type SelectionProps<T> = {
   /** Initial values */
@@ -14,103 +14,99 @@ export type SelectionProps<T> = {
   max?: number;
 };
 
-export type SelectionState<T> = ReturnType<typeof selectionState<T>>;
+// export type SelectionState<T> = ReturnType<typeof selectionState<T>>;
 
-export function selectionState<T>(props: SelectionProps<T> = {}) {
-  const selected = uniqueState(props.initial ?? []);
-  const selectedArr = $derived([...selected.current.values()]);
-  let all = $state(props.all ?? []);
-  const single = props.single ?? false;
-  const max = props.max;
+export class SelectionState<T> {
+  #initial: T[];
+  #selected: UniqueState<T>;
 
-  function isSelected(value: T) {
-    return selected.current.has(value);
+  all: Array<T>;
+  single: boolean;
+  max: number | undefined;
+
+  constructor(props: SelectionProps<T> = {}) {
+    this.#initial = props.initial ?? [];
+    this.#selected = new UniqueState(this.#initial);
+
+    this.all = props.all ?? [];
+    this.single = props.single ?? false;
+    this.max = props.max;
   }
 
-  function isEmpty() {
-    return selectedArr.length === 0;
+  get current() {
+    return this.single ? (Array.from(this.#selected.current)[0] ?? null) : Array.from(this.#selected.current);
   }
 
-  function isAllSelected() {
-    return all.every((v) => selected.current.has(v));
+  isSelected(value: T) {
+    return this.#selected.current.has(value);
   }
 
-  function isAnySelected() {
-    return all.some((v) => selected.current.has(v));
+  isEmpty() {
+    return this.#selected.current.size === 0;
   }
 
-  function isMaxSelected() {
-    return max != null ? selected.current.size >= max : false;
+  isAllSelected() {
+    return this.all.every((v) => this.#selected.current.has(v));
   }
 
-  function isDisabled(value: T) {
-    return !isSelected(value) && isMaxSelected();
+  isAnySelected() {
+    return this.all.some((v) => this.#selected.current.has(v));
   }
 
-  function clear() {
-    selected.reset();
+  isMaxSelected() {
+    return this.max != null ? this.#selected.current.size >= this.max : false;
   }
 
-  function reset() {
-    selected.reset();
-    selected.addEach(props.initial ?? []);
+  isDisabled(value: T) {
+    return !this.isSelected(value) && this.isMaxSelected();
   }
 
-  function setSelected(values: T[]) {
-    if (max == null || values.length < max) {
-      selected.reset();
-      selected.addEach(values);
+  clear() {
+    this.#selected.reset();
+  }
+
+  reset() {
+    this.#selected.reset();
+    this.#selected.addEach(this.#initial ?? []);
+  }
+
+  setSelected(values: T[]) {
+    if (this.max == null || values.length < this.max) {
+      this.#selected.reset();
+      this.#selected.addEach(values);
     }
   }
 
-  function toggleSelected(value: T) {
-    if (selected.current.has(value)) {
+  toggleSelected(value: T) {
+    if (this.#selected.current.has(value)) {
       // Remove
-      const prevSelected = [...selected.current];
-      selected.reset();
-      selected.addEach(prevSelected.filter((v) => v != value));
-    } else if (single) {
+      const prevSelected = [...this.#selected.current];
+      this.#selected.reset();
+      this.#selected.addEach(prevSelected.filter((v) => v != value));
+    } else if (this.single) {
       // Replace
-      selected.reset();
-      selected.add(value);
+      this.#selected.reset();
+      this.#selected.add(value);
     } else {
       // Add
-      if (max == null || selected.current.size < max) {
-        return selected.add(value);
+      if (this.max == null || this.#selected.current.size < this.max) {
+        return this.#selected.add(value);
       }
     }
   }
 
-  function toggleAll() {
+  toggleAll() {
     let values: T[];
-    if (isAllSelected()) {
+    if (this.isAllSelected()) {
       // Deselect all (within current `all`, for example page/filtered result)
-      values = [...selected.current].filter((v) => !all.includes(v));
+      values = [...this.#selected.current].filter((v) => !this.all.includes(v));
     } else {
       // Select all (`new Set()` will dedupe)
-      values = [...selected.current, ...all];
+      values = [...this.#selected.current, ...this.all];
     }
-    selected.reset();
-    selected.addEach(values);
+    this.#selected.reset();
+    this.#selected.addEach(values);
   }
 
-  return {
-    get selected() {
-      return single ? (selectedArr[0] ?? null) : selectedArr;
-    },
-    setSelected,
-    toggleSelected,
-    isSelected,
-    isDisabled,
-    toggleAll,
-    isAllSelected,
-    isAnySelected,
-    isMaxSelected,
-    isEmpty,
-    clear,
-    reset,
-    get all() {
-      return all;
-    },
-  };
+
 }

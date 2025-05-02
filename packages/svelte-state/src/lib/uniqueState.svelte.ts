@@ -4,31 +4,36 @@ import { SvelteSet } from 'svelte/reactivity';
  * State to manage unique values using `SvelteSet` with improved
  * ergonomics and better control of updates
  */
-export function uniqueState<T = string | number>(initialValues?: T[]) {
-  const current = new SvelteSet<T>(initialValues ?? []);
+export class UniqueState<T = string | number> {
+  current: SvelteSet<T>;
 
-  return {
-    current,
-    reset() {
-      current.clear();
-    },
-    add(value: T) {
-      current.add(value);
-    },
-    addEach(values: T[]) {
-      for (const value of values) {
-        current.add(value);
-      }
-    },
-    delete(value: T) {
-      current.delete(value);
-    },
-    toggle(value: T) {
-      if (current.has(value)) {
-        current.delete(value);
-      } else {
-        current.add(value);
-      }
-    },
-  };
+  constructor(initialValues?: T[]) {
+    this.current = new SvelteSet<T>(initialValues ?? []);
+  }
+
+  reset() {
+    this.current.clear();
+  }
+
+  add(value: T) {
+    this.current.add(value);
+  }
+
+  addEach(values: T[]) {
+    for (const value of values) {
+      this.current.add(value);
+    }
+  }
+
+  delete(value: T) {
+    this.current.delete(value);
+  }
+
+  toggle(value: T) {
+    if (this.current.has(value)) {
+      this.current.delete(value);
+    } else {
+      this.current.add(value);
+    }
+  }
 }
