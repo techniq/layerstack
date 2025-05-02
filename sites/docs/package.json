@@ -50,6 +50,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-common-types": "^6.7.2",
     "@layerstack/svelte-actions": "workspace:*",
+    "@layerstack/svelte-state": "workspace:*",
     "@layerstack/svelte-stores": "workspace:*",
     "@layerstack/svelte-table": "workspace:*",
     "@layerstack/tailwind": "workspace:*",

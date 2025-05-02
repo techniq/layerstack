@@ -19,6 +19,8 @@
     'styles',
   ];
 
+  const state = ['selectionState', 'uniqueState'];
+
   const stores = [
     'changeStore',
     'debounceStore',
@@ -48,6 +50,11 @@
 <h1>svelte-actions</h1>
 {#each actions as item}
   <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-actions/{item}" />
+{/each}
+
+<h1>svelte-state</h1>
+{#each state as item}
+  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-state/{item}" />
 {/each}
 
 <h1>svelte-stores</h1>
