@@ -1,5 +1,11 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.1
+
+### Minor Changes
+
+- breaking: Migrate `selectionState` and `uniqueState` to `SelectionState` and `UniqueState` classes ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.0
 
 ### Minor Changes
