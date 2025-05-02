@@ -34,7 +34,9 @@ export class SelectionState<T> {
   }
 
   get current() {
-    return this.single ? (Array.from(this.#selected.current)[0] ?? null) : Array.from(this.#selected.current);
+    return this.single
+      ? (Array.from(this.#selected.current)[0] ?? null)
+      : Array.from(this.#selected.current);
   }
 
   isSelected(value: T) {
@@ -107,6 +109,4 @@ export class SelectionState<T> {
     this.#selected.reset();
     this.#selected.addEach(values);
   }
-
-
 }
