@@ -11,13 +11,13 @@
     "@layerstack/svelte-state": "0.0.0"
   },
   "changesets": [
+    "angry-sheep-matter",
     "fluffy-eggs-joke",
     "fresh-pants-accept",
     "khaki-bars-smell",
     "loud-rockets-tease",
     "modern-hairs-open",
     "odd-yaks-see",
-    "real-spoons-hunt",
     "ripe-pens-raise",
     "solid-lands-shine",
     "swift-clocks-warn"

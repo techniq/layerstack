@@ -1,5 +1,11 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.3
+
+### Patch Changes
+
+- feat: Add `TimerState` ([#56](https://github.com/techniq/layerstack/pull/56))
+
 ## 0.1.0-next.2
 
 ### Patch Changes
