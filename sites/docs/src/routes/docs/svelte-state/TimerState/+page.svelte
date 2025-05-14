@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { subDays, subMonths } from 'date-fns';
-
-  import { Switch } from 'svelte-ux';
   import { TimerState } from '@layerstack/svelte-state';
+  import { Switch } from 'svelte-ux';
+
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
 

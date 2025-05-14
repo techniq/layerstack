@@ -1,5 +1,5 @@
 import source from '$svelte-state/selectionState.svelte.ts?raw';
-import pageSource from './+page.md?raw';
+import pageSource from './+page.svelte?raw';
 
 export async function load() {
   return {
