@@ -98,7 +98,6 @@ export function formatNumberWithLocale(
       style: 'decimal',
       notation: 'compact',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
     }),
 
     // Let's overwrite for style=integer
