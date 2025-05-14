@@ -1,5 +1,5 @@
 import source from '$svelte-state/selectionState.svelte.ts?raw';
-import pageSource from './+page.md?raw';
+import pageSource from './+page.svelte?raw';
 
 export async function load() {
   return {
@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'Manage item selection state including toggling values, selecting all, and clear or reset selection',
-      // related: ['components/MultiSelect', 'components/Selection'],
+      related: ['svelte-state/UniqueState', 'components/MultiSelect', 'components/Selection'],
     },
   };
 }

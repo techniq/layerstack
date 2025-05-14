@@ -1,5 +1,5 @@
 import source from '$svelte-state/uniqueState.svelte.ts?raw';
-import pageSource from './+page.md?raw';
+import pageSource from './+page.svelte?raw';
 
 export async function load() {
   return {
@@ -8,7 +8,7 @@ export async function load() {
       pageSource,
       description:
         'State to manage unique values using `Set` with improves ergonomics and better control of updates',
-      related: ['svelte-state/selectionState'],
+      related: ['svelte-state/SelectionState'],
     },
   };
 }
