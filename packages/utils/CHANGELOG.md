@@ -6,6 +6,12 @@
 
 - fix(format): Do not truncate decimal values when using `metric` preset (ex. 0.5) ([#53](https://github.com/techniq/layerstack/pull/53))
 
+## 1.0.1
+
+### Patch Changes
+
+- fix(format): Do not truncate decimal values when using `metric` preset (ex. 0.5) ([#53](https://github.com/techniq/layerstack/pull/53))
+
 ## 1.1.0-next.1
 
 ### Patch Changes
