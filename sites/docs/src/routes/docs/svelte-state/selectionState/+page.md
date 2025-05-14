@@ -14,8 +14,6 @@
   const selection3 = new SelectionState({ all: data.map(d => d.id)});
   const selection4 = new SelectionState({ single: true });
   const selection5 = new SelectionState({ max: 3 });
-
-  console.log({ selection })
 </script>
 
 <h1>Usage</h1>

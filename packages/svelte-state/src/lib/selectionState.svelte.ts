@@ -1,6 +1,6 @@
 import { UniqueState } from './uniqueState.svelte.js';
 
-export type SelectionProps<T> = {
+export type SelectionOptions<T> = {
   /** Initial values */
   initial?: T[];
 
@@ -14,8 +14,6 @@ export type SelectionProps<T> = {
   max?: number;
 };
 
-// export type SelectionState<T> = ReturnType<typeof selectionState<T>>;
-
 export class SelectionState<T> {
   #initial: T[];
   #selected: UniqueState<T>;
@@ -24,13 +22,13 @@ export class SelectionState<T> {
   single: boolean;
   max: number | undefined;
 
-  constructor(props: SelectionProps<T> = {}) {
-    this.#initial = props.initial ?? [];
+  constructor(options: SelectionOptions<T> = {}) {
+    this.#initial = options.initial ?? [];
     this.#selected = new UniqueState(this.#initial);
 
-    this.all = props.all ?? [];
-    this.single = props.single ?? false;
-    this.max = props.max;
+    this.all = options.all ?? [];
+    this.single = options.single ?? false;
+    this.max = options.max;
   }
 
   get current() {
