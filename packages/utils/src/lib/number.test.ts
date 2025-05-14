@@ -92,202 +92,232 @@ describe('step()', () => {
 });
 
 describe('formatNumber()', () => {
-  it('returns empty string for null', () => {
-    const actual = formatNumber(null);
-    expect(actual).equal('');
-  });
-
-  it('returns empty string for undefined', () => {
-    const actual = formatNumber(undefined);
-    expect(actual).equal('');
-  });
-
-  it('returns value as string for style "none"', () => {
-    const actual = formatNumber(1234.5678, 'none');
-    expect(actual).equal('1234.5678');
-  });
-
-  it('formats number with integer default', () => {
-    const actual = formatNumber(1234.5678, 'integer');
-    expect(actual).equal('1,235');
-  });
-
-  it('formats number with integer fr', () => {
-    const actual = formatNumberWithLocale(
-      createLocaleSettings({ locale: 'fr' }),
-      1234.5678,
-      'integer'
-    );
-    expect(actual).equal('1 235');
-  });
-
-  it('formats number with default fraction digits', () => {
-    const actual = formatNumber(1234.5678);
-    expect(actual).equal('1,234.57');
-  });
-
-  it('formats number with specified fraction digits', () => {
-    const actual = formatNumber(1234.5678, 'decimal', { fractionDigits: 3 });
-    expect(actual).equal('1,234.568');
-  });
-
-  it('returns value with significant digits', () => {
-    const actual = formatNumber(1234.5678, 'default', {
-      notation: 'compact',
-      maximumSignificantDigits: 2,
+  describe('default', () => {
+    it('returns empty string for null', () => {
+      const actual = formatNumber(null);
+      expect(actual).equal('');
     });
-    expect(actual).equal('1.2K');
-  });
 
-  it('returns value with significant digits', () => {
-    const actual = formatNumber(1000, 'default', {
-      notation: 'compact',
-      minimumSignificantDigits: 2,
+    it('returns empty string for undefined', () => {
+      const actual = formatNumber(undefined);
+      expect(actual).equal('');
     });
-    expect(actual).equal('1.0K');
-  });
 
-  it('formats number with currency USD by style', () => {
-    const actual = formatNumber(1234.5678, 'currency');
-    expect(actual).equal('$1,234.57');
-  });
-
-  it('formats number with currency USD by currency', () => {
-    const actual = formatNumber(1234.5678, 'currency', { currency: 'USD' });
-    expect(actual).equal('$1,234.57');
-  });
-
-  it('formats number with currency GBP', () => {
-    const actual = formatNumber(1234.5678, 'currency', { currency: 'GBP' });
-    expect(actual).equal('£1,234.57');
-  });
-
-  it('formats number with currency EUR only currency', () => {
-    const actual = formatNumber(1234.5678, 'currency', { currency: 'EUR' });
-    expect(actual).equal('€1,234.57');
-  });
-
-  it('formats number with currency EUR with right local', () => {
-    const actual = formatNumberWithLocale(
-      createLocaleSettings({ locale: 'fr' }),
-      1234.5678,
-      'currency',
-      {
-        currency: 'EUR',
-      }
-    );
-    expect(actual).equal('1 234,57 €');
-  });
-
-  it('formats number with currencyRound', () => {
-    const actual = formatNumber(1234.5678, 'currencyRound');
-    expect(actual).equal('$1,235');
-  });
-
-  it('returns value with percent symbol for style "percent"', () => {
-    const actual = formatNumber(0.1234, 'percent');
-    expect(actual).equal('12.34%');
-  });
-
-  it('returns value with percent symbol and no decimal for style "percentRound"', () => {
-    const actual2 = formatNumber(0.1234, 'percentRound');
-    expect(actual2).equal('12%');
-  });
-
-  it('returns value with metric suffix for style "unit" & meters', () => {
-    const actual = formatNumber(1000, 'unit', {
-      unit: 'meter',
-      unitDisplay: 'narrow',
-
-      notation: 'compact',
-      fractionDigits: 0,
+    it('formats number with default fraction digits', () => {
+      const actual = formatNumber(1234.5678);
+      expect(actual).equal('1,234.57');
     });
-    expect(actual).equal('1Km');
-  });
 
-  it('byte 10B', () => {
-    const actual = formatNumber(10, 'unit', {
-      unit: 'byte',
-      unitDisplay: 'narrow',
-      notation: 'compact',
-      fractionDigits: 0,
+    it('returns value with significant digits', () => {
+      const actual = formatNumber(1234.5678, 'default', {
+        notation: 'compact',
+        maximumSignificantDigits: 2,
+      });
+      expect(actual).equal('1.2K');
     });
-    expect(actual).equal('10B');
-  });
 
-  it('byte 200KB', () => {
-    const actual = formatNumber(200000, 'unit', {
-      unit: 'byte',
-      unitDisplay: 'narrow',
-      notation: 'compact',
-      fractionDigits: 0,
+    it('returns value with significant digits', () => {
+      const actual = formatNumber(1000, 'default', {
+        notation: 'compact',
+        minimumSignificantDigits: 2,
+      });
+      expect(actual).equal('1.0K');
     });
-    expect(actual).equal('200KB');
   });
 
-  it('byte 50MB', () => {
-    const actual = formatNumber(50000000, 'unit', {
-      unit: 'byte',
-      unitDisplay: 'narrow',
-      notation: 'compact',
-      fractionDigits: 0,
+  describe('none', () => {
+    it('returns value as string for style "none"', () => {
+      const actual = formatNumber(1234.5678, 'none');
+      expect(actual).equal('1234.5678');
     });
-    expect(actual).equal('50MB');
   });
 
-  it('dollar 0', () => {
-    const actual = formatNumber(0, 'metric', {
-      suffix: ' dollar',
+  describe('integer', () => {
+    it('formats number with integer default', () => {
+      const actual = formatNumber(1234.5678, 'integer');
+      expect(actual).equal('1,235');
     });
-    expect(actual).equal('0 dollar');
-  });
 
-  it('dollars 10', () => {
-    const actual = formatNumber(10, 'metric', {
-      suffix: ' dollar',
+    it('formats number with integer fr', () => {
+      const actual = formatNumberWithLocale(
+        createLocaleSettings({ locale: 'fr' }),
+        1234.5678,
+        'integer'
+      );
+      expect(actual).equal('1 235');
     });
-    expect(actual).equal('10 dollars');
   });
 
-  it('dollars 200K', () => {
-    const actual = formatNumber(200000, 'metric', {
-      suffix: ' dollar',
+  describe('decimal', () => {
+    it('formats number with specified fraction digits', () => {
+      const actual = formatNumber(1234.5678, 'decimal');
+      expect(actual).equal('1,234.57');
     });
-    expect(actual).equal('200K dollars');
-  });
 
-  it('dollars 50M', () => {
-    const actual = formatNumber(50000000, 'metric', {
-      suffix: ' dollar',
+    it('formats number with specified fraction digits', () => {
+      const actual = formatNumber(1234.5678, 'decimal', { fractionDigits: 3 });
+      expect(actual).equal('1,234.568');
     });
-    expect(actual).equal('50M dollars');
   });
 
-  it('50M wo suffix', () => {
-    const actual = formatNumber(50000000, 'metric');
-    expect(actual).equal('50M');
-  });
-
-  it('200 m²', () => {
-    const actual = formatNumber(200, 'metric', {
-      suffix: ' m²',
-      suffixExtraIfMany: '',
+  describe('currency', () => {
+    it('formats number with currency USD by style', () => {
+      const actual = formatNumber(1234.5678, 'currency');
+      expect(actual).equal('$1,234.57');
     });
-    expect(actual).equal('200 m²');
+
+    it('formats number with currency USD by currency', () => {
+      const actual = formatNumber(1234.5678, 'currency', { currency: 'USD' });
+      expect(actual).equal('$1,234.57');
+    });
+
+    it('formats number with currency GBP', () => {
+      const actual = formatNumber(1234.5678, 'currency', { currency: 'GBP' });
+      expect(actual).equal('£1,234.57');
+    });
+
+    it('formats number with currency EUR only currency', () => {
+      const actual = formatNumber(1234.5678, 'currency', { currency: 'EUR' });
+      expect(actual).equal('€1,234.57');
+    });
+
+    it('formats number with currency EUR with right local', () => {
+      const actual = formatNumberWithLocale(
+        createLocaleSettings({ locale: 'fr' }),
+        1234.5678,
+        'currency',
+        {
+          currency: 'EUR',
+        }
+      );
+      expect(actual).equal('1 234,57 €');
+    });
   });
 
-  it('0.5 (decimal)', () => {
-    const actual = formatNumber(0.5, 'metric');
-    expect(actual).equal('0.5');
+  describe('currencyRound', () => {
+    it('formats number with currencyRound', () => {
+      const actual = formatNumber(1234.5678, 'currencyRound');
+      expect(actual).equal('$1,235');
+    });
   });
 
-  it('0.05 (decimal)', () => {
-    const actual = formatNumber(0.05, 'metric');
-    expect(actual).equal('0.05');
+  describe('percent', () => {
+    it('returns value with percent symbol for style "percent"', () => {
+      const actual = formatNumber(0.1234, 'percent');
+      expect(actual).equal('12.34%');
+    });
   });
 
-  it('0.005 (decimal)', () => {
-    const actual = formatNumber(0.005, 'metric');
-    expect(actual).equal('0.01');
+  describe('percentRound', () => {
+    it('returns value with percent symbol and no decimal for style "percentRound"', () => {
+      const actual2 = formatNumber(0.1234, 'percentRound');
+      expect(actual2).equal('12%');
+    });
+  });
+
+  describe('unit', () => {
+    it('returns value with metric suffix for style "unit" & meters', () => {
+      const actual = formatNumber(1000, 'unit', {
+        unit: 'meter',
+        unitDisplay: 'narrow',
+
+        notation: 'compact',
+        fractionDigits: 0,
+      });
+      expect(actual).equal('1Km');
+    });
+
+    it('byte 10B', () => {
+      const actual = formatNumber(10, 'unit', {
+        unit: 'byte',
+        unitDisplay: 'narrow',
+        notation: 'compact',
+        fractionDigits: 0,
+      });
+      expect(actual).equal('10B');
+    });
+
+    it('byte 200KB', () => {
+      const actual = formatNumber(200000, 'unit', {
+        unit: 'byte',
+        unitDisplay: 'narrow',
+        notation: 'compact',
+        fractionDigits: 0,
+      });
+      expect(actual).equal('200KB');
+    });
+
+    it('byte 50MB', () => {
+      const actual = formatNumber(50000000, 'unit', {
+        unit: 'byte',
+        unitDisplay: 'narrow',
+        notation: 'compact',
+        fractionDigits: 0,
+      });
+      expect(actual).equal('50MB');
+    });
+  });
+
+  describe('metric', () => {
+    it('dollar 0', () => {
+      const actual = formatNumber(0, 'metric', {
+        suffix: ' dollar',
+      });
+      expect(actual).equal('0 dollar');
+    });
+
+    it('dollars 10', () => {
+      const actual = formatNumber(10, 'metric', {
+        suffix: ' dollar',
+      });
+      expect(actual).equal('10 dollars');
+    });
+
+    it('dollars 200K', () => {
+      const actual = formatNumber(200000, 'metric', {
+        suffix: ' dollar',
+      });
+      expect(actual).equal('200K dollars');
+    });
+
+    it('dollars 50M', () => {
+      const actual = formatNumber(50000000, 'metric', {
+        suffix: ' dollar',
+      });
+      expect(actual).equal('50M dollars');
+    });
+
+    it('50M wo suffix', () => {
+      const actual = formatNumber(50000000, 'metric');
+      expect(actual).equal('50M');
+    });
+
+    it('200 m²', () => {
+      const actual = formatNumber(200, 'metric', {
+        suffix: ' m²',
+        suffixExtraIfMany: '',
+      });
+      expect(actual).equal('200 m²');
+    });
+
+    it('0.5 (decimal)', () => {
+      const actual = formatNumber(0.5, 'metric');
+      expect(actual).equal('0.5');
+    });
+
+    it('0.05 (decimal)', () => {
+      const actual = formatNumber(0.05, 'metric');
+      expect(actual).equal('0.05');
+    });
+
+    it('0.005 (decimal)', () => {
+      const actual = formatNumber(0.005, 'metric');
+      expect(actual).equal('0.01');
+    });
+
+    it('1500', () => {
+      const actual = formatNumber(1500, 'metric');
+      expect(actual).equal('1.5K');
+    });
   });
 });
