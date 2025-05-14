@@ -19,7 +19,7 @@
     'styles',
   ];
 
-  const state = ['SelectionState', 'UniqueState'];
+  const state = ['SelectionState', 'TimerState', 'UniqueState'];
 
   const stores = [
     'changeStore',
