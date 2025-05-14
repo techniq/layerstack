@@ -275,4 +275,19 @@ describe('formatNumber()', () => {
     });
     expect(actual).equal('200 m²');
   });
+
+  it('0.5 (decimal)', () => {
+    const actual = formatNumber(0.5, 'metric');
+    expect(actual).equal('0.5');
+  });
+
+  it('0.05 (decimal)', () => {
+    const actual = formatNumber(0.05, 'metric');
+    expect(actual).equal('0.05');
+  });
+
+  it('0.005 (decimal)', () => {
+    const actual = formatNumber(0.005, 'metric');
+    expect(actual).equal('0.01');
+  });
 });
