@@ -1,5 +1,13 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.4
+
+### Patch Changes
+
+- feat: Add `MediaQueryPresets` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- breaking(SelectionState): Refine API (use `current` property setter instead of `setSelected()` and rename `toggleSelected()` to `toggle()`) ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.3
 
 ### Patch Changes
