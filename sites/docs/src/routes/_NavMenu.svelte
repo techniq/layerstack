@@ -19,7 +19,7 @@
     'styles',
   ];
 
-  const state = ['SelectionState', 'TimerState', 'UniqueState'];
+  const state = ['MediaQueryPresets', 'SelectionState', 'TimerState', 'UniqueState'];
 
   const stores = [
     'changeStore',
