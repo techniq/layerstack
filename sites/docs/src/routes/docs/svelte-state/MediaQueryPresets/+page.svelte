@@ -27,7 +27,8 @@
 <h1>Usage</h1>
 
 <Code
-  source={`<script>
+  source={'<' +
+    `script>
   import { MediaQueryPresets } from '@layerstack/svelte-state';
   const { mdScreen, print} = new MediaQueryPresets();
 </script>
@@ -39,7 +40,6 @@
 {#if print.current}
   <div>Only visable when printing</div>
 {/if}`}
-  `}
   language="svelte"
 />
 
