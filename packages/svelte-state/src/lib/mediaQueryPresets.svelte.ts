@@ -16,8 +16,8 @@ export class MediaQueryPresets {
   xlScreen = this.width(1280);
   xxlScreen = this.width(1536);
 
-  screen = new MediaQuery('screen');
-  print = new MediaQuery('print');
+  screen = new MediaQuery('screen and (min-width: 0)'); // workaround for https://github.com/sveltejs/svelte/issues/15930
+  print = new MediaQuery('print and (min-width: 0)'); // workaround for https://github.com/sveltejs/svelte/issues/15930
 
   dark = new MediaQuery('(prefers-color-scheme: dark)');
   light = new MediaQuery('(prefers-color-scheme: light)');
