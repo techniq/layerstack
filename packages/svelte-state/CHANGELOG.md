@@ -1,5 +1,11 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.6
+
+### Patch Changes
+
+- breaking(TimerState): Rename `onTick` to `tick` ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.5
 
 ### Patch Changes
