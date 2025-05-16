@@ -1,6 +1,6 @@
 import { UniqueState } from './uniqueState.svelte.js';
 
-export type SelectionOptions<T> = {
+export type SelectionOptions<T, S extends boolean = false> = {
   /** Initial values */
   initial?: T[];
 
@@ -8,33 +8,35 @@ export type SelectionOptions<T> = {
   all?: T[];
 
   /** Only allow 1 selected value */
-  single?: boolean;
+  single?: S;
 
   /** Maximum number of values that can be selected  */
   max?: number;
 };
 
-export class SelectionState<T> {
+export class SelectionState<T, S extends boolean = false> {
   #initial: T[];
   #selected: UniqueState<T>;
 
   all: Array<T>;
-  single: boolean;
+  single: S;
   max: number | undefined;
 
-  constructor(options: SelectionOptions<T> = {}) {
+  constructor(options: SelectionOptions<T, S> = {}) {
     this.#initial = options.initial ?? [];
     this.#selected = new UniqueState(this.#initial);
 
     this.all = options.all ?? [];
-    this.single = options.single ?? false;
+    this.single = (options.single ?? false) as S;
     this.max = options.max;
   }
 
-  get current() {
-    return this.single
-      ? (Array.from(this.#selected.current)[0] ?? null)
-      : Array.from(this.#selected.current);
+  get current(): S extends true ? T | null : T[] {
+    return (
+      this.single
+        ? (Array.from(this.#selected.current)[0] ?? null)
+        : Array.from(this.#selected.current)
+    ) as S extends true ? T | null : T[];
   }
 
   set current(values: T[] | T | null) {
