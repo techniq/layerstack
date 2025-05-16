@@ -2,7 +2,7 @@
   import { NavItem } from 'svelte-ux';
 
   import { page } from '$app/stores';
-  import { mdiHome } from '@mdi/js';
+  import { mdiFormatListBulleted, mdiHome } from '@mdi/js';
 
   const actions = [
     'dataBackground',
@@ -52,6 +52,14 @@
 </script>
 
 <NavItem text="Introduction" icon={mdiHome} currentUrl={$page.url} path="/" />
+
+<NavItem
+  text="Changelog"
+  icon={mdiFormatListBulleted}
+  currentUrl={$page.url}
+  path="https://github.com/techniq/layerstack/releases"
+  target="_blank"
+/>
 
 <h1>svelte-actions</h1>
 {#each actions as item}
