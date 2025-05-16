@@ -138,26 +138,14 @@
 <!-- Set theme before anything renders (even when SSR is in use) -->
 <ThemeInit />
 
-<AppLayout headerHeight={96}>
+<AppLayout>
   <svelte:fragment slot="nav">
     <NavMenu />
     <!-- Spacer -->
     <div class="h-4"></div>
   </svelte:fragment>
 
-  <AppBar {title} class="pt-8">
-    <div
-      class="fixed top-0 left-0 w-full h-8 bg-primary-700 border-b border-primary-800/50 shadow flex gap-2 items-center justify-center text-sm font-medium"
-    >
-      LayerStack for Svelte 5 has been released! -
-      <a
-        href="https://next.layerstack.dev"
-        class="font-semibold underline-offset-2 hover:underline"
-      >
-        Visit the preview docs <Icon data={mdiArrowTopRight} class="text-xs mt-[-2px]" />
-      </a>
-    </div>
-
+  <AppBar {title}>
     <div slot="actions" class="flex gap-3">
       <Button
         href="https://www.layerchart.com"
