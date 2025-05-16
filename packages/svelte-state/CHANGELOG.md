@@ -1,5 +1,15 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.5
+
+### Patch Changes
+
+- fix(SelectionState): Improve `current` type (based on `single`) ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Add PaginationState ([#60](https://github.com/techniq/layerstack/pull/60))
+
+- fix(MediaQueryPresets): Add workaround for `screen` and `print` for upstream svelte issue ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.4
 
 ### Patch Changes
