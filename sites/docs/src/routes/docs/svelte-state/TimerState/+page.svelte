@@ -5,8 +5,8 @@
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
 
-  const dateTimer = new TimerState({ initial: new Date(), onTick: () => new Date() });
-  const tickTimer = new TimerState({ initial: 0, onTick: (value) => (value ?? 0) + 1 });
+  const dateTimer = new TimerState({ initial: new Date() });
+  const tickTimer = new TimerState({ initial: 0, tick: (value) => (value ?? 0) + 1 });
 </script>
 
 <h1>Usage</h1>
@@ -14,7 +14,7 @@
 <Code source={`const timer = new TimerState();`} language="javascript" />
 
 <Code
-  source={`const timer = new TimerState<T>({ initial?: T, onTick?: (value: T) => {...}, delay?: number, disabled?: boolean })`}
+  source={`const timer = new TimerState<T>({ initial?: T, tick?: (value: T) => {...}, delay?: number, disabled?: boolean })`}
   language="javascript"
 />
 
@@ -38,7 +38,7 @@
 <h2>Tick count</h2>
 
 <Code
-  source={`const tickTimer = new TimerState({ initial: 0, onTick: (value) => value + 1 });`}
+  source={`const tickTimer = new TimerState({ initial: 0, tick: (value) => value + 1 });`}
   language="javascript"
 />
 
