@@ -147,7 +147,7 @@
 
   <AppBar {title} class="pt-8">
     <div
-      class="fixed top-0 left-0 w-full h-8 bg-primary-700 flex gap-2 items-center justify-center text-sm font-medium"
+      class="fixed top-0 left-0 w-full h-8 bg-primary-700 border-b border-primary-800/50 shadow flex gap-2 items-center justify-center text-sm font-medium"
     >
       LayerStack for Svelte 5 has been released! -
       <a href="https://next.layerstack.dev" class="underline-offset-2 hover:underline">
