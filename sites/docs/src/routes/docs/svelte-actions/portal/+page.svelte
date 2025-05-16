@@ -117,6 +117,8 @@
 </Preview>
 
 <style lang="postcss">
+  @reference "../../../app.css"
+
   .portal-content {
     @apply absolute top-1/2 left-1/2 shadow bg-surface-100 p-4 -translate-x-1/2 -translate-y-1/2 text-center;
   }

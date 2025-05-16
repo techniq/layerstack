@@ -1,5 +1,48 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- Updated dependencies [[`955e07b`](https://github.com/techniq/layerstack/commit/955e07b5aed62acd8afba10f9eaa68b90d72bb74)]:
+  - @layerstack/utils@1.1.0-next.2
+
+## 2.0.0-next.3
+
+### Patch Changes
+
+- Update dependencies ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Updated dependencies [[`b7ca80b`](https://github.com/techniq/layerstack/commit/b7ca80b6a8a07c53ec4a99864ec6b9fd1ecab0b4)]:
+  - @layerstack/utils@1.1.0-next.1
+
+## 2.0.0-next.2
+
+### Patch Changes
+
+- breaking: Rename `theme.css` to `core.css` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- feat: Add `themes/basic.css` for simple light/dark use cases ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- fix(theme.css): Provide default colors (instead of black) for all theme variables. Use `color-mix()` to derive `-50`:`-950` shades of all theme colors (primary-100, success-700, etc) ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 2.0.0-next.1
+
+### Patch Changes
+
+- fix(theme.css): Apply tailwind typography `.prose` css variable overrides within `@layer utilities` to fix deployment. Properly set opacity for some variables ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 2.0.0-next.0
+
+### Major Changes
+
+- Tailwind 4 support ([#32](https://github.com/techniq/layerstack/pull/32))
+
+### Patch Changes
+
+- Updated dependencies [[`6cdcb26`](https://github.com/techniq/layerstack/commit/6cdcb26cabd0539cee2885efbaa39e7787a34114), [`c6bb443`](https://github.com/techniq/layerstack/commit/c6bb443d12ee12bd69417dcfa5880b6bf78c9f09), [`c13e65e`](https://github.com/techniq/layerstack/commit/c13e65e059d690cbc282635f6e48a27d715e5997)]:
+  - @layerstack/utils@1.1.0-next.0
+
 ## 1.0.1
 
 ### Patch Changes

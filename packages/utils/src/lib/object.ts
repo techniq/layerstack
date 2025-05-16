@@ -187,3 +187,23 @@ export function pick<T extends object = {}>(obj: T, keys: string[]): Partial<T> 
 export function keysByValues<T extends object>(obj: T): Record<string, keyof T> {
   return fromEntries(entries(obj).map(([key, value]) => [String(value), key]));
 }
+
+/**
+ * Map keys of an object
+ */
+export function mapKeys<T extends object>(
+  obj: T,
+  fn: (key: keyof T) => string
+): Record<string, T[keyof T]> {
+  return fromEntries(entries(obj).map(([key, value]) => [fn(key), value]));
+}
+
+/**
+ * Map values of an object
+ */
+export function mapValues<T extends object, V>(
+  obj: T,
+  fn: (value: T[keyof T]) => V
+): Record<keyof T, V> {
+  return fromEntries(entries(obj).map(([key, value]) => [key, fn(value)])) as Record<keyof T, V>;
+}
