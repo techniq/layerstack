@@ -48,7 +48,7 @@
 
   const table = ['actions', 'stores'];
   const tailwind = ['utils'];
-  const utils = ['duration', 'format', 'json', 'Logger', 'string'];
+  const utils = ['Duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
 <NavItem text="Introduction" icon={mdiHome} currentUrl={$page.url} path="/" />
