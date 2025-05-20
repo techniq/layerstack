@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.3
+
+### Major Changes
+
+- breaking: Replace `getDuration()` / `humanizeDuration()` utils with `Duration` class (with `.format()` method) ([#62](https://github.com/techniq/layerstack/pull/62))
+
 ## 1.1.0-next.2
 
 ### Patch Changes
