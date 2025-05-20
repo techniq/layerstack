@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ url }) {
-  redirect(302, '/docs/utils/duration');
+  redirect(302, '/docs/utils/Duration');
 }
