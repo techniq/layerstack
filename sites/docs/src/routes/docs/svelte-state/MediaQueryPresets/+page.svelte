@@ -30,7 +30,7 @@
   source={'<' +
     `script>
   import { MediaQueryPresets } from '@layerstack/svelte-state';
-  const { mdScreen, print} = new MediaQueryPresets();
+  const { mdScreen, print } = new MediaQueryPresets();
 </script>
 
 {#if mdScreen.current}
