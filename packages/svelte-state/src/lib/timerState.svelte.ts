@@ -60,9 +60,14 @@ export class TimerState<T = any> {
   }
 
   set delay(value: number) {
+    const isRunning = this.#running;
     this.stop();
     this.#delay = value;
-    this.start();
+
+    if (isRunning) {
+      // Restart if was running
+      this.start();
+    }
   }
 
   start = () => {
