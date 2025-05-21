@@ -1,5 +1,11 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.7
+
+### Patch Changes
+
+- fix(TimerState): Only restart timer after updating delay if previously running ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.6
 
 ### Patch Changes
