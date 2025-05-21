@@ -1,0 +1,64 @@
+# @layerstack/svelte-state
+
+## 0.1.0-next.7
+
+### Patch Changes
+
+- fix(TimerState): Only restart timer after updating delay if previously running ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 0.1.0-next.6
+
+### Patch Changes
+
+- breaking(TimerState): Rename `onTick` to `tick` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Updated dependencies [[`4ed65a7`](https://github.com/techniq/layerstack/commit/4ed65a76562db9af2d18a196a2ba9e58f959aa5c)]:
+  - @layerstack/utils@2.0.0-next.3
+
+## 0.1.0-next.5
+
+### Patch Changes
+
+- fix(SelectionState): Improve `current` type (based on `single`) ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Add PaginationState ([#60](https://github.com/techniq/layerstack/pull/60))
+
+- fix(MediaQueryPresets): Add workaround for `screen` and `print` for upstream svelte issue ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 0.1.0-next.4
+
+### Patch Changes
+
+- feat: Add `MediaQueryPresets` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- breaking(SelectionState): Refine API (use `current` property setter instead of `setSelected()` and rename `toggleSelected()` to `toggle()`) ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 0.1.0-next.3
+
+### Patch Changes
+
+- feat: Add `TimerState` ([#56](https://github.com/techniq/layerstack/pull/56))
+
+## 0.1.0-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`955e07b`](https://github.com/techniq/layerstack/commit/955e07b5aed62acd8afba10f9eaa68b90d72bb74)]:
+  - @layerstack/utils@1.1.0-next.2
+
+## 0.1.0-next.1
+
+### Minor Changes
+
+- breaking: Migrate `selectionState` and `uniqueState` to `SelectionState` and `UniqueState` classes ([#31](https://github.com/techniq/layerstack/pull/31))
+
+## 0.1.0-next.0
+
+### Minor Changes
+
+- feat: Add `@layerstack/svelte-state` package, initially with `selectionState` and `uniqueState` ([#31](https://github.com/techniq/layerstack/pull/31))
+
+### Patch Changes
+
+- Updated dependencies [[`b7ca80b`](https://github.com/techniq/layerstack/commit/b7ca80b6a8a07c53ec4a99864ec6b9fd1ecab0b4)]:
+  - @layerstack/utils@1.1.0-next.1

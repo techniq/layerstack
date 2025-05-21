@@ -22,6 +22,7 @@ const config = {
     alias: {
       $docs: 'src/docs',
       '$svelte-actions': '../../packages/svelte-actions/src/lib',
+      '$svelte-state': '../../packages/svelte-state/src/lib',
       '$svelte-stores': '../../packages/svelte-stores/src/lib',
       '$svelte-table': '../../packages/svelte-table/src/lib',
       $tailwind: '../../packages/tailwind/src/lib',

@@ -34,7 +34,7 @@
   <div class="grid gap-3">
     <div
       use:computedStyles={(styles) => (_styles = styles)}
-      class={cls('size-10 rounded outline-offset-2', backgroundClass)}
+      class={cls('size-10 rounded-sm outline-offset-2', backgroundClass)}
       style:outline-style={outlineStyle}
     ></div>
 
@@ -74,7 +74,7 @@
   {@const styles = { '--background': background, '--border': border }}
   <div class="grid gap-4" use:styleProps={styles}>
     <div
-      class="size-10 rounded"
+      class="size-10 rounded-sm"
       style:background-color="var(--background)"
       style:border="var(--border)"
     ></div>
