@@ -1,5 +1,11 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.8
+
+### Patch Changes
+
+- fix: Add `PaginationState` to top-level exports ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 0.1.0-next.7
 
 ### Patch Changes
