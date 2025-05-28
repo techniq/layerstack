@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 
 import { format } from './format.js';
 import { PeriodType } from './date_types.js';
-import { testDateStr } from './date.test.js';
+import { testDate, testDateStr } from './date.test.js';
 import { parseISO } from 'date-fns';
 
 describe('format()', () => {
@@ -77,7 +77,7 @@ describe('format()', () => {
       expect(actual).equal('$1.2K');
     });
 
-    it('formats  with custom function', () => {
+    it('formats with custom function', () => {
       const actual = format(1234.5678, (value) => Math.round(value).toString());
       expect(actual).equal('1235');
     });
@@ -86,13 +86,23 @@ describe('format()', () => {
   describe('formats date', () => {
     // See `date.test.ts` for more date tests
     it('formats date with PeriodType (date)', () => {
-      const actual = format(testDateStr, PeriodType.Day);
+      const actual = format(testDate, PeriodType.Day);
       expect(actual).equal('11/21/2023');
     });
 
     it('formats date with period type code (date)', () => {
-      const actual = format(testDateStr, 'day');
+      const actual = format(testDate, 'day');
       expect(actual).equal('11/21/2023');
+    });
+
+    it('formats date with config with default options', () => {
+      const actual = format(testDate, { type: 'day' });
+      expect(actual).equal('11/21/2023');
+    });
+
+    it('formats date with config with extra options', () => {
+      const actual = format(testDate, { type: 'day', options: { variant: 'short' } });
+      expect(actual).equal('11/21');
     });
   });
 
