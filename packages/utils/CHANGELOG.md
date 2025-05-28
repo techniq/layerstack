@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.6
+
+### Patch Changes
+
+- fix: Add `FormatConfig` as top-level export ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.5
 
 ### Patch Changes
