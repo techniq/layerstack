@@ -10,6 +10,7 @@ export {
   format,
   formatWithLocale,
   type FormatType,
+  type FormatConfig,
   type FormatFunction,
   type FormatFunctionProperties,
   type FormatFunctions,
