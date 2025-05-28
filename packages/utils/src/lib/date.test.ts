@@ -13,18 +13,20 @@ import {
   replaceDayOfWeek,
   isStringDate,
 } from './date.js';
-import { formatWithLocale } from './format.js';
-import { createLocaleSettings, defaultLocale } from './locale.js';
+import { createLocaleSettings, defaultLocale, LocaleSettings } from './locale.js';
 import {
   PeriodType,
   type FormatDateOptions,
   DayOfWeek,
   type CustomIntlDateTimeFormatOptions,
   DateToken,
+  PeriodTypeCode,
 } from './date_types.js';
 import { getWeekStartsOnFromIntl } from './dateInternal.js';
+import { parseISO } from 'date-fns';
 
-export const testDate = '2023-11-21'; // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+export const testDateStr = '2023-11-21'; // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+export const testDate = parseISO('2023-11-21'); // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
 const dt_2M_2d = new Date(2023, 10, 21);
 const dt_2M_1d = new Date(2023, 10, 7);
 const dt_1M_1d = new Date(2023, 2, 7);
@@ -56,24 +58,684 @@ describe('formatDate()', () => {
     // @ts-expect-error
     expect(formatDate('invalid date')).equal('');
   });
+});
 
-  describe('should format date for PeriodType.Day', () => {
-    const localDate = new Date(2023, 10, 21);
-    const cases = [
-      ['short', defaultLocale, '11/21'],
-      ['short', fr, '21/11'],
-      ['default', defaultLocale, '11/21/2023'],
-      ['default', fr, '21/11/2023'],
-      ['long', defaultLocale, 'Nov 21, 2023'],
-      ['long', fr, '21 nov. 2023'],
+describe('formatDateWithLocale()', () => {
+  describe('PeriodType', () => {
+    const cases: [PeriodType, FormatDateOptions, Date, [LocaleSettings, string][]][] = [
+      // PeriodType.Day
+      [
+        PeriodType.Day,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/21'],
+          [fr, '21/11'],
+        ],
+      ],
+      [
+        PeriodType.Day,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/21/2023'],
+          [fr, '21/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.Day,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 21, 2023'],
+          [fr, '21 nov. 2023'],
+        ],
+      ],
+      // PeriodType.DayTime
+      [
+        PeriodType.DayTime,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 2:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        PeriodType.DayTime,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        PeriodType.DayTime,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02:03 PM'],
+          [fr, '07/03/2023 14:02:03'],
+        ],
+      ],
+      // PeriodType.TimeOnly
+      [
+        PeriodType.TimeOnly,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        PeriodType.TimeOnly,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        PeriodType.TimeOnly,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      // PeriodType.WeekSun / Mon
+      [
+        PeriodType.WeekSun,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '19/11 - 25/11'],
+        ],
+      ],
+      [
+        PeriodType.WeekSun,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.WeekSun,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.WeekMon,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/20/2023 - 11/26/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // PeriodType.Week
+      [
+        PeriodType.Week,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '20/11 - 26/11'],
+        ],
+      ],
+      [
+        PeriodType.Week,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.Week,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // PeriodType.Month
+      [
+        PeriodType.Month,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov'],
+          [fr, 'nov.'],
+        ],
+      ],
+      [
+        PeriodType.Month,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November'],
+          [fr, 'novembre'],
+        ],
+      ],
+      [
+        PeriodType.Month,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      // PeriodType.MonthYear
+      [
+        PeriodType.MonthYear,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 23'],
+          [fr, 'nov. 23'],
+        ],
+      ],
+      [
+        PeriodType.MonthYear,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      [
+        PeriodType.MonthYear,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+
+      // PeriodType.Quarter
+      [
+        PeriodType.Quarter,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Oct - Dec 23'],
+          [fr, 'oct. - déc. 23'],
+        ],
+      ],
+      [
+        PeriodType.Quarter,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'October - December 2023'],
+          [fr, 'octobre - décembre 2023'],
+        ],
+      ],
+      [
+        PeriodType.Quarter,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'October 2023 - December 2023'],
+          [fr, 'octobre 2023 - décembre 2023'],
+        ],
+      ],
+
+      // PeriodType.CalendarYear
+      [
+        PeriodType.CalendarYear,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '23'],
+          [fr, '23'],
+        ],
+      ],
+      [
+        PeriodType.CalendarYear,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+      [
+        PeriodType.CalendarYear,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+
+      // PeriodType.FiscalYearOctober
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '24'],
+          [fr, '24'],
+        ],
+      ],
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+
+      // PeriodType.BiWeek1Sun
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/12 - 11/25'],
+          [fr, '12/11 - 25/11'],
+        ],
+      ],
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
     ] as const;
 
     for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, localDate, PeriodType.Day, { variant })).equal(
-          expected
-        );
+      const [periodType, options, date, locales] = c;
+      describe(PeriodType[periodType], () => {
+        describe(`options: ${JSON.stringify(options)}`, () => {
+          for (const [locale, expected] of locales) {
+            it(`locale: ${locale.locale}`, () => {
+              expect(formatDateWithLocale(locale, date, periodType, options)).equal(expected);
+            });
+          }
+        });
+      });
+    }
+  });
+
+  describe('PeriodTypeCode string', () => {
+    const cases: [PeriodTypeCode, FormatDateOptions, Date, [LocaleSettings, string][]][] = [
+      // 'day'
+      [
+        'day',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/21'],
+          [fr, '21/11'],
+        ],
+      ],
+      [
+        'day',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/21/2023'],
+          [fr, '21/11/2023'],
+        ],
+      ],
+      [
+        'day',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 21, 2023'],
+          [fr, '21 nov. 2023'],
+        ],
+      ],
+      // 'daytime'
+      [
+        'daytime',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 2:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        'daytime',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        'daytime',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02:03 PM'],
+          [fr, '07/03/2023 14:02:03'],
+        ],
+      ],
+      // 'time'
+      [
+        'time',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        'time',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        'time',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      // 'week-sun'
+      [
+        'week-sun',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '19/11 - 25/11'],
+        ],
+      ],
+      [
+        'week-sun',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        'week-sun',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      // 'week-mon'
+      [
+        'week-mon',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/20/2023 - 11/26/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // 'week'
+      [
+        'week',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '20/11 - 26/11'],
+        ],
+      ],
+      [
+        'week',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      [
+        'week',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // 'month'
+      [
+        'month',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov'],
+          [fr, 'nov.'],
+        ],
+      ],
+      [
+        'month',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November'],
+          [fr, 'novembre'],
+        ],
+      ],
+      [
+        'month',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      // 'month-year'
+      [
+        'month-year',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 23'],
+          [fr, 'nov. 23'],
+        ],
+      ],
+      [
+        'month-year',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      [
+        'month-year',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+
+      // 'quarter'
+      [
+        'quarter',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Oct - Dec 23'],
+          [fr, 'oct. - déc. 23'],
+        ],
+      ],
+      [
+        'quarter',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'October - December 2023'],
+          [fr, 'octobre - décembre 2023'],
+        ],
+      ],
+      [
+        'quarter',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'October 2023 - December 2023'],
+          [fr, 'octobre 2023 - décembre 2023'],
+        ],
+      ],
+
+      // 'year'
+      [
+        'year',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '23'],
+          [fr, '23'],
+        ],
+      ],
+      [
+        'year',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+      [
+        'year',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+
+      // 'fiscal-year-october'
+      [
+        'fiscal-year-october',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '24'],
+          [fr, '24'],
+        ],
+      ],
+      [
+        'fiscal-year-october',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+      [
+        'fiscal-year-october',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+
+      // 'biweek1-sun'
+      [
+        'biweek1-sun',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/12 - 11/25'],
+          [fr, '12/11 - 25/11'],
+        ],
+      ],
+      [
+        'biweek1-sun',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        'biweek1-sun',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+    ];
+
+    for (const c of cases) {
+      const [periodTypeCode, options, date, locales] = c;
+      describe(periodTypeCode, () => {
+        describe(`options: ${JSON.stringify(options)}`, () => {
+          for (const [locale, expected] of locales) {
+            it(`locale: ${locale.locale}`, () => {
+              expect(formatDateWithLocale(locale, date, periodTypeCode, options)).equal(expected);
+            });
+          }
+        });
       });
     }
   });
@@ -89,238 +751,11 @@ describe('formatDate()', () => {
     ] as const;
 
     for (const c of cases) {
-      const [variant, locales, expected] = c;
+      const [variant, locale, expected] = c;
       it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Day, { variant })).equal(
+        expect(formatDateWithLocale(locale, testDateStr, PeriodType.Day, { variant })).equal(
           expected
         );
-      });
-    }
-  });
-
-  describe('should format date string for DayTime, TimeOnly', () => {
-    const cases: [Date, PeriodType, FormatDateOptions, string[]][] = [
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'short' },
-        ['3/7/2023, 2:02 PM', '07/03/2023 14:02'],
-      ],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'default' },
-        ['3/7/2023, 02:02 PM', '07/03/2023 14:02'],
-      ],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'long' },
-        ['3/7/2023, 02:02:03 PM', '07/03/2023 14:02:03'],
-      ],
-      [dt_1M_1d_time_pm, PeriodType.TimeOnly, { variant: 'short' }, ['2:02 PM', '14:02']],
-      [dt_1M_1d_time_pm, PeriodType.TimeOnly, { variant: 'default' }, ['02:02:03 PM', '14:02:03']],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.TimeOnly,
-        { variant: 'long' },
-        ['02:02:03.004 PM', '14:02:03,004'],
-      ],
-    ];
-
-    for (const c of cases) {
-      const [date, periodType, options, [expected_default, expected_fr]] = c;
-      it(c.toString(), () => {
-        expect(formatWithLocale(defaultLocale, date, periodType, options)).equal(expected_default);
-      });
-
-      it(c.toString() + 'fr', () => {
-        expect(formatWithLocale(fr, date, periodType, options)).equal(expected_fr);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.WeekSun / Mon no mather the locale', () => {
-    const cases = [
-      [PeriodType.WeekSun, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.WeekSun, 'short', fr, '19/11 - 25/11'],
-      [PeriodType.WeekSun, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.WeekSun, 'default', fr, '19/11/2023 - 25/11/2023'],
-      [PeriodType.WeekSun, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.WeekSun, 'long', fr, '19/11/2023 - 25/11/2023'],
-      [PeriodType.WeekMon, 'long', defaultLocale, '11/20/2023 - 11/26/2023'],
-      [PeriodType.WeekMon, 'long', fr, '20/11/2023 - 26/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [periodType, variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, periodType, { variant })).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Week with the good weekstarton locale', () => {
-    const cases = [
-      [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
-      [PeriodType.Week, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'default', fr, '20/11/2023 - 26/11/2023'],
-      [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
-
-      [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
-      [PeriodType.Week, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'default', fr, '20/11/2023 - 26/11/2023'],
-      [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [periodType, variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, periodType, { variant })).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Month', () => {
-    const cases = [
-      ['short', defaultLocale, 'Nov'],
-      ['short', fr, 'nov.'],
-      ['default', defaultLocale, 'November'],
-      ['default', fr, 'novembre'],
-      ['long', defaultLocale, 'November 2023'],
-      ['long', fr, 'novembre 2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Month, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.MonthYear', () => {
-    const cases = [
-      ['short', defaultLocale, 'Nov 23'],
-      ['short', fr, 'nov. 23'],
-      ['default', defaultLocale, 'November 2023'],
-      ['default', fr, 'novembre 2023'],
-      ['long', defaultLocale, 'November 2023'],
-      ['long', fr, 'novembre 2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.MonthYear, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Quarter', () => {
-    const cases = [
-      ['short', defaultLocale, 'Oct - Dec 23'],
-      ['short', fr, 'oct. - déc. 23'],
-      ['default', defaultLocale, 'October - December 2023'],
-      ['default', fr, 'octobre - décembre 2023'],
-      ['long', defaultLocale, 'October 2023 - December 2023'],
-      ['long', fr, 'octobre 2023 - décembre 2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Quarter, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.CalendarYear', () => {
-    const cases = [
-      ['short', defaultLocale, '23'],
-      ['short', fr, '23'],
-      ['default', defaultLocale, '2023'],
-      ['default', fr, '2023'],
-      ['long', defaultLocale, '2023'],
-      ['long', fr, '2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.CalendarYear, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.FiscalYearOctober', () => {
-    const cases = [
-      ['short', defaultLocale, '24'],
-      ['short', fr, '24'],
-      ['default', defaultLocale, '2024'],
-      ['default', fr, '2024'],
-      ['long', defaultLocale, '2024'],
-      ['long', fr, '2024'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(
-          formatDateWithLocale(locales, testDate, PeriodType.FiscalYearOctober, { variant })
-        ).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.BiWeek1Sun', () => {
-    const cases = [
-      ['short', defaultLocale, '11/12 - 11/25'],
-      ['short', fr, '12/11 - 25/11'],
-      ['default', defaultLocale, '11/12/2023 - 11/25/2023'],
-      ['default', fr, '12/11/2023 - 25/11/2023'],
-      ['long', defaultLocale, '11/12/2023 - 11/25/2023'],
-      ['long', fr, '12/11/2023 - 25/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.BiWeek1Sun, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.undefined', () => {
-    const expected = '2023-11-21T00:00:00-04:00';
-    const cases = [
-      ['short', defaultLocale],
-      ['short', fr],
-      ['default', defaultLocale],
-      ['default', fr],
-      ['long', defaultLocale],
-      ['long', fr],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales] = c;
-      it(c.toString(), () => {
-        // @ts-expect-error
-        expect(formatDateWithLocale(locales, testDate, undefined, { variant })).equal(expected);
       });
     }
   });
@@ -430,7 +865,7 @@ describe('localToUtcDate()', () => {
 
 describe('getMonthDaysByWeek()', () => {
   it('default starting Week: Sunday', () => {
-    const dates = getMonthDaysByWeek(new Date(testDate));
+    const dates = getMonthDaysByWeek(testDate);
     expect(dates).toMatchInlineSnapshot(`
       [
         [
@@ -483,7 +918,7 @@ describe('getMonthDaysByWeek()', () => {
   });
 
   it('Starting Week: Monday', () => {
-    const dates = getMonthDaysByWeek(new Date(testDate), 1);
+    const dates = getMonthDaysByWeek(testDate, 1);
     expect(dates).toMatchInlineSnapshot(`
       [
         [

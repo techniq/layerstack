@@ -91,7 +91,7 @@
 
 <h1>Numbers</h1>
 
-<h2>Number Formats (default settings)</h2>
+<h2>format (default settings)</h2>
 
 <Preview showCode>
   <div>{format(1234.56, 'integer')}</div>
@@ -104,7 +104,7 @@
   <div>{format(0.5678, 'percent')}</div>
 </Preview>
 
-<h2>number formats (additional options)</h2>
+<h2>format (additional options)</h2>
 
 <span>
   You can customize numbers with the 3rd arg that is an enhanced <b>`Intl.NumberFormatOptions`</b> type.
@@ -121,6 +121,26 @@
   <div>{format(0.5678, 'percentRound', { signDisplay: 'always' })}</div>
   <div>{format(1_234_567, 'metric', { minimumSignificantDigits: 12 })}</div>
   <div>{format(0.5678, 'percent', { fractionDigits: 1 })}</div>
+</Preview>
+
+<h2>config</h2>
+
+<span> You can customize numbers with a config option. </span>
+
+<Preview showCode>
+  <div>{format(1234.56, { type: 'integer', options: { maximumSignificantDigits: 2 } })}</div>
+  <div>{format(1234.56, { type: 'decimal', options: { maximumSignificantDigits: 5 } })}</div>
+  <div>{format(1234.56, { type: 'currency', options: { currency: 'EUR' } })}</div>
+  <div>
+    {format(123_456_789.99, {
+      type: 'currency',
+      options: { notation: 'compact', maximumSignificantDigits: 3 },
+    })}
+  </div>
+  <div>{format(0.5678, { type: 'percent', options: { signDisplay: 'always' } })}</div>
+  <div>{format(0.5678, { type: 'percentRound', options: { signDisplay: 'always' } })}</div>
+  <div>{format(1_234_567, { type: 'metric', options: { minimumSignificantDigits: 12 } })}</div>
+  <div>{format(0.5678, { type: 'percent', options: { fractionDigits: 1 } })}</div>
 </Preview>
 
 <h1>Dates</h1>
