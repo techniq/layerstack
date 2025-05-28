@@ -7,7 +7,7 @@
   "repository": "techniq/layerstack",
   "version": "1.1.0-next.1",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite dev --port 3004",
     "build": "vite build",
     "preview": "vite preview",
     "package": "svelte-package",
