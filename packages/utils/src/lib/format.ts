@@ -17,14 +17,9 @@ import {
 
 export type CustomFormatter = (value: any) => string;
 export type FormatType = FormatNumberStyle | PeriodType | PeriodTypeCode | CustomFormatter;
-export type FormatConfig = {
-  type: FormatType;
-  options?: FormatType extends FormatNumberStyle
-    ? FormatNumberOptions
-    : FormatType extends PeriodType | PeriodTypeCode
-      ? FormatDateOptions
-      : never;
-};
+export type FormatConfig =
+  | { type: FormatNumberStyle; options?: FormatNumberOptions }
+  | { type: PeriodType | PeriodTypeCode; options?: FormatDateOptions };
 
 // re-export for convenience
 export type { FormatNumberStyle, PeriodType, PeriodTypeCode };
@@ -116,7 +111,10 @@ export function formatWithLocale(
       : (formatOrConfig as FormatType);
 
   const formatOptions =
-    formatOrConfig && typeof formatOrConfig === 'object' && 'type' in formatOrConfig
+    formatOrConfig &&
+    typeof formatOrConfig === 'object' &&
+    'type' in formatOrConfig &&
+    'options' in formatOrConfig
       ? formatOrConfig.options
       : options;
 

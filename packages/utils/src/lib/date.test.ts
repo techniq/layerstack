@@ -58,6 +58,14 @@ describe('formatDate()', () => {
     // @ts-expect-error
     expect(formatDate('invalid date')).equal('');
   });
+
+  it('should allow formatting with PeriodType', () => {
+    expect(formatDate(testDate, PeriodType.Day)).equal('11/21/2023');
+  });
+
+  it('should allow formatting with PeriodTypeCode', () => {
+    expect(formatDate(testDate, 'day')).equal('11/21/2023');
+  });
 });
 
 describe('formatDateWithLocale()', () => {

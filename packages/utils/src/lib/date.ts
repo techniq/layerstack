@@ -612,7 +612,7 @@ function range(
 
 export function formatDate(
   date: Date | string | null | undefined,
-  periodType: PeriodType,
+  periodType: PeriodType | PeriodTypeCode,
   options: FormatDateOptions = {}
 ): string {
   return formatDateWithLocale(defaultLocale, date, periodType, options);
