@@ -1,5 +1,12 @@
 # @layerstack/svelte-stores
 
+## 1.0.2-next.5
+
+### Patch Changes
+
+- Updated dependencies [[`7642289`](https://github.com/techniq/layerstack/commit/7642289e1a99cf8092f2695491fd78b35a796bff)]:
+  - @layerstack/utils@2.0.0-next.5
+
 ## 1.0.2-next.4
 
 ### Patch Changes
