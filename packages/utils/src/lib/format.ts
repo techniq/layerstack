@@ -15,8 +15,17 @@ import {
   type PeriodTypeCode,
 } from './date_types.js';
 
-export type FormatType = FormatNumberStyle | PeriodType | PeriodTypeCode | CustomFormatter;
 export type CustomFormatter = (value: any) => string;
+export type FormatType = FormatNumberStyle | PeriodType | PeriodTypeCode | CustomFormatter;
+export type FormatConfig = {
+  type: FormatType;
+  options?: FormatType extends FormatNumberStyle
+    ? FormatNumberOptions
+    : FormatType extends PeriodType | PeriodTypeCode
+      ? FormatDateOptions
+      : never;
+};
+
 // re-export for convenience
 export type { FormatNumberStyle, PeriodType, PeriodTypeCode };
 
@@ -24,10 +33,15 @@ export type { FormatNumberStyle, PeriodType, PeriodTypeCode };
  * Generic format which can handle Dates, Numbers, or custom format function
  */
 export function format(value: null | undefined, format?: FormatType): string;
+export function format(value: null | undefined, config: { type: FormatType }): string;
 export function format(
   value: number,
   format?: FormatNumberStyle | CustomFormatter,
   options?: FormatNumberOptions
+): string;
+export function format(
+  value: number,
+  config: { type: FormatNumberStyle | CustomFormatter; options?: FormatNumberOptions }
 ): string;
 export function format(
   value: string | Date,
@@ -35,19 +49,77 @@ export function format(
   options?: FormatDateOptions
 ): string;
 export function format(
+  value: string | Date,
+  config: { type: PeriodType | PeriodTypeCode | CustomFormatter; options?: FormatDateOptions }
+): string;
+export function format(
   value: any,
-  format?: FormatType,
+  formatOrConfig?:
+    | FormatType
+    | { type: FormatType; options?: FormatNumberOptions | FormatDateOptions },
   options?: FormatNumberOptions | FormatDateOptions
 ): any {
-  return formatWithLocale(defaultLocale, value, format, options);
+  if (formatOrConfig && typeof formatOrConfig === 'object' && 'type' in formatOrConfig) {
+    return formatWithLocale(defaultLocale, value, formatOrConfig.type, formatOrConfig.options);
+  }
+  return formatWithLocale(defaultLocale, value, formatOrConfig as FormatType, options);
 }
+
+// null | undefined
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: null | undefined,
+  format?: FormatType,
+  options?: FormatNumberOptions | FormatDateOptions
+): string;
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: null | undefined,
+  config: FormatConfig
+): string;
+
+// number
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: number,
+  format?: FormatNumberStyle | CustomFormatter,
+  options?: FormatNumberOptions
+): string;
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: number,
+  config: FormatConfig
+): string;
+
+// Date
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: string | Date,
+  format?: PeriodType | PeriodTypeCode | CustomFormatter,
+  options?: FormatDateOptions
+): string;
+export function formatWithLocale(
+  settings: LocaleSettings,
+  value: string | Date,
+  config: FormatConfig
+): string;
 
 export function formatWithLocale(
   settings: LocaleSettings,
   value: any,
-  format?: FormatType,
+  formatOrConfig?: FormatType | FormatConfig,
   options?: FormatNumberOptions | FormatDateOptions
 ) {
+  const format =
+    formatOrConfig && typeof formatOrConfig === 'object' && 'type' in formatOrConfig
+      ? formatOrConfig.type
+      : (formatOrConfig as FormatType);
+
+  const formatOptions =
+    formatOrConfig && typeof formatOrConfig === 'object' && 'type' in formatOrConfig
+      ? formatOrConfig.options
+      : options;
+
   if (typeof format === 'function') {
     return format(value);
   } else if (
@@ -61,14 +133,14 @@ export function formatWithLocale(
       settings,
       value,
       format as PeriodType | PeriodTypeCode,
-      options as FormatDateOptions
+      formatOptions as FormatDateOptions
     );
   } else if (typeof value === 'number') {
     return formatNumberWithLocale(
       settings,
       value,
       format as FormatNumberStyle,
-      options as FormatNumberOptions
+      formatOptions as FormatNumberOptions
     );
   } else if (typeof value === 'string') {
     // Keep original value if already string
