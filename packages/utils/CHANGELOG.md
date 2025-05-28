@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- fix(format): Improve typing for `FormatConfig` and `formatDate()` ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.4
 
 ### Patch Changes
