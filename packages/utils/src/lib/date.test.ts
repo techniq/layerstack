@@ -554,16 +554,92 @@ describe('getWeekStartsOnFromIntl() tokens', () => {
 });
 
 describe('getPeriodTypeByCode()', () => {
-  it('week', () => {
-    const val = getPeriodTypeByCode('WEEK');
-    expect(val).toBe(PeriodType.Week);
+  const data = [
+    ['custom', PeriodType.Custom],
+    ['day', PeriodType.Day],
+    ['daytime', PeriodType.DayTime],
+    ['time', PeriodType.TimeOnly],
+    ['week', PeriodType.Week],
+    ['week-sun', PeriodType.WeekSun],
+    ['week-mon', PeriodType.WeekMon],
+    ['week-tue', PeriodType.WeekTue],
+    ['week-wed', PeriodType.WeekWed],
+    ['week-thu', PeriodType.WeekThu],
+    ['week-fri', PeriodType.WeekFri],
+    ['week-sat', PeriodType.WeekSat],
+    ['month', PeriodType.Month],
+    ['month-year', PeriodType.MonthYear],
+    ['quarter', PeriodType.Quarter],
+    ['year', PeriodType.CalendarYear],
+    ['fiscal-year-october', PeriodType.FiscalYearOctober],
+    ['biweek1', PeriodType.BiWeek1],
+    ['biweek1-sun', PeriodType.BiWeek1Sun],
+    ['biweek1-mon', PeriodType.BiWeek1Mon],
+    ['biweek1-tue', PeriodType.BiWeek1Tue],
+    ['biweek1-wed', PeriodType.BiWeek1Wed],
+    ['biweek1-thu', PeriodType.BiWeek1Thu],
+    ['biweek1-fri', PeriodType.BiWeek1Fri],
+    ['biweek1-sat', PeriodType.BiWeek1Sat],
+    ['biweek2', PeriodType.BiWeek2],
+    ['biweek2-sun', PeriodType.BiWeek2Sun],
+    ['biweek2-mon', PeriodType.BiWeek2Mon],
+    ['biweek2-tue', PeriodType.BiWeek2Tue],
+    ['biweek2-wed', PeriodType.BiWeek2Wed],
+    ['biweek2-thu', PeriodType.BiWeek2Thu],
+    ['biweek2-fri', PeriodType.BiWeek2Fri],
+    ['biweek2-sat', PeriodType.BiWeek2Sat],
+  ] as const;
+
+  data.forEach(([code, periodType]) => {
+    it(code, () => {
+      const val = getPeriodTypeByCode(code);
+      expect(val).toBe(periodType);
+    });
   });
 });
 
 describe('getPeriodTypeCode()', () => {
-  it('BiWeek1Sat', () => {
-    const val = getPeriodTypeCode(PeriodType.BiWeek1Sat);
-    expect(val).toBe('BIWEEK1-SAT');
+  const data = [
+    ['custom', PeriodType.Custom],
+    ['day', PeriodType.Day],
+    ['daytime', PeriodType.DayTime],
+    ['time', PeriodType.TimeOnly],
+    ['week', PeriodType.Week],
+    ['week-sun', PeriodType.WeekSun],
+    ['week-mon', PeriodType.WeekMon],
+    ['week-tue', PeriodType.WeekTue],
+    ['week-wed', PeriodType.WeekWed],
+    ['week-thu', PeriodType.WeekThu],
+    ['week-fri', PeriodType.WeekFri],
+    ['week-sat', PeriodType.WeekSat],
+    ['month', PeriodType.Month],
+    ['month-year', PeriodType.MonthYear],
+    ['quarter', PeriodType.Quarter],
+    ['year', PeriodType.CalendarYear],
+    ['fiscal-year-october', PeriodType.FiscalYearOctober],
+    ['biweek1', PeriodType.BiWeek1],
+    ['biweek1-sun', PeriodType.BiWeek1Sun],
+    ['biweek1-mon', PeriodType.BiWeek1Mon],
+    ['biweek1-tue', PeriodType.BiWeek1Tue],
+    ['biweek1-wed', PeriodType.BiWeek1Wed],
+    ['biweek1-thu', PeriodType.BiWeek1Thu],
+    ['biweek1-fri', PeriodType.BiWeek1Fri],
+    ['biweek1-sat', PeriodType.BiWeek1Sat],
+    ['biweek2', PeriodType.BiWeek2],
+    ['biweek2-sun', PeriodType.BiWeek2Sun],
+    ['biweek2-mon', PeriodType.BiWeek2Mon],
+    ['biweek2-tue', PeriodType.BiWeek2Tue],
+    ['biweek2-wed', PeriodType.BiWeek2Wed],
+    ['biweek2-thu', PeriodType.BiWeek2Thu],
+    ['biweek2-fri', PeriodType.BiWeek2Fri],
+    ['biweek2-sat', PeriodType.BiWeek2Sat],
+  ] as const;
+
+  data.forEach(([code, periodType]) => {
+    it(code, () => {
+      const val = getPeriodTypeCode(periodType);
+      expect(val).toBe(code);
+    });
   });
 });
 
