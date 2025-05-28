@@ -41,6 +41,8 @@ import {
   type CustomIntlDateTimeFormatOptions,
   type FormatDateOptions,
   type DateFormatVariantPreset,
+  periodTypeMappings,
+  PeriodTypeCode,
 } from './date_types.js';
 import { defaultLocale, type LocaleSettings } from './locale.js';
 
@@ -142,54 +144,13 @@ export function getPeriodTypeNameWithLocale(settings: LocaleSettings, periodType
   }
 }
 
-const periodTypeMappings: Record<PeriodType, string> = {
-  [PeriodType.Custom]: 'CUSTOM',
-
-  [PeriodType.Day]: 'DAY',
-  [PeriodType.DayTime]: 'DAY-TIME',
-  [PeriodType.TimeOnly]: 'TIME',
-
-  [PeriodType.WeekSun]: 'WEEK-SUN',
-  [PeriodType.WeekMon]: 'WEEK-MON',
-  [PeriodType.WeekTue]: 'WEEK-TUE',
-  [PeriodType.WeekWed]: 'WEEK-WED',
-  [PeriodType.WeekThu]: 'WEEK-THU',
-  [PeriodType.WeekFri]: 'WEEK-FRI',
-  [PeriodType.WeekSat]: 'WEEK-SAT',
-  [PeriodType.Week]: 'WEEK',
-
-  [PeriodType.Month]: 'MTH',
-  [PeriodType.MonthYear]: 'MTH-CY',
-  [PeriodType.Quarter]: 'QTR',
-  [PeriodType.CalendarYear]: 'CY',
-  [PeriodType.FiscalYearOctober]: 'FY-OCT',
-
-  [PeriodType.BiWeek1Sun]: 'BIWEEK1-SUN',
-  [PeriodType.BiWeek1Mon]: 'BIWEEK1-MON',
-  [PeriodType.BiWeek1Tue]: 'BIWEEK1-TUE',
-  [PeriodType.BiWeek1Wed]: 'BIWEEK1-WED',
-  [PeriodType.BiWeek1Thu]: 'BIWEEK1-THU',
-  [PeriodType.BiWeek1Fri]: 'BIWEEK1-FRI',
-  [PeriodType.BiWeek1Sat]: 'BIWEEK1-SAT',
-  [PeriodType.BiWeek1]: 'BIWEEK1',
-
-  [PeriodType.BiWeek2Sun]: 'BIWEEK2-SUN',
-  [PeriodType.BiWeek2Mon]: 'BIWEEK2-MON',
-  [PeriodType.BiWeek2Tue]: 'BIWEEK2-TUE',
-  [PeriodType.BiWeek2Wed]: 'BIWEEK2-WED',
-  [PeriodType.BiWeek2Thu]: 'BIWEEK2-THU',
-  [PeriodType.BiWeek2Fri]: 'BIWEEK2-FRI',
-  [PeriodType.BiWeek2Sat]: 'BIWEEK2-SAT',
-  [PeriodType.BiWeek2]: 'BIWEEK2',
-};
-
-export function getPeriodTypeCode(periodType: PeriodType): string {
+export function getPeriodTypeCode(periodType: PeriodType): PeriodTypeCode {
   return periodTypeMappings[periodType];
 }
 
-export function getPeriodTypeByCode(code: string): PeriodType {
+export function getPeriodTypeByCode(code: PeriodTypeCode) {
   const element = entries(periodTypeMappings).find((c) => c[1] === code);
-  return parseInt(String(element?.[0] ?? '1'));
+  return parseInt(String(element?.[0] ?? '0'));
 }
 
 export function getDayOfWeek(periodType: PeriodType): DayOfWeek | null {
@@ -651,7 +612,7 @@ function range(
 
 export function formatDate(
   date: Date | string | null | undefined,
-  periodType: PeriodType,
+  periodType: PeriodType | PeriodTypeCode,
   options: FormatDateOptions = {}
 ): string {
   return formatDateWithLocale(defaultLocale, date, periodType, options);
@@ -699,7 +660,7 @@ export function updatePeriodTypeWithWeekStartsOn(
 export function formatDateWithLocale(
   settings: LocaleSettings,
   date: Date | string | null | undefined,
-  periodType: PeriodType,
+  periodType: PeriodType | PeriodTypeCode,
   options: FormatDateOptions = {}
 ): string {
   if (typeof date === 'string') {
@@ -715,6 +676,11 @@ export function formatDateWithLocale(
   const weekStartsOn = options.weekStartsOn ?? settings.formats.dates.weekStartsOn;
 
   const { day, dayTime, timeOnly, week, month, monthsYear, year } = settings.formats.dates.presets;
+
+  periodType =
+    typeof periodType === 'string'
+      ? getPeriodTypeByCode(periodType)
+      : ((periodType ?? PeriodType.Day) as PeriodType);
 
   periodType = updatePeriodTypeWithWeekStartsOn(weekStartsOn, periodType) ?? periodType;
 

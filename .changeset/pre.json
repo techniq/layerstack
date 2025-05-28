@@ -1,0 +1,40 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@layerstack/svelte-actions": "1.0.0",
+    "@layerstack/svelte-stores": "1.0.1",
+    "@layerstack/svelte-table": "1.0.0",
+    "@layerstack/tailwind": "1.0.0",
+    "@layerstack/utils": "1.0.0",
+    "@layerstack/docs": "1.0.1",
+    "@layerstack/svelte-state": "0.0.0"
+  },
+  "changesets": [
+    "angry-sheep-matter",
+    "cold-actors-burn",
+    "cuddly-cows-win",
+    "fancy-poets-lead",
+    "fluffy-eggs-joke",
+    "fresh-pants-accept",
+    "khaki-bars-smell",
+    "legal-seals-march",
+    "light-mice-brake",
+    "loud-rockets-tease",
+    "modern-hairs-open",
+    "odd-dots-greet",
+    "odd-yaks-see",
+    "plain-crews-cry",
+    "polite-moments-build",
+    "quick-ducks-do",
+    "ripe-pens-raise",
+    "seven-teeth-ring",
+    "slimy-bags-beg",
+    "smooth-ties-lie",
+    "solid-lands-shine",
+    "swift-clocks-warn",
+    "tidy-drinks-rush",
+    "twelve-cloths-live",
+    "two-doodles-return"
+  ]
+}

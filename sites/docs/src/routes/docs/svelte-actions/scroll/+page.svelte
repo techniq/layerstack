@@ -28,7 +28,7 @@
 <Preview>
   <input type="range" bind:value={scrolledIndex} min={0} max={itemCount - 1} />
   {scrolledIndex}
-  <div class="h-40 overflow-auto border rounded">
+  <div class="h-40 overflow-auto border rounded-sm">
     {#each items as item, i}
       <div
         use:scrollIntoView={{ condition: scrolledIndex === i }}
@@ -47,7 +47,7 @@
 <Preview>
   <input type="range" bind:value={scrolledIndex} min={0} max={itemCount - 1} />
   {scrolledIndex}
-  <div class="h-40 overflow-auto border rounded">
+  <div class="h-40 overflow-auto border rounded-sm">
     {#each items as item, i}
       <div
         use:scrollIntoView={{ condition: scrolledIndex === i, onlyIfNeeded: true }}
@@ -62,7 +62,7 @@
 <h2>scrollShadow <small>Add shadows to indicate scrolling available</small></h2>
 
 <Preview>
-  <div class="h-40 border rounded" use:scrollShadow>
+  <div class="h-40 border rounded-sm" use:scrollShadow>
     {#each items as item, i (item)}
       <div>{item}</div>
     {/each}
@@ -72,7 +72,7 @@
 <h3>with flip'd children</h3>
 
 <Preview>
-  <div class="h-40 border rounded" use:scrollShadow>
+  <div class="h-40 border rounded-sm" use:scrollShadow>
     {#each items as item, i (item)}
       <div animate:flip={{ duration: 300 }}>{item}</div>
     {/each}
@@ -82,7 +82,7 @@
 <h3>Horizontal scroll</h3>
 
 <Preview>
-  <div class="h-20 border rounded" use:scrollShadow>
+  <div class="h-20 border rounded-sm" use:scrollShadow>
     <div class="flex whitespace-nowrap gap-2 p-2">
       {#each items as item, i}
         <div class="p-4 border">{item}</div>
@@ -95,7 +95,7 @@
 
 <Preview>
   <div
-    class="h-40 border rounded"
+    class="h-40 border rounded-sm"
     use:scrollShadow={{
       bottom: { color: 'hsl(var(--color-surface-100))', offset: 30, blur: 30, scrollRatio: 0 },
     }}
@@ -109,7 +109,7 @@
 <h3>with truncation</h3>
 
 <Preview>
-  <div class="w-[200px] h-40 border rounded" use:scrollShadow>
+  <div class="w-[200px] h-40 border rounded-sm" use:scrollShadow>
     {#each items as item, i}
       <div class="truncate">{item} with a really long description</div>
     {/each}
@@ -119,7 +119,7 @@
 <h2>scrollFade <small>Add shadows to indicate scrolling available</small></h2>
 
 <Preview>
-  <div class="max-h-40 border rounded" use:scrollFade>
+  <div class="max-h-40 border rounded-sm" use:scrollFade>
     {#each items as item, i (item)}
       <div>{item}</div>
     {/each}
@@ -129,7 +129,7 @@
 <h3>with flip'd children</h3>
 
 <Preview>
-  <div class="max-h-40 border rounded" use:scrollFade>
+  <div class="max-h-40 border rounded-sm" use:scrollFade>
     {#each items as item, i (item)}
       <div animate:flip={{ duration: 3000 }}>{item}</div>
     {/each}
@@ -139,7 +139,7 @@
 <h3>Horizontal scroll</h3>
 
 <Preview>
-  <div class="h-20 border rounded" use:scrollFade>
+  <div class="h-20 border rounded-sm" use:scrollFade>
     <div class="flex whitespace-nowrap gap-2 p-2">
       {#each items as item, i}
         <div class="p-4 border">{item}</div>

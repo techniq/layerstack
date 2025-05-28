@@ -19,6 +19,14 @@
     'styles',
   ];
 
+  const state = [
+    'MediaQueryPresets',
+    'PaginationState',
+    'SelectionState',
+    'TimerState',
+    'UniqueState',
+  ];
+
   const stores = [
     'changeStore',
     'debounceStore',
@@ -39,8 +47,8 @@
   ];
 
   const table = ['actions', 'stores'];
-  const tailwind = ['plugin', 'utils'];
-  const utils = ['duration', 'format', 'json', 'Logger', 'string'];
+  const tailwind = ['utils'];
+  const utils = ['Duration', 'format', 'json', 'Logger', 'string'];
 </script>
 
 <NavItem text="Introduction" icon={mdiHome} currentUrl={$page.url} path="/" />
@@ -56,6 +64,11 @@
 <h1>svelte-actions</h1>
 {#each actions as item}
   <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-actions/{item}" />
+{/each}
+
+<h1>svelte-state</h1>
+{#each state as item}
+  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-state/{item}" />
 {/each}
 
 <h1>svelte-stores</h1>

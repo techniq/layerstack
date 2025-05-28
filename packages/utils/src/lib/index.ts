@@ -4,12 +4,13 @@ export { formatDate, getDateFuncsByPeriodType } from './date.js';
 export { PeriodType, DayOfWeek, DateToken } from './date_types.js';
 export * from './date_types.js';
 export * from './dom.js';
-export { getDuration, humanizeDuration, DurationUnits } from './duration.js';
+export { Duration, DurationUnits } from './duration.js';
 export * from './file.js';
 export {
   format,
   formatWithLocale,
   type FormatType,
+  type FormatConfig,
   type FormatFunction,
   type FormatFunctionProperties,
   type FormatFunctions,
