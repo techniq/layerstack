@@ -3,16 +3,22 @@ import {
   getPeriodTypeNameWithLocale,
   getDayOfWeekName,
   isStringDate,
+  periodTypeMappings,
 } from './date.js';
 import { formatNumberWithLocale } from './number.js';
 import type { FormatNumberOptions, FormatNumberStyle } from './number.js';
 import { defaultLocale, type LocaleSettings } from './locale.js';
-import { PeriodType, type FormatDateOptions, DayOfWeek } from './date_types.js';
+import {
+  PeriodType,
+  type FormatDateOptions,
+  DayOfWeek,
+  type PeriodTypeCode,
+} from './date_types.js';
 
-export type FormatType = FormatNumberStyle | PeriodType | CustomFormatter;
+export type FormatType = FormatNumberStyle | PeriodType | PeriodTypeCode | CustomFormatter;
 export type CustomFormatter = (value: any) => string;
 // re-export for convenience
-export type { FormatNumberStyle, PeriodType };
+export type { FormatNumberStyle, PeriodType, PeriodTypeCode };
 
 /**
  * Generic format which can handle Dates, Numbers, or custom format function
@@ -25,7 +31,7 @@ export function format(
 ): string;
 export function format(
   value: string | Date,
-  format?: PeriodType | CustomFormatter,
+  format?: PeriodType | PeriodTypeCode | CustomFormatter,
   options?: FormatDateOptions
 ): string;
 export function format(
@@ -44,11 +50,17 @@ export function formatWithLocale(
 ) {
   if (typeof format === 'function') {
     return format(value);
-  } else if (value instanceof Date || isStringDate(value) || (format && format in PeriodType)) {
+  } else if (
+    value instanceof Date ||
+    isStringDate(value) ||
+    (format &&
+      (format in PeriodType ||
+        Object.values(periodTypeMappings).includes(format as PeriodTypeCode)))
+  ) {
     return formatDateWithLocale(
       settings,
       value,
-      (format ?? PeriodType.Day) as PeriodType,
+      format as PeriodType | PeriodTypeCode,
       options as FormatDateOptions
     );
   } else if (typeof value === 'number') {
@@ -76,7 +88,7 @@ export type FormatFunction = ((
 ) => string) &
   ((
     value: Date | string | null | undefined,
-    period: PeriodType,
+    period: PeriodType | PeriodTypeCode,
     options?: FormatDateOptions
   ) => string);
 
@@ -91,7 +103,7 @@ export type FormatFunctions = FormatFunction & FormatFunctionProperties;
 export function buildFormatters(settings: LocaleSettings): FormatFunctions {
   const mainFormat = (
     value: any,
-    style: FormatNumberStyle | PeriodType,
+    style: FormatNumberStyle | PeriodType | PeriodTypeCode,
     options?: FormatNumberOptions | FormatDateOptions
   ) => formatWithLocale(settings, value, style, options);
 

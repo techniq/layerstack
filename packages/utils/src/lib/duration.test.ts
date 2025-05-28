@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 import { Duration, DurationUnits } from './duration.js';
-import { PeriodType } from './date_types.js';
-import { testDate } from './date.test.js';
 import { subDays } from 'date-fns';
 
 describe('Duration', () => {

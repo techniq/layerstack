@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 
 import { format } from './format.js';
 import { PeriodType } from './date_types.js';
-import { testDate } from './date.test.js';
+import { testDateStr } from './date.test.js';
 import { parseISO } from 'date-fns';
 
 describe('format()', () => {
@@ -28,8 +28,13 @@ describe('format()', () => {
   });
 
   // See `date.test.ts` for more date tests
-  it('formats date with PeriodType format (date)', () => {
-    const actual = format(testDate, PeriodType.Day);
+  it('formats date with PeriodType (date)', () => {
+    const actual = format(testDateStr, PeriodType.Day);
+    expect(actual).equal('11/21/2023');
+  });
+
+  it('formats date with period type code (date)', () => {
+    const actual = format(testDateStr, 'day');
     expect(actual).equal('11/21/2023');
   });
 
@@ -48,11 +53,11 @@ describe('format()', () => {
     expect(actual).equal('1,234.57');
   });
   it('format based on value type (date string)', () => {
-    const actual = format(testDate);
+    const actual = format(testDateStr);
     expect(actual).equal('11/21/2023');
   });
   it('format based on value type (date)', () => {
-    const actual = format(parseISO(testDate));
+    const actual = format(parseISO(testDateStr));
     expect(actual).equal('11/21/2023');
   });
   it('format based on value type (string)', () => {
