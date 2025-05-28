@@ -62,6 +62,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '11/21'],
       ['short', fr, '21/11'],
+      ['default', defaultLocale, '11/21/2023'],
+      ['default', fr, '21/11/2023'],
       ['long', defaultLocale, 'Nov 21, 2023'],
       ['long', fr, '21 nov. 2023'],
     ] as const;
@@ -80,6 +82,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '11/21'],
       ['short', fr, '21/11'],
+      ['default', defaultLocale, '11/21/2023'],
+      ['default', fr, '21/11/2023'],
       ['long', defaultLocale, 'Nov 21, 2023'],
       ['long', fr, '21 nov. 2023'],
     ] as const;
@@ -140,6 +144,8 @@ describe('formatDate()', () => {
     const cases = [
       [PeriodType.WeekSun, 'short', defaultLocale, '11/19 - 11/25'],
       [PeriodType.WeekSun, 'short', fr, '19/11 - 25/11'],
+      [PeriodType.WeekSun, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
+      [PeriodType.WeekSun, 'default', fr, '19/11/2023 - 25/11/2023'],
       [PeriodType.WeekSun, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
       [PeriodType.WeekSun, 'long', fr, '19/11/2023 - 25/11/2023'],
       [PeriodType.WeekMon, 'long', defaultLocale, '11/20/2023 - 11/26/2023'],
@@ -158,11 +164,15 @@ describe('formatDate()', () => {
     const cases = [
       [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
       [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
+      [PeriodType.Week, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
+      [PeriodType.Week, 'default', fr, '20/11/2023 - 26/11/2023'],
       [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
       [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
 
       [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
       [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
+      [PeriodType.Week, 'default', defaultLocale, '11/19/2023 - 11/25/2023'],
+      [PeriodType.Week, 'default', fr, '20/11/2023 - 26/11/2023'],
       [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
       [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
     ] as const;
@@ -179,8 +189,10 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, 'Nov'],
       ['short', fr, 'nov.'],
-      ['long', defaultLocale, 'November'],
-      ['long', fr, 'novembre'],
+      ['default', defaultLocale, 'November'],
+      ['default', fr, 'novembre'],
+      ['long', defaultLocale, 'November 2023'],
+      ['long', fr, 'novembre 2023'],
     ] as const;
 
     for (const c of cases) {
@@ -197,6 +209,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, 'Nov 23'],
       ['short', fr, 'nov. 23'],
+      ['default', defaultLocale, 'November 2023'],
+      ['default', fr, 'novembre 2023'],
       ['long', defaultLocale, 'November 2023'],
       ['long', fr, 'novembre 2023'],
     ] as const;
@@ -215,8 +229,10 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, 'Oct - Dec 23'],
       ['short', fr, 'oct. - déc. 23'],
-      ['long', defaultLocale, 'October - December 2023'],
-      ['long', fr, 'octobre - décembre 2023'],
+      ['default', defaultLocale, 'October - December 2023'],
+      ['default', fr, 'octobre - décembre 2023'],
+      ['long', defaultLocale, 'October 2023 - December 2023'],
+      ['long', fr, 'octobre 2023 - décembre 2023'],
     ] as const;
 
     for (const c of cases) {
@@ -233,6 +249,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '23'],
       ['short', fr, '23'],
+      ['default', defaultLocale, '2023'],
+      ['default', fr, '2023'],
       ['long', defaultLocale, '2023'],
       ['long', fr, '2023'],
     ] as const;
@@ -251,6 +269,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '24'],
       ['short', fr, '24'],
+      ['default', defaultLocale, '2024'],
+      ['default', fr, '2024'],
       ['long', defaultLocale, '2024'],
       ['long', fr, '2024'],
     ] as const;
@@ -269,6 +289,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '11/12 - 11/25'],
       ['short', fr, '12/11 - 25/11'],
+      ['default', defaultLocale, '11/12/2023 - 11/25/2023'],
+      ['default', fr, '12/11/2023 - 25/11/2023'],
       ['long', defaultLocale, '11/12/2023 - 11/25/2023'],
       ['long', fr, '12/11/2023 - 25/11/2023'],
     ] as const;
@@ -288,6 +310,8 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale],
       ['short', fr],
+      ['default', defaultLocale],
+      ['default', fr],
       ['long', defaultLocale],
       ['long', fr],
     ] as const;

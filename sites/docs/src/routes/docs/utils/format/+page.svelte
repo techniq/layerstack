@@ -154,273 +154,45 @@
   </div>
 </div>
 
-<h2>PeriodType Day</h2>
+{#each [PeriodType.Day, PeriodType.DayTime, PeriodType.TimeOnly, PeriodType.Week, PeriodType.BiWeek1, PeriodType.Month, PeriodType.MonthYear, PeriodType.Quarter, PeriodType.CalendarYear, PeriodType.FiscalYearOctober] as periodType}
+  <h2>PeriodType.{PeriodType[periodType]}</h2>
 
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
+  {#if periodType === PeriodType.Week || periodType === PeriodType.BiWeek1}
+    <span>
+      It will take your default <b>weekStartsOn</b>
+      <a
+        class="text-accent-500"
+        href="https://svelte-ux.techniq.dev/customization#settings"
+        target="_blank">settings</a
+      >, if you want to be specific, you can also use
+      <b>{periodType === PeriodType.Week ? 'PeriodType.WeekSun' : 'PeriodType.BiWeek1Sun'}</b>
+    </span>
+  {/if}
 
-<h2>PeriodType DayTime</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        variant: 'short',
-      })}
-    </Preview>
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <h3>short</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          variant: 'short',
+        })}
+      </Preview>
+    </div>
+    <div>
+      <h3>default</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          // variant: 'default',
+        })}
+      </Preview>
+    </div>
+    <div>
+      <h3>long</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          variant: 'long',
+        })}
+      </Preview>
+    </div>
   </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType TimeOnly</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Week</h2>
-<span>
-  It will take your default <b>weekStartsOn</b>
-  <a class="text-accent-500" href="/customization#settings">settings</a>, if you want to be
-  specific, you can also use
-  <b>PeriodType.WeekSun</b>
-</span>
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType BiWeek1</h2>
-<span>
-  It will take your default <b>weekStartsOn</b>
-  <a class="text-accent-500" href="/customization#settings">settings</a>, if you want to be
-  specific, you can also use
-  <b>PeriodType.BiWeek1Sun</b>
-</span>
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Month</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Quarter</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType CalendarYear</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType FiscalYearOctober</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
+{/each}

@@ -203,8 +203,8 @@ const defaultLocaleSettings: LocaleSettings = {
         },
         month: {
           short: DateToken.Month_short,
-          default: DateToken.Month_short,
-          long: DateToken.Month_long,
+          default: DateToken.Month_long,
+          long: [DateToken.Month_long, DateToken.Year_numeric],
         },
         monthsYear: {
           short: [DateToken.Month_short, DateToken.Year_2Digit],
