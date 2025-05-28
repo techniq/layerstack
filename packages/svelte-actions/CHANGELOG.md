@@ -1,5 +1,12 @@
 # @layerstack/svelte-actions
 
+## 1.0.1-next.4
+
+### Patch Changes
+
+- Updated dependencies [[`ab0bb08`](https://github.com/techniq/layerstack/commit/ab0bb086257e281aa10ef13a3296aedf95c777f9), [`48b0aea`](https://github.com/techniq/layerstack/commit/48b0aead52ca6aeb2135a5297f5d774c8b510e12), [`38c4443`](https://github.com/techniq/layerstack/commit/38c44438c2454d3ffe328be15c1077987f64ee24), [`eaca635`](https://github.com/techniq/layerstack/commit/eaca6356ccd5288950aca64b8082ef18df2757ec)]:
+  - @layerstack/utils@2.0.0-next.4
+
 ## 1.0.1-next.3
 
 ### Patch Changes
