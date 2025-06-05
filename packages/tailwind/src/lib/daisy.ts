@@ -49,7 +49,7 @@ const daisyColorMap = {
 };
 
 /**
- *  Map Daisy UI color names to Svelte UX names, and sort themes
+ *  Map Daisy UI color names to LayerStack names, and sort themes
  */
 function mapColorsName(themes: typeof daisyThemes, colorMap: typeof daisyColorMap) {
   let themesGeneric = themes as unknown as Record<Theme, Record<string, string>>;

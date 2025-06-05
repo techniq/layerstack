@@ -3,47 +3,55 @@
 
   import Preview from '$docs/Preview.svelte';
 
-  import { getDuration, humanizeDuration, DurationUnits } from '@layerstack/utils';
+  import { Duration, DurationUnits } from '@layerstack/utils';
 </script>
 
 <h1>Examples</h1>
 
-<h2>humanizeDuration()</h2>
+<h2>new Duration()</h2>
 
-<h3>Date</h3>
+<h3>Date range</h3>
 
-<Preview>
-  <div>{humanizeDuration({ start: subDays(new Date(), 3) })}</div>
-  <div>{humanizeDuration({ start: subMonths(new Date(), 3) })}</div>
-  <div>{humanizeDuration({ start: subMonths(new Date(), 3), variant: 'long' })}</div>
+<Preview class="whitespace-pre">
+  <div>{JSON.stringify(new Duration({ start: subDays(new Date(), 3) }), null, 2)}</div>
 </Preview>
 
-<h3>string</h3>
+<h3>Date range</h3>
+
+<Preview class="whitespace-pre">
+  <div>{JSON.stringify(new Duration({ start: '2021-01-01', end: '2021-01-07' }), null, 2)}</div>
+</Preview>
+
+<h2>duration.format()</h2>
+
+<h3>Date range</h3>
 
 <Preview>
-  <div>{humanizeDuration({ start: '1982-03-30' })}</div>
-  <div>{humanizeDuration({ start: '2021-01-01', end: '2021-01-07' })}</div>
-  <div>{humanizeDuration({ start: '1982-03-30', totalUnits: 2 })}</div>
-  <div>{humanizeDuration({ start: '1982-03-30', minUnits: DurationUnits.Hour })}</div>
+  <div>{new Duration({ start: subDays(new Date(), 3) }).format()}</div>
+  <div>{new Duration({ start: subMonths(new Date(), 3) }).format()}</div>
+  <div>{new Duration({ start: subMonths(new Date(), 3) }).format({ variant: 'long' })}</div>
+</Preview>
+
+<h3>string range</h3>
+
+<Preview>
+  <div>{new Duration({ start: '1982-03-30' }).format()}</div>
+  <div>{new Duration({ start: '2021-01-01', end: '2021-01-07' }).format()}</div>
+  <div>{new Duration({ start: '1982-03-30' }).format({ totalUnits: 2 })}</div>
+  <div>{new Duration({ start: '1982-03-30' }).format({ minUnits: DurationUnits.Hour })}</div>
 </Preview>
 
 <h3>duration object</h3>
 
 <Preview>
-  <div>{humanizeDuration({ duration: { milliseconds: 300 } })}</div>
-  <div>{humanizeDuration({ duration: { hours: 1, minutes: 30 } })}</div>
-  <div>{humanizeDuration({ duration: { days: 5, hours: 26 } })}</div>
+  <div>{new Duration({ duration: { milliseconds: 300 } }).format()}</div>
+  <div>{new Duration({ duration: { hours: 1, minutes: 30 } }).format()}</div>
+  <div>{new Duration({ duration: { days: 5, hours: 26 } }).format()}</div>
 </Preview>
 
 <h3>Leap year comparison</h3>
 
 <Preview>
-  <div>{humanizeDuration({ start: new Date('2023-02-28'), end: new Date('2023-03-01') })}</div>
-  <div>{humanizeDuration({ start: new Date('2024-02-28'), end: new Date('2024-03-01') })}</div>
-</Preview>
-
-<h2>getDuration()</h2>
-
-<Preview class="whitespace-pre">
-  {JSON.stringify(getDuration(subDays(new Date(), 3)), null, 2)}
+  <div>{new Duration({ start: new Date('2023-02-28'), end: new Date('2023-03-01') }).format()}</div>
+  <div>{new Duration({ start: new Date('2024-02-28'), end: new Date('2024-03-01') }).format()}</div>
 </Preview>

@@ -41,12 +41,12 @@
         }}
         class={cls(
           'border p-4 transition-shadow hover:shadow-md rounded-lg before:rounded-lg',
-          '[--border_base:theme(colors.surface-content/50%)]',
-          '[--border_hover_1:theme(colors.primary)]',
-          '[--border_hover_2:theme(colors.secondary)]',
-          '[--surface_base:theme(colors.surface-200)]',
-          '[--surface_hover_1:theme(colors.surface-100/90%)]',
-          '[--surface_hover_2:theme(colors.surface-100)]'
+          '[--border_base:var(--color-surface-content)]/50',
+          '[--border_hover_1:var(--color-primary)]',
+          '[--border_hover_2:var(--color-secondary)]',
+          '[--surface_base:var(--color-surface-200)]',
+          '[--surface_hover_1:var(--color-surface-100)]/90',
+          '[--surface_hover_2:var(--color-surface-100)]'
         )}
       >
         {item}
@@ -66,11 +66,11 @@
           'border p-4 transition-shadow hover:shadow-md rounded-lg before:rounded-lg',
           '[--spotlight-radius:200px]',
           '[--spotlight-border-width:1px]',
-          '[--spotlight-border-color-stops:theme(colors.surface-content/50%),theme(colors.surface-content/50%),transparent]',
-          '[--spotlight-surface-color-stops:theme(colors.surface-200),theme(colors.surface-200)]',
+          '[--spotlight-border-color-stops:--var(--color-surface-content/50%),--var(--color-surface-content/50%),transparent]',
+          '[--spotlight-surface-color-stops:var(--color-surface-200),var(--color-surface-200)]',
           'hover:[--spotlight-border-width:2px]',
-          'hover:[--spotlight-border-color-stops:theme(colors.primary)_5%,theme(colors.secondary)]',
-          'hover:[--spotlight-surface-color-stops:theme(colors.surface-100/90%),theme(colors.surface-100)]'
+          'hover:[--spotlight-border-color-stops:var(--color-primary)_5%,var(--color-secondary)]',
+          'hover:[--spotlight-surface-color-stops:--var(--color-surface-100/90%),var(--color-surface-100)]'
         )}
       >
         {item}
@@ -90,12 +90,12 @@
           'border px-4 py-8 transition-shadow hover:shadow-md rounded-lg before:rounded-lg',
           '[--spotlight-radius:100px]',
           '[--spotlight-border-width:1px]',
-          '[--spotlight-border-color-stops:theme(colors.surface-content/50%),theme(colors.surface-content/50%),transparent]',
-          '[--spotlight-surface-color-stops:theme(colors.surface-200),theme(colors.surface-200)]',
+          '[--spotlight-border-color-stops:--var(--color-surface-content/50%),--var(--color-surface-content/50%),transparent]',
+          '[--spotlight-surface-color-stops:var(--color-surface-200),var(--color-surface-200)]',
           'hover:[--spotlight-radius:50px]',
           'hover:[--spotlight-border-width:2px]',
-          'hover:[--spotlight-border-color-stops:theme(colors.primary)_100%,transparent]',
-          'hover:[--spotlight-surface-color-stops:theme(colors.surface-200/90%),theme(colors.surface-200)]'
+          'hover:[--spotlight-border-color-stops:var(--color-primary)_100%,transparent]',
+          'hover:[--spotlight-surface-color-stops:--var(--color-surface-200/90%),var(--color-surface-200)]'
         )}
       >
         {item}
