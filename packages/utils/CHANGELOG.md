@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.8
+
+### Patch Changes
+
+- refactor: Remove `platform` nesting of user agent introspection functions (already nested in `env` export) ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.7
 
 ### Patch Changes
