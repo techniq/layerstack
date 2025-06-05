@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.7
+
+### Patch Changes
+
+- feat: Add `platform` to get details of browser (operating system, etc) ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.6
 
 ### Patch Changes
