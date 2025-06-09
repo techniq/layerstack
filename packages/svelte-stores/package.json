@@ -39,7 +39,6 @@
   "dependencies": {
     "@layerstack/utils": "workspace:*",
     "d3-array": "^3.2.4",
-    "date-fns": "^4.1.0",
     "immer": "^10.1.1",
     "lodash-es": "^4.17.21",
     "zod": "^3.24.3"

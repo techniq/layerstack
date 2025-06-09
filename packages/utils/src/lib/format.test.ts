@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
 import { format } from './format.js';
+import { parseDate } from './date.js';
 import { PeriodType } from './date_types.js';
 import { testDate, testDateStr } from './date.test.js';
-import { parseISO } from 'date-fns';
 
 describe('format()', () => {
   it('returns empty string for null', () => {
@@ -120,7 +120,7 @@ describe('format()', () => {
       expect(actual).equal('11/21/2023');
     });
     it('format based on value type (date)', () => {
-      const actual = format(parseISO(testDateStr));
+      const actual = format(parseDate(testDateStr));
       expect(actual).equal('11/21/2023');
     });
     it('format based on value type (string)', () => {

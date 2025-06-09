@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { subDays, subMonths } from 'date-fns';
-
   import Preview from '$docs/Preview.svelte';
 
   import { Duration, DurationUnits } from '@layerstack/utils';
+  import { intervalOffset } from '@layerstack/utils/date';
 </script>
 
 <h1>Examples</h1>
@@ -13,7 +12,9 @@
 <h3>Date range</h3>
 
 <Preview class="whitespace-pre">
-  <div>{JSON.stringify(new Duration({ start: subDays(new Date(), 3) }), null, 2)}</div>
+  <div>
+    {JSON.stringify(new Duration({ start: intervalOffset('day', new Date(), 3) }), null, 2)}
+  </div>
 </Preview>
 
 <h3>Date range</h3>
@@ -27,9 +28,11 @@
 <h3>Date range</h3>
 
 <Preview>
-  <div>{new Duration({ start: subDays(new Date(), 3) }).format()}</div>
-  <div>{new Duration({ start: subMonths(new Date(), 3) }).format()}</div>
-  <div>{new Duration({ start: subMonths(new Date(), 3) }).format({ variant: 'long' })}</div>
+  <div>{new Duration({ start: intervalOffset('day', new Date(), 3) }).format()}</div>
+  <div>{new Duration({ start: intervalOffset('month', new Date(), 3) }).format()}</div>
+  <div>
+    {new Duration({ start: intervalOffset('month', new Date(), 3) }).format({ variant: 'long' })}
+  </div>
 </Preview>
 
 <h3>string range</h3>

@@ -1,6 +1,13 @@
 // top-level exports
 export { flatten, unique, greatestAbs } from './array.js';
-export { formatDate, getDateFuncsByPeriodType } from './date.js';
+export {
+  formatDate,
+  parseDate,
+  timeInterval,
+  startOfInterval,
+  endOfInterval,
+  getDateFuncsByPeriodType,
+} from './date.js';
 export { PeriodType, DayOfWeek, DateToken } from './date_types.js';
 export * from './date_types.js';
 export * from './dom.js';

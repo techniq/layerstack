@@ -41,7 +41,6 @@
     "@layerstack/utils": "workspace:*",
     "d3-array": "^3.2.4",
     "d3-scale": "^4.0.2",
-    "date-fns": "^4.1.0",
     "lodash-es": "^4.17.21"
   },
   "main": "./dist/index.js",

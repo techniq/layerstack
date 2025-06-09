@@ -35,9 +35,6 @@ importers:
       d3-scale:
         specifier: ^4.0.2
         version: 4.0.2
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -148,9 +145,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -221,9 +215,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -288,9 +279,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -346,9 +334,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -362,6 +347,9 @@ importers:
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
+      '@types/d3-time':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -428,9 +416,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21

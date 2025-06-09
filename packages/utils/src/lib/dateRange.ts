@@ -1,6 +1,12 @@
-import { startOfDay, isLeapYear, isAfter, isBefore, subYears } from 'date-fns';
-
-import { getDateFuncsByPeriodType, updatePeriodTypeWithWeekStartsOn } from './date.js';
+import {
+  getDateFuncsByPeriodType,
+  intervalOffset,
+  isLeapYear,
+  isDateAfter,
+  isDateBefore,
+  startOfInterval,
+  updatePeriodTypeWithWeekStartsOn,
+} from './date.js';
 import { PeriodType } from './date_types.js';
 import type { LocaleSettings } from './locale.js';
 
@@ -34,7 +40,7 @@ export function getDateRangePresets(
   periodType: PeriodType
 ): { label: string; value: DateRange }[] {
   let now = new Date();
-  const today = startOfDay(now);
+  const today = startOfInterval('day', now);
 
   if (settings) {
     periodType =
@@ -201,12 +207,12 @@ export function getPreviousYearPeriodOffset(
       // if year before reference date is a leap year and is before 2/29
       const adjustForLeapYear = options?.referenceDate
         ? (isLeapYear(options?.referenceDate) &&
-            isAfter(
+            isDateAfter(
               options?.referenceDate,
               new Date(options?.referenceDate.getFullYear(), /*Feb*/ 1, 28)
             )) ||
-          (isLeapYear(subYears(options?.referenceDate, 1)) &&
-            isBefore(
+          (isLeapYear(intervalOffset('year', options?.referenceDate, -1)) &&
+            isDateBefore(
               options?.referenceDate,
               new Date(options?.referenceDate.getFullYear(), /*Feb*/ 1, 29)
             ))
@@ -269,7 +275,8 @@ export function getPeriodComparisonOffset(
   switch (view) {
     case 'prevPeriod':
       const dateFuncs = getDateFuncsByPeriodType(settings, period.periodType);
-      return dateFuncs.difference(period.from, period.to) - 1; // Difference counts full days, need additoinal offset
+      // return dateFuncs.difference(period.from, period.to) - 1; // Difference counts full days, need additional offset
+      return dateFuncs.difference(period.to, period.from); // Difference counts full days, need additional offset
 
     case 'prevYear':
       return getPreviousYearPeriodOffset(period.periodType, {

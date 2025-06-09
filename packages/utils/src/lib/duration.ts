@@ -1,4 +1,4 @@
-import { parseISO } from 'date-fns';
+import { parseDate } from './date.js';
 
 export type DurationOption = {
   milliseconds?: number;
@@ -33,8 +33,8 @@ export class Duration {
       duration?: DurationOption;
     } = {}
   ) {
-    const startDate = typeof options.start === 'string' ? parseISO(options.start) : options.start;
-    const endDate = typeof options.end === 'string' ? parseISO(options.end) : options.end;
+    const startDate = typeof options.start === 'string' ? parseDate(options.start) : options.start;
+    const endDate = typeof options.end === 'string' ? parseDate(options.end) : options.end;
 
     const differenceInMs = startDate
       ? Math.abs(Number(endDate || new Date()) - Number(startDate))

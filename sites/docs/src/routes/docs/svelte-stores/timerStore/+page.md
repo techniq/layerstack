@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { subDays, subMonths } from 'date-fns';
-
 	import { Switch } from 'svelte-ux';
 	import { timerStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';

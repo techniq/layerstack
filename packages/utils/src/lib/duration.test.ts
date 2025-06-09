@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { Duration, DurationUnits } from './duration.js';
-import { subDays } from 'date-fns';
+import { intervalOffset } from './date.js';
 
 describe('Duration', () => {
   it('default', () => {
@@ -35,7 +35,7 @@ describe('Duration', () => {
   });
 
   it('start-only should use `now` for end', () => {
-    const start = subDays(new Date(), 10);
+    const start = intervalOffset('day', new Date(), -10);
     const actual = new Duration({ start });
     expect(actual.years).equal(0);
     expect(actual.days).equal(10);
