@@ -17,7 +17,7 @@ import {
   timeFriday,
   timeSaturday,
 } from 'd3-time';
-import { timeParse } from 'd3-time-format';
+import { timeFormat, timeParse } from 'd3-time-format';
 import { min, max } from 'd3-array';
 
 import { hasKeyOf } from './typeGuards.js';
@@ -621,10 +621,33 @@ function range(
 
 export function formatDate(
   date: Date | string | null | undefined,
-  periodType: PeriodType | PeriodTypeCode,
+  periodOrFormat: PeriodType | PeriodTypeCode | string,
   options: FormatDateOptions = {}
 ): string {
-  return formatDateWithLocale(defaultLocale, date, periodType, options);
+  if (typeof periodOrFormat === 'string' && !getPeriodTypeByCode(periodOrFormat as any)) {
+    if (!date) {
+      return '';
+    } else if (typeof date === 'string') {
+      // If periodOrFormat is string, treat as unicode/strftime format
+      date = parseDate(date);
+    }
+
+    let strftimeFormat = periodOrFormat;
+    if (!periodOrFormat.includes('%')) {
+      // Unicode format, convert to strftime format
+      strftimeFormat = convertUnicodeToStrftime(periodOrFormat);
+      // console.log({ periodOrFormat, strftimeFormat });
+    }
+
+    return timeFormat(strftimeFormat)(date);
+  }
+
+  return formatDateWithLocale(
+    defaultLocale,
+    date,
+    periodOrFormat as PeriodType | PeriodTypeCode,
+    options
+  );
 }
 
 export function updatePeriodTypeWithWeekStartsOn(
@@ -885,16 +908,16 @@ export function isStringDateWithTimezone(value: string) {
  * @returns A Date object
  */
 export function parseDate(dateStr: string, format?: string) {
+  // If format is provided, use it to parse the date string
   if (format) {
-    if (format.includes('%')) {
-      // strftime format
-      return timeParse(format)(dateStr) ?? new Date('Invalid Date');
-    } else {
+    let strftimeFormat = format;
+    if (!format.includes('%')) {
       // Unicode format, convert to strftime format
-      const strftimeFormat = convertUnicodeToStrftime(format);
-      console.log({ format, strftimeFormat });
-      return timeParse(strftimeFormat)(dateStr) ?? new Date('Invalid Date');
+      strftimeFormat = convertUnicodeToStrftime(format);
+      // console.log({ format, strftimeFormat });
     }
+
+    return timeParse(strftimeFormat)(dateStr) ?? new Date('Invalid Date');
   }
 
   if (!isStringDate(dateStr)) return new Date('Invalid Date');
