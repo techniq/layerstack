@@ -6,6 +6,13 @@ export {
   timeInterval,
   startOfInterval,
   endOfInterval,
+  intervalOffset,
+  isSameInterval,
+  intervalDifference,
+  isLeapYear,
+  isDateBefore,
+  isDateAfter,
+  isDateWithin,
   getDateFuncsByPeriodType,
 } from './date.js';
 export { PeriodType, DayOfWeek, DateToken } from './date_types.js';
