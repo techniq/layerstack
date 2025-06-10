@@ -1296,6 +1296,39 @@ describe('parseDate()', () => {
   it('invalid date string', () => {
     expect(parseDate('some_string')).toEqual(new Date('Invalid Date'));
   });
+
+  describe('strftime format', () => {
+    test.each([
+      ['2023-03-07', '%Y-%m-%d', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/2023', '%m/%d/%Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/2023', '%m/%d/%Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/23', '%m/%d/%y', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/23', '%m/%d/%y', new Date('2023-03-07T04:00:00.000Z')],
+      ['Monday, March 7, 2023', '%A, %B %d, %Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['11:25:59', '%H:%M:%S', new Date('1900-01-01T15:25:59.000Z')],
+      ['2:30 PM', '%I:%M %p', new Date('1900-01-01T18:30:00.000Z')],
+      ['2023-03-07 14:30:45', '%Y-%m-%d %H:%M:%S', new Date('2023-03-07T18:30:45.000Z')],
+      ['2023-03-07 14:30:45 -07:00', '%Y-%m-%d %H:%M:%S %Z', new Date('2023-03-07T21:30:45.000Z')],
+    ])('parseDate(%s, %s) => %s', (date, format, expected) => {
+      expect(parseDate(date, format)).toEqual(expected);
+    });
+  });
+
+  describe('Unicode format', () => {
+    test.each([
+      ['2023-03-07', 'yyyy-MM-dd', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/2023', 'M/d/yyyy', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/2023', 'MM/dd/yyyy', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/23', 'M/d/yy', new Date('2023-03-07T04:00:00.000Z')],
+      ['Monday, December 25, 2023', 'EEEE, MMMM dd, yyyy', new Date('2023-12-25T04:00:00.000Z')],
+      ['11:25:59', 'HH:mm:ss', new Date('1900-01-01T15:25:59.000Z')],
+      ['2:30 PM', 'hh:mm a', new Date('1900-01-01T18:30:00.000Z')],
+      ['2023-03-07 14:30:45', 'yyyy-MM-dd HH:mm:ss', new Date('2023-03-07T18:30:45.000Z')],
+      ['2023-03-07 14:30:45 -07:00', 'yyyy-MM-dd HH:mm:ss z', new Date('2023-03-07T21:30:45.000Z')],
+    ])('parseDate(%s, %s) => %s', (date, format, expected) => {
+      expect(parseDate(date, format)).toEqual(expected);
+    });
+  });
 });
 
 describe('timeInterval()', () => {

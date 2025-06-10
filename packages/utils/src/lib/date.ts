@@ -17,6 +17,7 @@ import {
   timeFriday,
   timeSaturday,
 } from 'd3-time';
+import { timeParse } from 'd3-time-format';
 import { min, max } from 'd3-array';
 
 import { hasKeyOf } from './typeGuards.js';
@@ -35,6 +36,7 @@ import {
   type TimeIntervalType,
 } from './date_types.js';
 import { defaultLocale, type LocaleSettings } from './locale.js';
+import { convertUnicodeToStrftime } from './dateInternal.js';
 
 export * from './date_types.js';
 
@@ -875,16 +877,34 @@ export function isStringDateWithTimezone(value: string) {
   return isStringDateWithTime(value) && /Z$|[+-]\d{2}:\d{2}$/.test(value);
 }
 
-/** Parse a date string as a local Date if no timezone is specified */
-export function parseDate(datestr: string) {
-  if (!isStringDate(datestr)) return new Date('Invalid Date');
-
-  if (isStringDateWithTime(datestr)) {
-    // Respect timezone.  Also parses unqualified strings like '1982-03-30T04:00' as local date
-    return new Date(datestr);
+/** Parse a date string as a local Date if no timezone is specified
+ * @param dateStr - The date string to parse
+ * @param format - The format of the date string. If not provided, expects ISO 8601 format.
+ *   - If provided, will use the format to parse the date string.
+ *   - Supports Unicode or strftime date format strings, but will be converted to applicable strftime format before parsing.
+ * @returns A Date object
+ */
+export function parseDate(dateStr: string, format?: string) {
+  if (format) {
+    if (format.includes('%')) {
+      // strftime format
+      return timeParse(format)(dateStr) ?? new Date('Invalid Date');
+    } else {
+      // Unicode format, convert to strftime format
+      const strftimeFormat = convertUnicodeToStrftime(format);
+      console.log({ format, strftimeFormat });
+      return timeParse(strftimeFormat)(dateStr) ?? new Date('Invalid Date');
+    }
   }
 
-  const [date, time] = datestr.split('T');
+  if (!isStringDate(dateStr)) return new Date('Invalid Date');
+
+  if (isStringDateWithTime(dateStr)) {
+    // Respect timezone.  Also parses unqualified strings like '1982-03-30T04:00' as local date
+    return new Date(dateStr);
+  }
+
+  const [date, time] = dateStr.split('T');
   const [year, month, day] = date.split('-').map(Number);
 
   if (time) {
