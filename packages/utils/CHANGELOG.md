@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.10
+
+### Patch Changes
+
+- fix: Add more date utils to top-level exports including `intervalOffset`, `intervalDifference`, `isSameInterval`, `isDateWithin`, and more ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.9
 
 ### Patch Changes
