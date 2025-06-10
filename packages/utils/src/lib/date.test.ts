@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, test } from 'vitest';
 import {
   formatDate,
   getMonthDaysByWeek,
@@ -12,6 +12,15 @@ import {
   hasDayOfWeek,
   replaceDayOfWeek,
   isStringDate,
+  timeInterval,
+  startOfInterval,
+  endOfInterval,
+  parseDate,
+  intervalOffset,
+  isSameInterval,
+  intervalDifference,
+  isLeapYear,
+  isDateWithin,
 } from './date.js';
 import { createLocaleSettings, defaultLocale, LocaleSettings } from './locale.js';
 import {
@@ -21,12 +30,23 @@ import {
   type CustomIntlDateTimeFormatOptions,
   DateToken,
   PeriodTypeCode,
+  TimeIntervalType,
 } from './date_types.js';
 import { getWeekStartsOnFromIntl } from './dateInternal.js';
-import { parseISO } from 'date-fns';
+import {
+  timeDay,
+  timeHour,
+  timeMillisecond,
+  timeMinute,
+  timeMonth,
+  timeYear,
+  timeSecond,
+  timeWeek,
+} from 'd3-time';
 
 export const testDateStr = '2023-11-21'; // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
-export const testDate = parseISO('2023-11-21'); // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+export const testDate = parseDate('2023-11-21'); // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+
 const dt_2M_2d = new Date(2023, 10, 21);
 const dt_2M_1d = new Date(2023, 10, 7);
 const dt_1M_1d = new Date(2023, 2, 7);
@@ -1234,5 +1254,194 @@ describe('isStringDate()', () => {
 
   it('date with time with 7 digit milliseconds (UTC)', () => {
     expect(isStringDate('1982-03-30T11:25:59.1234567Z')).true;
+  });
+});
+
+describe('parseDate()', () => {
+  it('date only as locale date', () => {
+    expect(parseDate('1982-03-30')).toEqual(new Date('1982-03-30T04:00:00.000Z'));
+  });
+
+  it('date and time only (hour/minute) as locale date', () => {
+    expect(parseDate('1982-03-30T04:00')).toEqual(new Date('1982-03-30T08:00:00.000Z'));
+  });
+
+  it('date and time only (hour/minute/second) as locale date', () => {
+    expect(parseDate('1982-03-30T04:00:00')).toEqual(new Date('1982-03-30T08:00:00.000Z'));
+  });
+
+  it('should not equal UTC date', () => {
+    // Just an extra check
+    expect(parseDate('1982-03-30')).not.toEqual(new Date('1982-03-30'));
+  });
+
+  it('date with timezome (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59Z')).toEqual(new Date('1982-03-30T11:25:59Z'));
+  });
+
+  it('date with time (offset)', () => {
+    expect(parseDate('1982-03-30T00:00:00-01:00')).toEqual(new Date('1982-03-30T00:00:00-01:00'));
+  });
+
+  it('date with time and 3 digit milliseconds (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59.123Z')).toEqual(new Date('1982-03-30T11:25:59.123Z'));
+  });
+
+  it('date with time with 7 digit milliseconds (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59.1234567Z')).toEqual(
+      new Date('1982-03-30T11:25:59.1234567Z')
+    );
+  });
+
+  it('invalid date string', () => {
+    expect(parseDate('some_string')).toEqual(new Date('Invalid Date'));
+  });
+});
+
+describe('timeInterval()', () => {
+  test.each([
+    ['millisecond', timeMillisecond],
+    ['second', timeSecond],
+    ['minute', timeMinute],
+    ['hour', timeHour],
+    ['day', timeDay],
+    ['week', timeWeek],
+    ['month', timeMonth],
+    // ['quarter', timeMonth.every(3)], // TODO: how to verify this?
+    ['year', timeYear],
+  ])('timeInterval(%s) => %s', (interval, expected) => {
+    expect(timeInterval(interval as TimeIntervalType)).toEqual(expected);
+  });
+});
+
+describe('startOfInterval()', () => {
+  test.each([
+    ['millisecond', '2023-03-07T14:02:03.004'],
+    ['second', '2023-03-07T14:02:03'],
+    ['minute', '2023-03-07T14:02'],
+    ['hour', '2023-03-07T14:00:00.000'],
+    ['day', '2023-03-07'],
+    ['week', '2023-03-05'],
+    ['month', '2023-03-01'],
+    ['quarter', '2023-01-01'],
+    ['year', '2023-01-01'],
+  ])('startOfInterval(%s, %s) => %s', (interval, expected) => {
+    expect(startOfInterval(interval as TimeIntervalType, dt_1M_1d_time_pm)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('endOfInterval()', () => {
+  test.each([
+    ['millisecond', '2023-03-07T14:02:03.004'],
+    ['second', '2023-03-07T14:02:03.999'],
+    ['minute', '2023-03-07T14:02:59.999'],
+    ['hour', '2023-03-07T14:59:59.999'],
+    ['day', '2023-03-07T23:59:59.999'],
+    ['week', '2023-03-11T23:59:59.999'],
+    ['month', '2023-03-31T23:59:59.999'],
+    ['quarter', '2023-03-31T23:59:59.999'],
+    ['year', '2023-12-31T23:59:59.999'],
+  ])('endOfInterval(%s, %s) => %s', (interval, expected) => {
+    expect(endOfInterval(interval as TimeIntervalType, dt_1M_1d_time_pm)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('intervalOffset()', () => {
+  test.each([
+    ['millisecond', 1, '2023-11-21T04:00:00.001Z'],
+    ['millisecond', -1, '2023-11-21T03:59:59.999Z'],
+    ['second', 1, '2023-11-21T04:00:01Z'],
+    ['second', -1, '2023-11-21T03:59:59Z'],
+    ['minute', 1, '2023-11-21T04:01:00Z'],
+    ['minute', -1, '2023-11-21T03:59:00Z'],
+    ['hour', 1, '2023-11-21T05:00:00Z'],
+    ['hour', -1, '2023-11-21T03:00:00Z'],
+    ['day', 1, '2023-11-22'],
+    ['day', -1, '2023-11-20'],
+    ['week', 1, '2023-11-28'],
+    ['week', -1, '2023-11-14'],
+    ['month', 1, '2023-12-21'],
+    ['month', -1, '2023-10-21'],
+    ['quarter', 1, '2024-02-01'],
+    ['quarter', -1, '2023-08-01'],
+    ['year', 1, '2024-11-21'],
+    ['year', -1, '2022-11-21'],
+  ])('intervalOffset(%s, %s, %s) => %s', (interval, offset, expected) => {
+    expect(intervalOffset(interval as TimeIntervalType, testDate, offset)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('isSameInterval()', () => {
+  test.each([
+    ['day', '2023-03-07T00:00', '2023-03-07T23:59', true],
+    ['day', '2023-03-07T11:00', '2023-03-08T12:00', false],
+    ['week', '2023-03-07', '2023-03-08', true],
+    ['week', '2023-03-07', '2023-03-14', false],
+    ['month', '2023-03-07', '2023-03-30', true],
+    ['month', '2023-03-07', '2023-04-07', false],
+    ['quarter', '2023-03-07', '2023-01-07', true],
+    ['quarter', '2023-03-07', '2023-04-07', false],
+    ['year', '2023-03-07', '2023-11-21', true],
+    ['year', '2023-03-07', '2024-03-07', false],
+  ])('isSameInterval(%s, %s, %s) => %s', (interval, date1, date2, expected) => {
+    expect(isSameInterval(interval as TimeIntervalType, parseDate(date1), parseDate(date2))).toBe(
+      expected
+    );
+  });
+});
+
+describe('intervalDifference()', () => {
+  test.each([
+    ['day', '2023-03-07T00:00', '2023-03-07T23:59', 0], // Same day
+    ['day', '2023-03-07', '2023-03-08', 1], // Next day
+    ['day', '2023-01-01', '2023-12-31', 364], // Full year
+    ['day', '2023-01-01', '2024-01-01', 365], // Next year
+    ['week', '2023-03-05', '2023-03-11', 0], // Same week
+    ['week', '2023-03-07', '2023-03-14', 1], // Next week
+    ['month', '2023-01-01', '2023-01-31', 0], // Same month
+    ['month', '2023-01-01', '2023-02-01', 1], // Next month
+    ['quarter', '2023-01-01', '2023-03-31', 0], // Same quarter
+    ['quarter', '2023-01-01', '2023-04-01', 1], // Next quarter
+    ['year', '2023-01-01', '2023-12-31', 0], // Same year
+    ['year', '2023-01-01', '2024-01-01', 1], // Next year
+  ])('intervalDifference(%s, %s, %s) => %s', (interval, date1, date2, expected) => {
+    expect(
+      intervalDifference(interval as TimeIntervalType, parseDate(date1), parseDate(date2))
+    ).toEqual(expected);
+  });
+});
+
+describe('isLeapYear()', () => {
+  test.each([
+    ['2020-01-01', true],
+    ['2021-01-01', false],
+    ['2022-01-01', false],
+    ['2023-01-01', false],
+    ['2024-01-01', true],
+  ])('isLeapYear(%s) => %s', (date, expected) => {
+    expect(isLeapYear(parseDate(date))).toBe(expected);
+  });
+});
+
+describe('isDateWithin()', () => {
+  test.each([
+    ['2023-03-07', '2023-03-06', '2023-03-08', true], // between
+    ['2023-03-07', '2023-03-07', '2023-03-08', true], // match start
+    ['2023-03-07', '2023-03-06', '2023-03-07', true], // match end
+    ['2023-03-07', '2023-03-08', '2023-03-09', false], // outside start
+    ['2023-03-07', '2023-03-05', '2023-03-06', false], // outside end
+  ])('isDateWithin(%s, %s) => %s', (date, start, end, expected) => {
+    expect(
+      isDateWithin(parseDate(date), {
+        start: parseDate(start),
+        end: parseDate(end),
+      })
+    ).toBe(expected);
   });
 });

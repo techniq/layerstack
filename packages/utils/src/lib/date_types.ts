@@ -94,6 +94,17 @@ export const periodTypeMappings = {
 
 export type PeriodTypeCode = ValueOf<typeof periodTypeMappings>;
 
+export type TimeIntervalType =
+  | 'millisecond'
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'quarter'
+  | 'year';
+
 export enum DayOfWeek {
   Sunday = 0,
   Monday = 1,
