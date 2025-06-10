@@ -1056,6 +1056,6 @@ export function isDateAfter(date1: Date, date2: Date) {
 }
 
 /** Check if date is within interval */
-export function isDateWithin(date: Date, interval: { start: Date; end: Date }) {
-  return date.getTime() >= interval.start.getTime() && date.getTime() <= interval.end.getTime();
+export function isDateWithin(date: Date, range: { start: Date; end: Date }) {
+  return date.getTime() >= range.start.getTime() && date.getTime() <= range.end.getTime();
 }
