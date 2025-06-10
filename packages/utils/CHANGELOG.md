@@ -1,5 +1,13 @@
 # @layerstack/utils
 
+## 2.0.0-next.9
+
+### Patch Changes
+
+- refactor: Replace `date-fns` usage with new date utils (based on d3-time) to reduce bundle size ([#71](https://github.com/techniq/layerstack/pull/71))
+
+- feat: Add new date utils including `parseDate`, `timeInterval`, `startOfInterval`, `endOfInterval`, `intervalOffset`, and more ([#71](https://github.com/techniq/layerstack/pull/71))
+
 ## 2.0.0-next.8
 
 ### Patch Changes

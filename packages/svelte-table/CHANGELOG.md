@@ -1,5 +1,15 @@
 # @layerstack/svelte-table
 
+## 1.0.1-next.9
+
+### Patch Changes
+
+- refactor: Replace `date-fns` usage with new date utils (based on d3-time) to reduce bundle size ([#71](https://github.com/techniq/layerstack/pull/71))
+
+- Updated dependencies [[`abd845a`](https://github.com/techniq/layerstack/commit/abd845a53b4b1cdc3a61a6503b6cb4fd144d35a5), [`abd845a`](https://github.com/techniq/layerstack/commit/abd845a53b4b1cdc3a61a6503b6cb4fd144d35a5)]:
+  - @layerstack/svelte-actions@1.0.1-next.9
+  - @layerstack/utils@2.0.0-next.9
+
 ## 1.0.1-next.8
 
 ### Patch Changes
