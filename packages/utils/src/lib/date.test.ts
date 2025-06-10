@@ -20,6 +20,7 @@ import {
   isSameInterval,
   intervalDifference,
   isLeapYear,
+  isDateWithin,
 } from './date.js';
 import { createLocaleSettings, defaultLocale, LocaleSettings } from './locale.js';
 import {
@@ -1425,5 +1426,22 @@ describe('isLeapYear()', () => {
     ['2024-01-01', true],
   ])('isLeapYear(%s) => %s', (date, expected) => {
     expect(isLeapYear(parseDate(date))).toBe(expected);
+  });
+});
+
+describe('isDateWithin()', () => {
+  test.each([
+    ['2023-03-07', '2023-03-06', '2023-03-08', true], // between
+    ['2023-03-07', '2023-03-07', '2023-03-08', true], // match start
+    ['2023-03-07', '2023-03-06', '2023-03-07', true], // match end
+    ['2023-03-07', '2023-03-08', '2023-03-09', false], // outside start
+    ['2023-03-07', '2023-03-05', '2023-03-06', false], // outside end
+  ])('isDateWithin(%s, %s) => %s', (date, start, end, expected) => {
+    expect(
+      isDateWithin(parseDate(date), {
+        start: parseDate(start),
+        end: parseDate(end),
+      })
+    ).toBe(expected);
   });
 });
