@@ -1,5 +1,13 @@
 # @layerstack/utils
 
+## 2.0.0-next.11
+
+### Patch Changes
+
+- feat(formatDate): Support second argument as explicit `format` string accepting both `Unicode` and `strftime` formats (converting `Unicode` to `strftime`) while still supporting period type string/enum. ([#74](https://github.com/techniq/layerstack/pull/74))
+
+- feat(parseDate): Support optional `format` argument accepting both `Unicode` and `strftime` formats (converting `Unicode` to `strftime`) ([#74](https://github.com/techniq/layerstack/pull/74))
+
 ## 2.0.0-next.10
 
 ### Patch Changes
