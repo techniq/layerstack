@@ -21,9 +21,7 @@
     "@sveltejs/kit": "^2.21.0",
     "@sveltejs/package": "^2.3.11",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@types/d3-array": "^3.2.1",
     "@types/lodash-es": "^4.17.12",
-    "@vitest/coverage-v8": "^3.1.2",
     "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.3.3",
     "rimraf": "6.0.1",
@@ -38,7 +36,6 @@
   "type": "module",
   "dependencies": {
     "@layerstack/utils": "workspace:*",
-    "d3-array": "^3.2.4",
     "immer": "^10.1.1",
     "lodash-es": "^4.17.21",
     "zod": "^3.24.3"
