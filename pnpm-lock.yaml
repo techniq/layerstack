@@ -252,9 +252,6 @@ importers:
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.3.0
-      tailwindcss:
-        specifier: ^4.1.5
-        version: 4.1.6
     devDependencies:
       '@skeletonlabs/tw-plugin':
         specifier: ^0.4.1
@@ -283,6 +280,9 @@ importers:
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
+      tailwindcss:
+        specifier: ^4.1.5
+        version: 4.1.6
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
