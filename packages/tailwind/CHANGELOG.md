@@ -1,5 +1,16 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.14
+
+### Patch Changes
+
+- fix: Change `culori` dep to devDependencies (only used for generation and not runtime) ([#79](https://github.com/techniq/layerstack/pull/79))
+
+- fix: Change `tailwindcss` dep to devDependecies ([#79](https://github.com/techniq/layerstack/pull/79))
+
+- Updated dependencies [[`49ccf88`](https://github.com/techniq/layerstack/commit/49ccf8863b5f6402eb4caa72b53380611ae80ad1), [`1ebd4db`](https://github.com/techniq/layerstack/commit/1ebd4db5b1fb3d3d820312aa1aa5a84d7926200e)]:
+  - @layerstack/utils@2.0.0-next.12
+
 ## 2.0.0-next.13
 
 ### Patch Changes
