@@ -1,4 +1,4 @@
-import { isFunction, get } from 'lodash-es';
+import { get } from 'lodash-es';
 
 import { PeriodType, parseDate } from '@layerstack/utils';
 
@@ -99,7 +99,7 @@ export function getCellHeader(column: ColumnDef) {
 
 export function getCellValue(column: ColumnDef, rowData: any, rowIndex?: number) {
   let value = undefined;
-  if (isFunction(column.value)) {
+  if (typeof column.value === 'function') {
     value = column.value?.(rowData, rowIndex);
   }
 
@@ -109,7 +109,7 @@ export function getCellValue(column: ColumnDef, rowData: any, rowIndex?: number)
 
   if (
     typeof value === 'string' &&
-    !isFunction(column.format) &&
+    typeof column.format !== 'function' &&
     (column.format ?? 'none') in PeriodType
   ) {
     // Convert date string to Date instance
