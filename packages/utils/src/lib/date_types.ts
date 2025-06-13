@@ -1,4 +1,5 @@
 import type { DateRange } from './dateRange.js';
+import { ValueOf } from './typeHelpers.js';
 
 export type SelectedDate = Date | Date[] | DateRange | null | undefined;
 
@@ -50,6 +51,59 @@ export enum PeriodType {
   BiWeek2Fri = 86,
   BiWeek2Sat = 87,
 }
+
+export const periodTypeMappings = {
+  [PeriodType.Custom]: 'custom',
+  [PeriodType.Day]: 'day',
+  [PeriodType.DayTime]: 'daytime',
+  [PeriodType.TimeOnly]: 'time',
+
+  [PeriodType.WeekSun]: 'week-sun',
+  [PeriodType.WeekMon]: 'week-mon',
+  [PeriodType.WeekTue]: 'week-tue',
+  [PeriodType.WeekWed]: 'week-wed',
+  [PeriodType.WeekThu]: 'week-thu',
+  [PeriodType.WeekFri]: 'week-fri',
+  [PeriodType.WeekSat]: 'week-sat',
+  [PeriodType.Week]: 'week',
+
+  [PeriodType.Month]: 'month',
+  [PeriodType.MonthYear]: 'month-year',
+  [PeriodType.Quarter]: 'quarter',
+  [PeriodType.CalendarYear]: 'year',
+  [PeriodType.FiscalYearOctober]: 'fiscal-year-october',
+
+  [PeriodType.BiWeek1Sun]: 'biweek1-sun',
+  [PeriodType.BiWeek1Mon]: 'biweek1-mon',
+  [PeriodType.BiWeek1Tue]: 'biweek1-tue',
+  [PeriodType.BiWeek1Wed]: 'biweek1-wed',
+  [PeriodType.BiWeek1Thu]: 'biweek1-thu',
+  [PeriodType.BiWeek1Fri]: 'biweek1-fri',
+  [PeriodType.BiWeek1Sat]: 'biweek1-sat',
+  [PeriodType.BiWeek1]: 'biweek1',
+
+  [PeriodType.BiWeek2Sun]: 'biweek2-sun',
+  [PeriodType.BiWeek2Mon]: 'biweek2-mon',
+  [PeriodType.BiWeek2Tue]: 'biweek2-tue',
+  [PeriodType.BiWeek2Wed]: 'biweek2-wed',
+  [PeriodType.BiWeek2Thu]: 'biweek2-thu',
+  [PeriodType.BiWeek2Fri]: 'biweek2-fri',
+  [PeriodType.BiWeek2Sat]: 'biweek2-sat',
+  [PeriodType.BiWeek2]: 'biweek2',
+} as const;
+
+export type PeriodTypeCode = ValueOf<typeof periodTypeMappings>;
+
+export type TimeIntervalType =
+  | 'millisecond'
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'quarter'
+  | 'year';
 
 export enum DayOfWeek {
   Sunday = 0,

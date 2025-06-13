@@ -1,5 +1,4 @@
-import { parseISO } from 'date-fns';
-import { isStringDate } from './date.js';
+import { isStringDate, parseDate } from './date.js';
 
 /**
  *  JSON.stringify() with custom handling for `Map` and `Set`.  To be used with `parse()`
@@ -43,7 +42,7 @@ export function parse<T = any>(value: string): T {
  */
 export function reviver(key: string, value: any) {
   if (typeof value === 'string' && isStringDate(value)) {
-    return parseISO(value);
+    return parseDate(value);
   } else if (typeof value === 'object' && value !== null) {
     if (value._type === 'Map') {
       return new Map(value.value);

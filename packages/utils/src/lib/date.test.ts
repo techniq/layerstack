@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, test } from 'vitest';
 import {
   formatDate,
   getMonthDaysByWeek,
@@ -12,19 +12,41 @@ import {
   hasDayOfWeek,
   replaceDayOfWeek,
   isStringDate,
+  timeInterval,
+  startOfInterval,
+  endOfInterval,
+  parseDate,
+  intervalOffset,
+  isSameInterval,
+  intervalDifference,
+  isLeapYear,
+  isDateWithin,
 } from './date.js';
-import { formatWithLocale } from './format.js';
-import { createLocaleSettings, defaultLocale } from './locale.js';
+import { createLocaleSettings, defaultLocale, LocaleSettings } from './locale.js';
 import {
   PeriodType,
   type FormatDateOptions,
   DayOfWeek,
   type CustomIntlDateTimeFormatOptions,
   DateToken,
+  PeriodTypeCode,
+  TimeIntervalType,
 } from './date_types.js';
 import { getWeekStartsOnFromIntl } from './dateInternal.js';
+import {
+  timeDay,
+  timeHour,
+  timeMillisecond,
+  timeMinute,
+  timeMonth,
+  timeYear,
+  timeSecond,
+  timeWeek,
+} from 'd3-time';
 
-export const testDate = '2023-11-21'; // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+export const testDateStr = '2023-11-21'; // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+export const testDate = parseDate('2023-11-21'); // "good" default date as the day (21) is bigger than 12 (number of months). And november is a good month1 (because why not?)
+
 const dt_2M_2d = new Date(2023, 10, 21);
 const dt_2M_1d = new Date(2023, 10, 7);
 const dt_1M_1d = new Date(2023, 2, 7);
@@ -57,21 +79,723 @@ describe('formatDate()', () => {
     expect(formatDate('invalid date')).equal('');
   });
 
-  describe('should format date for PeriodType.Day', () => {
-    const localDate = new Date(2023, 10, 21);
-    const cases = [
-      ['short', defaultLocale, '11/21'],
-      ['short', fr, '21/11'],
-      ['long', defaultLocale, 'Nov 21, 2023'],
-      ['long', fr, '21 nov. 2023'],
+  it('should allow formatting with PeriodType', () => {
+    expect(formatDate(testDate, PeriodType.Day)).equal('11/21/2023');
+  });
+
+  it('should allow formatting with PeriodTypeCode', () => {
+    expect(formatDate(testDate, 'day')).equal('11/21/2023');
+  });
+
+  describe('strftime format', () => {
+    test.each([
+      [new Date('2023-03-07T04:00:00.000Z'), '%Y-%m-%d', '2023-03-07'],
+      // [new Date('2023-03-07T04:00:00.000Z'), '%m/%d/%Y', '3/7/2023'], // Not suported
+      [new Date('2023-03-07T04:00:00.000Z'), '%m/%d/%Y', '03/07/2023'],
+      [new Date('2023-03-07T04:00:00.000Z'), '%m/%d/%y', '03/07/23'],
+      [new Date('2023-03-07T04:00:00.000Z'), '%A, %B %d, %Y', 'Tuesday, March 07, 2023'],
+      [new Date('1900-01-01T15:25:59.000Z'), '%H:%M:%S', '11:25:59'],
+      [new Date('1900-01-01T18:30:00.000Z'), '%I:%M %p', '02:30 PM'],
+      [new Date('2023-03-07T18:30:45.000Z'), '%Y-%m-%d %H:%M:%S', '2023-03-07 14:30:45'],
+      [new Date('2023-03-07T21:30:45.000Z'), '%Y-%m-%d %H:%M:%S %Z', '2023-03-07 17:30:45 -0400'],
+    ])('formatDate(%s, %s) => %s', (date, format, expected) => {
+      expect(formatDate(date, format)).toEqual(expected);
+    });
+  });
+
+  describe('Unicode format', () => {
+    test.each([
+      [new Date('2023-03-07T04:00:00.000Z'), 'yyyy-MM-dd', '2023-03-07'],
+      // [new Date('2023-03-07T04:00:00.000Z'), 'M/d/yyyy', '3/7/2023'], // Not suported
+      [new Date('2023-03-07T04:00:00.000Z'), 'MM/dd/yyyy', '03/07/2023'],
+      [new Date('2023-03-07T04:00:00.000Z'), 'M/d/yy', '03/07/23'],
+      [new Date('2023-03-07T04:00:00.000Z'), 'EEEE, MMMM dd, yyyy', 'Tuesday, March 07, 2023'],
+      [new Date('1900-01-01T15:25:59.000Z'), 'HH:mm:ss', '11:25:59'],
+      [new Date('1900-01-01T18:30:00.000Z'), 'hh:mm a', '02:30 PM'],
+      [new Date('2023-03-07T18:30:45.000Z'), 'yyyy-MM-dd HH:mm:ss', '2023-03-07 14:30:45'],
+      [new Date('2023-03-07T21:30:45.000Z'), 'yyyy-MM-dd HH:mm:ss z', '2023-03-07 17:30:45 -0400'],
+    ])('formatDate(%s, %s) => %s', (date, format, expected) => {
+      expect(formatDate(date, format)).toEqual(expected);
+    });
+  });
+});
+
+describe('formatDateWithLocale()', () => {
+  describe('PeriodType', () => {
+    const cases: [PeriodType, FormatDateOptions, Date, [LocaleSettings, string][]][] = [
+      // PeriodType.Day
+      [
+        PeriodType.Day,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/21'],
+          [fr, '21/11'],
+        ],
+      ],
+      [
+        PeriodType.Day,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/21/2023'],
+          [fr, '21/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.Day,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 21, 2023'],
+          [fr, '21 nov. 2023'],
+        ],
+      ],
+      // PeriodType.DayTime
+      [
+        PeriodType.DayTime,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 2:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        PeriodType.DayTime,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        PeriodType.DayTime,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02:03 PM'],
+          [fr, '07/03/2023 14:02:03'],
+        ],
+      ],
+      // PeriodType.TimeOnly
+      [
+        PeriodType.TimeOnly,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        PeriodType.TimeOnly,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        PeriodType.TimeOnly,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      // PeriodType.WeekSun / Mon
+      [
+        PeriodType.WeekSun,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '19/11 - 25/11'],
+        ],
+      ],
+      [
+        PeriodType.WeekSun,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.WeekSun,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.WeekMon,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/20/2023 - 11/26/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // PeriodType.Week
+      [
+        PeriodType.Week,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '20/11 - 26/11'],
+        ],
+      ],
+      [
+        PeriodType.Week,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.Week,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // PeriodType.Month
+      [
+        PeriodType.Month,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov'],
+          [fr, 'nov.'],
+        ],
+      ],
+      [
+        PeriodType.Month,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November'],
+          [fr, 'novembre'],
+        ],
+      ],
+      [
+        PeriodType.Month,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      // PeriodType.MonthYear
+      [
+        PeriodType.MonthYear,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 23'],
+          [fr, 'nov. 23'],
+        ],
+      ],
+      [
+        PeriodType.MonthYear,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      [
+        PeriodType.MonthYear,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+
+      // PeriodType.Quarter
+      [
+        PeriodType.Quarter,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Oct - Dec 23'],
+          [fr, 'oct. - déc. 23'],
+        ],
+      ],
+      [
+        PeriodType.Quarter,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'October - December 2023'],
+          [fr, 'octobre - décembre 2023'],
+        ],
+      ],
+      [
+        PeriodType.Quarter,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'October 2023 - December 2023'],
+          [fr, 'octobre 2023 - décembre 2023'],
+        ],
+      ],
+
+      // PeriodType.CalendarYear
+      [
+        PeriodType.CalendarYear,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '23'],
+          [fr, '23'],
+        ],
+      ],
+      [
+        PeriodType.CalendarYear,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+      [
+        PeriodType.CalendarYear,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+
+      // PeriodType.FiscalYearOctober
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '24'],
+          [fr, '24'],
+        ],
+      ],
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+      [
+        PeriodType.FiscalYearOctober,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+
+      // PeriodType.BiWeek1Sun
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/12 - 11/25'],
+          [fr, '12/11 - 25/11'],
+        ],
+      ],
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        PeriodType.BiWeek1Sun,
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
     ] as const;
 
     for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, localDate, PeriodType.Day, { variant })).equal(
-          expected
-        );
+      const [periodType, options, date, locales] = c;
+      describe(PeriodType[periodType], () => {
+        describe(`options: ${JSON.stringify(options)}`, () => {
+          for (const [locale, expected] of locales) {
+            it(`locale: ${locale.locale}`, () => {
+              expect(formatDateWithLocale(locale, date, periodType, options)).equal(expected);
+            });
+          }
+        });
+      });
+    }
+  });
+
+  describe('PeriodTypeCode string', () => {
+    const cases: [PeriodTypeCode, FormatDateOptions, Date, [LocaleSettings, string][]][] = [
+      // 'day'
+      [
+        'day',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/21'],
+          [fr, '21/11'],
+        ],
+      ],
+      [
+        'day',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/21/2023'],
+          [fr, '21/11/2023'],
+        ],
+      ],
+      [
+        'day',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 21, 2023'],
+          [fr, '21 nov. 2023'],
+        ],
+      ],
+      // 'daytime'
+      [
+        'daytime',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 2:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        'daytime',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02 PM'],
+          [fr, '07/03/2023 14:02'],
+        ],
+      ],
+      [
+        'daytime',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '3/7/2023, 02:02:03 PM'],
+          [fr, '07/03/2023 14:02:03'],
+        ],
+      ],
+      // 'time'
+      [
+        'time',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        'time',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        'time',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      // 'week-sun'
+      [
+        'week-sun',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '19/11 - 25/11'],
+        ],
+      ],
+      [
+        'week-sun',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        'week-sun',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '19/11/2023 - 25/11/2023'],
+        ],
+      ],
+      // 'week-mon'
+      [
+        'week-mon',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/20/2023 - 11/26/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // 'week'
+      [
+        'week',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/19 - 11/25'],
+          [fr, '20/11 - 26/11'],
+        ],
+      ],
+      [
+        'week',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      [
+        'week',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/19/2023 - 11/25/2023'],
+          [fr, '20/11/2023 - 26/11/2023'],
+        ],
+      ],
+      // 'month'
+      [
+        'month',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov'],
+          [fr, 'nov.'],
+        ],
+      ],
+      [
+        'month',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November'],
+          [fr, 'novembre'],
+        ],
+      ],
+      [
+        'month',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      // 'month-year'
+      [
+        'month-year',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Nov 23'],
+          [fr, 'nov. 23'],
+        ],
+      ],
+      [
+        'month-year',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+      [
+        'month-year',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'November 2023'],
+          [fr, 'novembre 2023'],
+        ],
+      ],
+
+      // 'quarter'
+      [
+        'quarter',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, 'Oct - Dec 23'],
+          [fr, 'oct. - déc. 23'],
+        ],
+      ],
+      [
+        'quarter',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, 'October - December 2023'],
+          [fr, 'octobre - décembre 2023'],
+        ],
+      ],
+      [
+        'quarter',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, 'October 2023 - December 2023'],
+          [fr, 'octobre 2023 - décembre 2023'],
+        ],
+      ],
+
+      // 'year'
+      [
+        'year',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '23'],
+          [fr, '23'],
+        ],
+      ],
+      [
+        'year',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+      [
+        'year',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2023'],
+          [fr, '2023'],
+        ],
+      ],
+
+      // 'fiscal-year-october'
+      [
+        'fiscal-year-october',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '24'],
+          [fr, '24'],
+        ],
+      ],
+      [
+        'fiscal-year-october',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+      [
+        'fiscal-year-october',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '2024'],
+          [fr, '2024'],
+        ],
+      ],
+
+      // 'biweek1-sun'
+      [
+        'biweek1-sun',
+        { variant: 'short' },
+        testDate,
+        [
+          [defaultLocale, '11/12 - 11/25'],
+          [fr, '12/11 - 25/11'],
+        ],
+      ],
+      [
+        'biweek1-sun',
+        { variant: 'default' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+      [
+        'biweek1-sun',
+        { variant: 'long' },
+        testDate,
+        [
+          [defaultLocale, '11/12/2023 - 11/25/2023'],
+          [fr, '12/11/2023 - 25/11/2023'],
+        ],
+      ],
+    ];
+
+    for (const c of cases) {
+      const [periodTypeCode, options, date, locales] = c;
+      describe(periodTypeCode, () => {
+        describe(`options: ${JSON.stringify(options)}`, () => {
+          for (const [locale, expected] of locales) {
+            it(`locale: ${locale.locale}`, () => {
+              expect(formatDateWithLocale(locale, date, periodTypeCode, options)).equal(expected);
+            });
+          }
+        });
       });
     }
   });
@@ -80,223 +804,18 @@ describe('formatDate()', () => {
     const cases = [
       ['short', defaultLocale, '11/21'],
       ['short', fr, '21/11'],
+      ['default', defaultLocale, '11/21/2023'],
+      ['default', fr, '21/11/2023'],
       ['long', defaultLocale, 'Nov 21, 2023'],
       ['long', fr, '21 nov. 2023'],
     ] as const;
 
     for (const c of cases) {
-      const [variant, locales, expected] = c;
+      const [variant, locale, expected] = c;
       it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Day, { variant })).equal(
+        expect(formatDateWithLocale(locale, testDateStr, PeriodType.Day, { variant })).equal(
           expected
         );
-      });
-    }
-  });
-
-  describe('should format date string for DayTime, TimeOnly', () => {
-    const cases: [Date, PeriodType, FormatDateOptions, string[]][] = [
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'short' },
-        ['3/7/2023, 2:02 PM', '07/03/2023 14:02'],
-      ],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'default' },
-        ['3/7/2023, 02:02 PM', '07/03/2023 14:02'],
-      ],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.DayTime,
-        { variant: 'long' },
-        ['3/7/2023, 02:02:03 PM', '07/03/2023 14:02:03'],
-      ],
-      [dt_1M_1d_time_pm, PeriodType.TimeOnly, { variant: 'short' }, ['2:02 PM', '14:02']],
-      [dt_1M_1d_time_pm, PeriodType.TimeOnly, { variant: 'default' }, ['02:02:03 PM', '14:02:03']],
-      [
-        dt_1M_1d_time_pm,
-        PeriodType.TimeOnly,
-        { variant: 'long' },
-        ['02:02:03.004 PM', '14:02:03,004'],
-      ],
-    ];
-
-    for (const c of cases) {
-      const [date, periodType, options, [expected_default, expected_fr]] = c;
-      it(c.toString(), () => {
-        expect(formatWithLocale(defaultLocale, date, periodType, options)).equal(expected_default);
-      });
-
-      it(c.toString() + 'fr', () => {
-        expect(formatWithLocale(fr, date, periodType, options)).equal(expected_fr);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.WeekSun / Mon no mather the locale', () => {
-    const cases = [
-      [PeriodType.WeekSun, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.WeekSun, 'short', fr, '19/11 - 25/11'],
-      [PeriodType.WeekSun, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.WeekSun, 'long', fr, '19/11/2023 - 25/11/2023'],
-      [PeriodType.WeekMon, 'long', defaultLocale, '11/20/2023 - 11/26/2023'],
-      [PeriodType.WeekMon, 'long', fr, '20/11/2023 - 26/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [periodType, variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, periodType, { variant })).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Week with the good weekstarton locale', () => {
-    const cases = [
-      [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
-      [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
-
-      [PeriodType.Week, 'short', defaultLocale, '11/19 - 11/25'],
-      [PeriodType.Week, 'short', fr, '20/11 - 26/11'],
-      [PeriodType.Week, 'long', defaultLocale, '11/19/2023 - 11/25/2023'],
-      [PeriodType.Week, 'long', fr, '20/11/2023 - 26/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [periodType, variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, periodType, { variant })).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Month', () => {
-    const cases = [
-      ['short', defaultLocale, 'Nov'],
-      ['short', fr, 'nov.'],
-      ['long', defaultLocale, 'November'],
-      ['long', fr, 'novembre'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Month, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.MonthYear', () => {
-    const cases = [
-      ['short', defaultLocale, 'Nov 23'],
-      ['short', fr, 'nov. 23'],
-      ['long', defaultLocale, 'November 2023'],
-      ['long', fr, 'novembre 2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.MonthYear, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.Quarter', () => {
-    const cases = [
-      ['short', defaultLocale, 'Oct - Dec 23'],
-      ['short', fr, 'oct. - déc. 23'],
-      ['long', defaultLocale, 'October - December 2023'],
-      ['long', fr, 'octobre - décembre 2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.Quarter, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.CalendarYear', () => {
-    const cases = [
-      ['short', defaultLocale, '23'],
-      ['short', fr, '23'],
-      ['long', defaultLocale, '2023'],
-      ['long', fr, '2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.CalendarYear, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.FiscalYearOctober', () => {
-    const cases = [
-      ['short', defaultLocale, '24'],
-      ['short', fr, '24'],
-      ['long', defaultLocale, '2024'],
-      ['long', fr, '2024'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(
-          formatDateWithLocale(locales, testDate, PeriodType.FiscalYearOctober, { variant })
-        ).equal(expected);
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.BiWeek1Sun', () => {
-    const cases = [
-      ['short', defaultLocale, '11/12 - 11/25'],
-      ['short', fr, '12/11 - 25/11'],
-      ['long', defaultLocale, '11/12/2023 - 11/25/2023'],
-      ['long', fr, '12/11/2023 - 25/11/2023'],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales, expected] = c;
-      it(c.toString(), () => {
-        expect(formatDateWithLocale(locales, testDate, PeriodType.BiWeek1Sun, { variant })).equal(
-          expected
-        );
-      });
-    }
-  });
-
-  describe('should format date for PeriodType.undefined', () => {
-    const expected = '2023-11-21T00:00:00-04:00';
-    const cases = [
-      ['short', defaultLocale],
-      ['short', fr],
-      ['long', defaultLocale],
-      ['long', fr],
-    ] as const;
-
-    for (const c of cases) {
-      const [variant, locales] = c;
-      it(c.toString(), () => {
-        // @ts-expect-error
-        expect(formatDateWithLocale(locales, testDate, undefined, { variant })).equal(expected);
       });
     }
   });
@@ -406,7 +925,7 @@ describe('localToUtcDate()', () => {
 
 describe('getMonthDaysByWeek()', () => {
   it('default starting Week: Sunday', () => {
-    const dates = getMonthDaysByWeek(new Date(testDate));
+    const dates = getMonthDaysByWeek(testDate);
     expect(dates).toMatchInlineSnapshot(`
       [
         [
@@ -459,7 +978,7 @@ describe('getMonthDaysByWeek()', () => {
   });
 
   it('Starting Week: Monday', () => {
-    const dates = getMonthDaysByWeek(new Date(testDate), 1);
+    const dates = getMonthDaysByWeek(testDate, 1);
     expect(dates).toMatchInlineSnapshot(`
       [
         [
@@ -530,16 +1049,92 @@ describe('getWeekStartsOnFromIntl() tokens', () => {
 });
 
 describe('getPeriodTypeByCode()', () => {
-  it('week', () => {
-    const val = getPeriodTypeByCode('WEEK');
-    expect(val).toBe(PeriodType.Week);
+  const data = [
+    ['custom', PeriodType.Custom],
+    ['day', PeriodType.Day],
+    ['daytime', PeriodType.DayTime],
+    ['time', PeriodType.TimeOnly],
+    ['week', PeriodType.Week],
+    ['week-sun', PeriodType.WeekSun],
+    ['week-mon', PeriodType.WeekMon],
+    ['week-tue', PeriodType.WeekTue],
+    ['week-wed', PeriodType.WeekWed],
+    ['week-thu', PeriodType.WeekThu],
+    ['week-fri', PeriodType.WeekFri],
+    ['week-sat', PeriodType.WeekSat],
+    ['month', PeriodType.Month],
+    ['month-year', PeriodType.MonthYear],
+    ['quarter', PeriodType.Quarter],
+    ['year', PeriodType.CalendarYear],
+    ['fiscal-year-october', PeriodType.FiscalYearOctober],
+    ['biweek1', PeriodType.BiWeek1],
+    ['biweek1-sun', PeriodType.BiWeek1Sun],
+    ['biweek1-mon', PeriodType.BiWeek1Mon],
+    ['biweek1-tue', PeriodType.BiWeek1Tue],
+    ['biweek1-wed', PeriodType.BiWeek1Wed],
+    ['biweek1-thu', PeriodType.BiWeek1Thu],
+    ['biweek1-fri', PeriodType.BiWeek1Fri],
+    ['biweek1-sat', PeriodType.BiWeek1Sat],
+    ['biweek2', PeriodType.BiWeek2],
+    ['biweek2-sun', PeriodType.BiWeek2Sun],
+    ['biweek2-mon', PeriodType.BiWeek2Mon],
+    ['biweek2-tue', PeriodType.BiWeek2Tue],
+    ['biweek2-wed', PeriodType.BiWeek2Wed],
+    ['biweek2-thu', PeriodType.BiWeek2Thu],
+    ['biweek2-fri', PeriodType.BiWeek2Fri],
+    ['biweek2-sat', PeriodType.BiWeek2Sat],
+  ] as const;
+
+  data.forEach(([code, periodType]) => {
+    it(code, () => {
+      const val = getPeriodTypeByCode(code);
+      expect(val).toBe(periodType);
+    });
   });
 });
 
 describe('getPeriodTypeCode()', () => {
-  it('BiWeek1Sat', () => {
-    const val = getPeriodTypeCode(PeriodType.BiWeek1Sat);
-    expect(val).toBe('BIWEEK1-SAT');
+  const data = [
+    ['custom', PeriodType.Custom],
+    ['day', PeriodType.Day],
+    ['daytime', PeriodType.DayTime],
+    ['time', PeriodType.TimeOnly],
+    ['week', PeriodType.Week],
+    ['week-sun', PeriodType.WeekSun],
+    ['week-mon', PeriodType.WeekMon],
+    ['week-tue', PeriodType.WeekTue],
+    ['week-wed', PeriodType.WeekWed],
+    ['week-thu', PeriodType.WeekThu],
+    ['week-fri', PeriodType.WeekFri],
+    ['week-sat', PeriodType.WeekSat],
+    ['month', PeriodType.Month],
+    ['month-year', PeriodType.MonthYear],
+    ['quarter', PeriodType.Quarter],
+    ['year', PeriodType.CalendarYear],
+    ['fiscal-year-october', PeriodType.FiscalYearOctober],
+    ['biweek1', PeriodType.BiWeek1],
+    ['biweek1-sun', PeriodType.BiWeek1Sun],
+    ['biweek1-mon', PeriodType.BiWeek1Mon],
+    ['biweek1-tue', PeriodType.BiWeek1Tue],
+    ['biweek1-wed', PeriodType.BiWeek1Wed],
+    ['biweek1-thu', PeriodType.BiWeek1Thu],
+    ['biweek1-fri', PeriodType.BiWeek1Fri],
+    ['biweek1-sat', PeriodType.BiWeek1Sat],
+    ['biweek2', PeriodType.BiWeek2],
+    ['biweek2-sun', PeriodType.BiWeek2Sun],
+    ['biweek2-mon', PeriodType.BiWeek2Mon],
+    ['biweek2-tue', PeriodType.BiWeek2Tue],
+    ['biweek2-wed', PeriodType.BiWeek2Wed],
+    ['biweek2-thu', PeriodType.BiWeek2Thu],
+    ['biweek2-fri', PeriodType.BiWeek2Fri],
+    ['biweek2-sat', PeriodType.BiWeek2Sat],
+  ] as const;
+
+  data.forEach(([code, periodType]) => {
+    it(code, () => {
+      const val = getPeriodTypeCode(periodType);
+      expect(val).toBe(code);
+    });
   });
 });
 
@@ -691,5 +1286,227 @@ describe('isStringDate()', () => {
 
   it('date with time with 7 digit milliseconds (UTC)', () => {
     expect(isStringDate('1982-03-30T11:25:59.1234567Z')).true;
+  });
+});
+
+describe('parseDate()', () => {
+  it('date only as locale date', () => {
+    expect(parseDate('1982-03-30')).toEqual(new Date('1982-03-30T04:00:00.000Z'));
+  });
+
+  it('date and time only (hour/minute) as locale date', () => {
+    expect(parseDate('1982-03-30T04:00')).toEqual(new Date('1982-03-30T08:00:00.000Z'));
+  });
+
+  it('date and time only (hour/minute/second) as locale date', () => {
+    expect(parseDate('1982-03-30T04:00:00')).toEqual(new Date('1982-03-30T08:00:00.000Z'));
+  });
+
+  it('should not equal UTC date', () => {
+    // Just an extra check
+    expect(parseDate('1982-03-30')).not.toEqual(new Date('1982-03-30'));
+  });
+
+  it('date with timezome (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59Z')).toEqual(new Date('1982-03-30T11:25:59Z'));
+  });
+
+  it('date with time (offset)', () => {
+    expect(parseDate('1982-03-30T00:00:00-01:00')).toEqual(new Date('1982-03-30T00:00:00-01:00'));
+  });
+
+  it('date with time and 3 digit milliseconds (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59.123Z')).toEqual(new Date('1982-03-30T11:25:59.123Z'));
+  });
+
+  it('date with time with 7 digit milliseconds (UTC)', () => {
+    expect(parseDate('1982-03-30T11:25:59.1234567Z')).toEqual(
+      new Date('1982-03-30T11:25:59.1234567Z')
+    );
+  });
+
+  it('invalid date string', () => {
+    expect(parseDate('some_string')).toEqual(new Date('Invalid Date'));
+  });
+
+  describe('strftime format', () => {
+    test.each([
+      ['2023-03-07', '%Y-%m-%d', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/2023', '%m/%d/%Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/2023', '%m/%d/%Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/23', '%m/%d/%y', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/23', '%m/%d/%y', new Date('2023-03-07T04:00:00.000Z')],
+      ['Tuesday, March 7, 2023', '%A, %B %d, %Y', new Date('2023-03-07T04:00:00.000Z')],
+      ['11:25:59', '%H:%M:%S', new Date('1900-01-01T15:25:59.000Z')],
+      ['2:30 PM', '%I:%M %p', new Date('1900-01-01T18:30:00.000Z')],
+      ['2023-03-07 14:30:45', '%Y-%m-%d %H:%M:%S', new Date('2023-03-07T18:30:45.000Z')],
+      ['2023-03-07 14:30:45 -07:00', '%Y-%m-%d %H:%M:%S %Z', new Date('2023-03-07T21:30:45.000Z')],
+    ])('parseDate(%s, %s) => %s', (date, format, expected) => {
+      expect(parseDate(date, format)).toEqual(expected);
+    });
+  });
+
+  describe('Unicode format', () => {
+    test.each([
+      ['2023-03-07', 'yyyy-MM-dd', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/2023', 'M/d/yyyy', new Date('2023-03-07T04:00:00.000Z')],
+      ['03/07/2023', 'MM/dd/yyyy', new Date('2023-03-07T04:00:00.000Z')],
+      ['3/7/23', 'M/d/yy', new Date('2023-03-07T04:00:00.000Z')],
+      ['Tuesday, December 25, 2023', 'EEEE, MMMM dd, yyyy', new Date('2023-12-25T04:00:00.000Z')],
+      ['11:25:59', 'HH:mm:ss', new Date('1900-01-01T15:25:59.000Z')],
+      ['2:30 PM', 'hh:mm a', new Date('1900-01-01T18:30:00.000Z')],
+      ['2023-03-07 14:30:45', 'yyyy-MM-dd HH:mm:ss', new Date('2023-03-07T18:30:45.000Z')],
+      ['2023-03-07 14:30:45 -07:00', 'yyyy-MM-dd HH:mm:ss z', new Date('2023-03-07T21:30:45.000Z')],
+    ])('parseDate(%s, %s) => %s', (date, format, expected) => {
+      expect(parseDate(date, format)).toEqual(expected);
+    });
+  });
+});
+
+describe('timeInterval()', () => {
+  test.each([
+    ['millisecond', timeMillisecond],
+    ['second', timeSecond],
+    ['minute', timeMinute],
+    ['hour', timeHour],
+    ['day', timeDay],
+    ['week', timeWeek],
+    ['month', timeMonth],
+    // ['quarter', timeMonth.every(3)], // TODO: how to verify this?
+    ['year', timeYear],
+  ])('timeInterval(%s) => %s', (interval, expected) => {
+    expect(timeInterval(interval as TimeIntervalType)).toEqual(expected);
+  });
+});
+
+describe('startOfInterval()', () => {
+  test.each([
+    ['millisecond', '2023-03-07T14:02:03.004'],
+    ['second', '2023-03-07T14:02:03'],
+    ['minute', '2023-03-07T14:02'],
+    ['hour', '2023-03-07T14:00:00.000'],
+    ['day', '2023-03-07'],
+    ['week', '2023-03-05'],
+    ['month', '2023-03-01'],
+    ['quarter', '2023-01-01'],
+    ['year', '2023-01-01'],
+  ])('startOfInterval(%s, %s) => %s', (interval, expected) => {
+    expect(startOfInterval(interval as TimeIntervalType, dt_1M_1d_time_pm)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('endOfInterval()', () => {
+  test.each([
+    ['millisecond', '2023-03-07T14:02:03.004'],
+    ['second', '2023-03-07T14:02:03.999'],
+    ['minute', '2023-03-07T14:02:59.999'],
+    ['hour', '2023-03-07T14:59:59.999'],
+    ['day', '2023-03-07T23:59:59.999'],
+    ['week', '2023-03-11T23:59:59.999'],
+    ['month', '2023-03-31T23:59:59.999'],
+    ['quarter', '2023-03-31T23:59:59.999'],
+    ['year', '2023-12-31T23:59:59.999'],
+  ])('endOfInterval(%s, %s) => %s', (interval, expected) => {
+    expect(endOfInterval(interval as TimeIntervalType, dt_1M_1d_time_pm)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('intervalOffset()', () => {
+  test.each([
+    ['millisecond', 1, '2023-11-21T04:00:00.001Z'],
+    ['millisecond', -1, '2023-11-21T03:59:59.999Z'],
+    ['second', 1, '2023-11-21T04:00:01Z'],
+    ['second', -1, '2023-11-21T03:59:59Z'],
+    ['minute', 1, '2023-11-21T04:01:00Z'],
+    ['minute', -1, '2023-11-21T03:59:00Z'],
+    ['hour', 1, '2023-11-21T05:00:00Z'],
+    ['hour', -1, '2023-11-21T03:00:00Z'],
+    ['day', 1, '2023-11-22'],
+    ['day', -1, '2023-11-20'],
+    ['week', 1, '2023-11-28'],
+    ['week', -1, '2023-11-14'],
+    ['month', 1, '2023-12-21'],
+    ['month', -1, '2023-10-21'],
+    ['quarter', 1, '2024-02-01'],
+    ['quarter', -1, '2023-08-01'],
+    ['year', 1, '2024-11-21'],
+    ['year', -1, '2022-11-21'],
+  ])('intervalOffset(%s, %s, %s) => %s', (interval, offset, expected) => {
+    expect(intervalOffset(interval as TimeIntervalType, testDate, offset)).toEqual(
+      parseDate(expected)
+    );
+  });
+});
+
+describe('isSameInterval()', () => {
+  test.each([
+    ['day', '2023-03-07T00:00', '2023-03-07T23:59', true],
+    ['day', '2023-03-07T11:00', '2023-03-08T12:00', false],
+    ['week', '2023-03-07', '2023-03-08', true],
+    ['week', '2023-03-07', '2023-03-14', false],
+    ['month', '2023-03-07', '2023-03-30', true],
+    ['month', '2023-03-07', '2023-04-07', false],
+    ['quarter', '2023-03-07', '2023-01-07', true],
+    ['quarter', '2023-03-07', '2023-04-07', false],
+    ['year', '2023-03-07', '2023-11-21', true],
+    ['year', '2023-03-07', '2024-03-07', false],
+  ])('isSameInterval(%s, %s, %s) => %s', (interval, date1, date2, expected) => {
+    expect(isSameInterval(interval as TimeIntervalType, parseDate(date1), parseDate(date2))).toBe(
+      expected
+    );
+  });
+});
+
+describe('intervalDifference()', () => {
+  test.each([
+    ['day', '2023-03-07T00:00', '2023-03-07T23:59', 0], // Same day
+    ['day', '2023-03-07', '2023-03-08', 1], // Next day
+    ['day', '2023-01-01', '2023-12-31', 364], // Full year
+    ['day', '2023-01-01', '2024-01-01', 365], // Next year
+    ['week', '2023-03-05', '2023-03-11', 0], // Same week
+    ['week', '2023-03-07', '2023-03-14', 1], // Next week
+    ['month', '2023-01-01', '2023-01-31', 0], // Same month
+    ['month', '2023-01-01', '2023-02-01', 1], // Next month
+    ['quarter', '2023-01-01', '2023-03-31', 0], // Same quarter
+    ['quarter', '2023-01-01', '2023-04-01', 1], // Next quarter
+    ['year', '2023-01-01', '2023-12-31', 0], // Same year
+    ['year', '2023-01-01', '2024-01-01', 1], // Next year
+  ])('intervalDifference(%s, %s, %s) => %s', (interval, date1, date2, expected) => {
+    expect(
+      intervalDifference(interval as TimeIntervalType, parseDate(date1), parseDate(date2))
+    ).toEqual(expected);
+  });
+});
+
+describe('isLeapYear()', () => {
+  test.each([
+    ['2020-01-01', true],
+    ['2021-01-01', false],
+    ['2022-01-01', false],
+    ['2023-01-01', false],
+    ['2024-01-01', true],
+  ])('isLeapYear(%s) => %s', (date, expected) => {
+    expect(isLeapYear(parseDate(date))).toBe(expected);
+  });
+});
+
+describe('isDateWithin()', () => {
+  test.each([
+    ['2023-03-07', '2023-03-06', '2023-03-08', true], // between
+    ['2023-03-07', '2023-03-07', '2023-03-08', true], // match start
+    ['2023-03-07', '2023-03-06', '2023-03-07', true], // match end
+    ['2023-03-07', '2023-03-08', '2023-03-09', false], // outside start
+    ['2023-03-07', '2023-03-05', '2023-03-06', false], // outside end
+  ])('isDateWithin(%s, %s) => %s', (date, start, end, expected) => {
+    expect(
+      isDateWithin(parseDate(date), {
+        start: parseDate(start),
+        end: parseDate(end),
+      })
+    ).toBe(expected);
   });
 });

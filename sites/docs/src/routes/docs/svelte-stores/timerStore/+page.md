@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { subDays, subMonths } from 'date-fns';
-
 	import { Switch } from 'svelte-ux';
 	import { timerStore } from '@layerstack/svelte-stores';
 	import Preview from '$docs/Preview.svelte';
@@ -22,7 +20,9 @@ const timer = timerStore();
 const timer = timerStore<T>({ initial?: T, onTick?: (value: T) => {...}, delay?: number, disabled?: boolean })
 ```
 
-<h2>Example</h2>
+<h1>Examples</h1>
+
+<h2>Default</h2>
 
 ```svelte
 <script>

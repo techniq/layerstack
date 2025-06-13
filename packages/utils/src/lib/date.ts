@@ -1,34 +1,24 @@
 import {
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  startOfQuarter,
-  endOfQuarter,
-  startOfYear,
-  endOfYear,
-  min,
-  max,
-  addMonths,
-  addDays,
-  differenceInDays,
-  differenceInWeeks,
-  differenceInMonths,
-  differenceInQuarters,
-  differenceInYears,
-  addWeeks,
-  addQuarters,
-  addYears,
-  isSameDay,
-  isSameWeek,
-  isSameMonth,
-  isSameQuarter,
-  isSameYear,
-  parseISO,
-  formatISO,
-} from 'date-fns';
+  CountableTimeInterval,
+  timeDay,
+  timeHour,
+  timeMillisecond,
+  timeMinute,
+  timeMonth,
+  timeSecond,
+  timeWeek,
+  timeYear,
+  timeInterval as d3TimeInterval,
+  type TimeInterval,
+  timeMonday,
+  timeTuesday,
+  timeWednesday,
+  timeThursday,
+  timeFriday,
+  timeSaturday,
+} from 'd3-time';
+import { timeFormat, timeParse } from 'd3-time-format';
+import { min, max } from 'd3-array';
 
 import { hasKeyOf } from './typeGuards.js';
 import { assertNever, entries } from './typeHelpers.js';
@@ -41,8 +31,12 @@ import {
   type CustomIntlDateTimeFormatOptions,
   type FormatDateOptions,
   type DateFormatVariantPreset,
+  periodTypeMappings,
+  PeriodTypeCode,
+  type TimeIntervalType,
 } from './date_types.js';
 import { defaultLocale, type LocaleSettings } from './locale.js';
+import { convertUnicodeToStrftime } from './dateInternal.js';
 
 export * from './date_types.js';
 
@@ -142,54 +136,13 @@ export function getPeriodTypeNameWithLocale(settings: LocaleSettings, periodType
   }
 }
 
-const periodTypeMappings: Record<PeriodType, string> = {
-  [PeriodType.Custom]: 'CUSTOM',
-
-  [PeriodType.Day]: 'DAY',
-  [PeriodType.DayTime]: 'DAY-TIME',
-  [PeriodType.TimeOnly]: 'TIME',
-
-  [PeriodType.WeekSun]: 'WEEK-SUN',
-  [PeriodType.WeekMon]: 'WEEK-MON',
-  [PeriodType.WeekTue]: 'WEEK-TUE',
-  [PeriodType.WeekWed]: 'WEEK-WED',
-  [PeriodType.WeekThu]: 'WEEK-THU',
-  [PeriodType.WeekFri]: 'WEEK-FRI',
-  [PeriodType.WeekSat]: 'WEEK-SAT',
-  [PeriodType.Week]: 'WEEK',
-
-  [PeriodType.Month]: 'MTH',
-  [PeriodType.MonthYear]: 'MTH-CY',
-  [PeriodType.Quarter]: 'QTR',
-  [PeriodType.CalendarYear]: 'CY',
-  [PeriodType.FiscalYearOctober]: 'FY-OCT',
-
-  [PeriodType.BiWeek1Sun]: 'BIWEEK1-SUN',
-  [PeriodType.BiWeek1Mon]: 'BIWEEK1-MON',
-  [PeriodType.BiWeek1Tue]: 'BIWEEK1-TUE',
-  [PeriodType.BiWeek1Wed]: 'BIWEEK1-WED',
-  [PeriodType.BiWeek1Thu]: 'BIWEEK1-THU',
-  [PeriodType.BiWeek1Fri]: 'BIWEEK1-FRI',
-  [PeriodType.BiWeek1Sat]: 'BIWEEK1-SAT',
-  [PeriodType.BiWeek1]: 'BIWEEK1',
-
-  [PeriodType.BiWeek2Sun]: 'BIWEEK2-SUN',
-  [PeriodType.BiWeek2Mon]: 'BIWEEK2-MON',
-  [PeriodType.BiWeek2Tue]: 'BIWEEK2-TUE',
-  [PeriodType.BiWeek2Wed]: 'BIWEEK2-WED',
-  [PeriodType.BiWeek2Thu]: 'BIWEEK2-THU',
-  [PeriodType.BiWeek2Fri]: 'BIWEEK2-FRI',
-  [PeriodType.BiWeek2Sat]: 'BIWEEK2-SAT',
-  [PeriodType.BiWeek2]: 'BIWEEK2',
-};
-
-export function getPeriodTypeCode(periodType: PeriodType): string {
+export function getPeriodTypeCode(periodType: PeriodType): PeriodTypeCode {
   return periodTypeMappings[periodType];
 }
 
-export function getPeriodTypeByCode(code: string): PeriodType {
+export function getPeriodTypeByCode(code: PeriodTypeCode) {
   const element = entries(periodTypeMappings).find((c) => c[1] === code);
-  return parseInt(String(element?.[0] ?? '1'));
+  return parseInt(String(element?.[0] ?? '0'));
 }
 
 export function getDayOfWeek(periodType: PeriodType): DayOfWeek | null {
@@ -243,15 +196,15 @@ export function getMonthDaysByWeek(
   dateInTheMonth: Date,
   weekStartsOn: DayOfWeek = DayOfWeek.Sunday
 ): Date[][] {
-  const startOfFirstWeek = startOfWeek(startOfMonth(dateInTheMonth), { weekStartsOn });
-  const endOfLastWeek = endOfWeek(endOfMonth(dateInTheMonth), { weekStartsOn });
+  const startOfFirstWeek = startOfWeek(startOfInterval('month', dateInTheMonth), weekStartsOn);
+  const endOfLastWeek = endOfWeek(endOfInterval('month', dateInTheMonth), weekStartsOn);
 
   const list = [];
 
   let valueToAdd = startOfFirstWeek;
   while (valueToAdd <= endOfLastWeek) {
     list.push(valueToAdd);
-    valueToAdd = addDays(valueToAdd, 1);
+    valueToAdd = intervalOffset('day', valueToAdd, 1);
   }
 
   return chunk(list, 7) as Date[][];
@@ -304,7 +257,7 @@ export function getFiscalYearRange(
   const numberOfMonths = (options && options.numberOfMonths) || 12;
 
   const startDate = new Date((fiscalYear || 0) - 1, startMonth - 1, 1);
-  const endDate = endOfMonth(addMonths(startDate, numberOfMonths - 1));
+  const endDate = endOfInterval('month', intervalOffset('month', startDate, numberOfMonths - 1));
 
   return { startDate, endDate };
 }
@@ -329,13 +282,51 @@ const biweekBaseDates = [new Date('1799-12-22T00:00'), new Date('1799-12-15T00:0
 
 export function startOfBiWeek(date: Date, week: number, startOfWeek: DayOfWeek) {
   var weekBaseDate = biweekBaseDates[week - 1];
-  var baseDate = addDays(weekBaseDate, startOfWeek);
-  var periodsSince = Math.floor(differenceInDays(date, baseDate) / 14);
-  return addDays(baseDate, periodsSince * 14);
+  var baseDate = intervalOffset('day', weekBaseDate, startOfWeek);
+  var periodsSince = Math.floor(intervalDifference('day', baseDate, date) / 14);
+  return intervalOffset('day', baseDate, periodsSince * 14);
 }
 
 export function endOfBiWeek(date: Date, week: number, startOfWeek: DayOfWeek) {
-  return addDays(startOfBiWeek(date, week, startOfWeek), 13);
+  return intervalOffset('day', startOfBiWeek(date, week, startOfWeek), 13);
+}
+
+function startOfWeek(date: Date, weekStartsOn: DayOfWeek) {
+  switch (weekStartsOn) {
+    case DayOfWeek.Sunday:
+      return startOfInterval(timeWeek, date);
+    case DayOfWeek.Monday:
+      return startOfInterval(timeMonday, date);
+    case DayOfWeek.Tuesday:
+      return startOfInterval(timeTuesday, date);
+    case DayOfWeek.Wednesday:
+      return startOfInterval(timeWednesday, date);
+    case DayOfWeek.Thursday:
+      return startOfInterval(timeThursday, date);
+    case DayOfWeek.Friday:
+      return startOfInterval(timeFriday, date);
+    case DayOfWeek.Saturday:
+      return startOfInterval(timeSaturday, date);
+  }
+}
+
+function endOfWeek(date: Date, weekStartsOn: DayOfWeek) {
+  switch (weekStartsOn) {
+    case DayOfWeek.Sunday:
+      return endOfInterval(timeWeek, date);
+    case DayOfWeek.Monday:
+      return endOfInterval(timeMonday, date);
+    case DayOfWeek.Tuesday:
+      return endOfInterval(timeTuesday, date);
+    case DayOfWeek.Wednesday:
+      return endOfInterval(timeWednesday, date);
+    case DayOfWeek.Thursday:
+      return endOfInterval(timeThursday, date);
+    case DayOfWeek.Friday:
+      return endOfInterval(timeFriday, date);
+    case DayOfWeek.Saturday:
+      return endOfInterval(timeSaturday, date);
+  }
 }
 
 export function getDateFuncsByPeriodType(
@@ -349,107 +340,101 @@ export function getDateFuncsByPeriodType(
   switch (periodType) {
     case PeriodType.Day:
       return {
-        start: startOfDay,
-        end: endOfDay,
-        add: addDays,
-        difference: differenceInDays,
-        isSame: isSameDay,
+        start: startOfInterval('day'),
+        end: endOfInterval('day'),
+        add: (date: Date, amount: number) => intervalOffset('day', date, amount),
+        difference: intervalDifference('day'),
+        isSame: isSameInterval('day'),
       };
 
     case PeriodType.Week:
     case PeriodType.WeekSun:
       return {
-        start: startOfWeek,
-        end: endOfWeek,
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: isSameWeek,
+        start: startOfInterval(timeWeek),
+        end: endOfInterval(timeWeek),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeWeek),
+        isSame: isSameInterval(timeWeek),
       };
     case PeriodType.WeekMon:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 1 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 1 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 1 }),
+        start: startOfInterval(timeMonday),
+        end: endOfInterval(timeMonday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeMonday),
+        isSame: isSameInterval(timeMonday),
       };
     case PeriodType.WeekTue:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 2 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 2 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 2 }),
+        start: startOfInterval(timeTuesday),
+        end: endOfInterval(timeTuesday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeTuesday),
+        isSame: isSameInterval(timeTuesday),
       };
     case PeriodType.WeekWed:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 3 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 3 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 3 }),
+        start: startOfInterval(timeWednesday),
+        end: endOfInterval(timeWednesday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeWednesday),
+        isSame: isSameInterval(timeWednesday),
       };
     case PeriodType.WeekThu:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 4 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 4 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 4 }),
+        start: startOfInterval(timeThursday),
+        end: endOfInterval(timeThursday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeThursday),
+        isSame: isSameInterval(timeThursday),
       };
     case PeriodType.WeekFri:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 5 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 5 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 5 }),
+        start: startOfInterval(timeFriday),
+        end: endOfInterval(timeFriday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeFriday),
+        isSame: isSameInterval(timeFriday),
       };
     case PeriodType.WeekSat:
       return {
-        start: (date: Date) => startOfWeek(date, { weekStartsOn: 6 }),
-        end: (date: Date) => endOfWeek(date, { weekStartsOn: 6 }),
-        add: addWeeks,
-        difference: differenceInWeeks,
-        isSame: (dateLeft: Date, dateRight: Date) =>
-          isSameWeek(dateLeft, dateRight, { weekStartsOn: 6 }),
+        start: startOfInterval(timeSaturday),
+        end: endOfInterval(timeSaturday),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
+        difference: intervalDifference(timeSaturday),
+        isSame: isSameInterval(timeSaturday),
       };
 
     case PeriodType.Month:
       return {
-        start: startOfMonth,
-        end: endOfMonth,
-        add: addMonths,
-        difference: differenceInMonths,
-        isSame: isSameMonth,
+        start: startOfInterval('month'),
+        end: endOfInterval('month'),
+        add: (date: Date, amount: number) => intervalOffset('month', date, amount),
+        difference: intervalDifference('month'),
+        isSame: isSameInterval('month'),
       };
     case PeriodType.Quarter:
       return {
-        start: startOfQuarter,
-        end: endOfQuarter,
-        add: addQuarters,
-        difference: differenceInQuarters,
-        isSame: isSameQuarter,
+        start: startOfInterval('quarter'),
+        end: endOfInterval('quarter'),
+        add: (date: Date, amount: number) => intervalOffset('quarter', date, amount),
+        difference: intervalDifference('quarter'),
+        isSame: isSameInterval('quarter'),
       };
     case PeriodType.CalendarYear:
       return {
-        start: startOfYear,
-        end: endOfYear,
-        add: addYears,
-        difference: differenceInYears,
-        isSame: isSameYear,
+        start: startOfInterval('year'),
+        end: endOfInterval('year'),
+        add: (date: Date, amount: number) => intervalOffset('year', date, amount),
+        difference: intervalDifference('year'),
+        isSame: isSameInterval('year'),
       };
     case PeriodType.FiscalYearOctober:
       return {
         start: startOfFiscalYear,
         end: endOfFiscalYear,
-        add: addYears,
-        difference: differenceInYears,
+        add: (date: Date, amount: number) => intervalOffset('year', date, amount),
+        difference: intervalDifference('year'),
         isSame: isSameFiscalYear,
       };
 
@@ -476,12 +461,14 @@ export function getDateFuncsByPeriodType(
       return {
         start: (date: Date) => startOfBiWeek(date, week, dayOfWeek),
         end: (date: Date) => endOfBiWeek(date, week, dayOfWeek),
-        add: (date: Date, amount: number) => addWeeks(date, amount * 2),
+        add: (date: Date, amount: number) => intervalOffset('week', date, amount * 2),
         difference: (dateLeft: Date, dateRight: Date) => {
-          return differenceInWeeks(dateLeft, dateRight) / 2;
+          // TODO: Use interval based on start of bi-week (sunday, monday, etc)
+          return intervalDifference('week', dateLeft, dateRight) / 2;
         },
         isSame: (dateLeft: Date, dateRight: Date) => {
-          return isSameDay(
+          return isSameInterval(
+            'day',
             startOfBiWeek(dateLeft, week, dayOfWeek),
             startOfBiWeek(dateRight, week, dayOfWeek)
           );
@@ -499,31 +486,16 @@ export function getDateFuncsByPeriodType(
     case undefined:
       // Default to end of day if periodType == null, etc
       return {
-        start: startOfDay,
-        end: endOfDay,
-        add: addDays,
-        difference: differenceInDays,
-        isSame: isSameDay,
+        start: startOfInterval('day'),
+        end: endOfInterval('day'),
+        add: (date: Date, amount: number) => intervalOffset('day', date, amount),
+        difference: intervalDifference('day'),
+        isSame: isSameInterval('day'),
       };
 
     default:
       assertNever(periodType); // This will now report unhandled cases
   }
-}
-
-export function formatISODate(
-  date: Date | string | null | undefined,
-  representation: 'complete' | 'date' | 'time' = 'complete'
-) {
-  if (date == null) {
-    return '';
-  }
-
-  if (typeof date === 'string') {
-    date = parseISO(date);
-  }
-
-  return formatISO(date, { representation });
 }
 
 export function formatIntl(
@@ -639,22 +611,43 @@ function range(
 ) {
   const start =
     biWeek === undefined
-      ? startOfWeek(date, { weekStartsOn })
+      ? startOfWeek(date, weekStartsOn)
       : startOfBiWeek(date, biWeek, weekStartsOn);
   const end =
-    biWeek === undefined
-      ? endOfWeek(date, { weekStartsOn })
-      : endOfBiWeek(date, biWeek, weekStartsOn);
+    biWeek === undefined ? endOfWeek(date, weekStartsOn) : endOfBiWeek(date, biWeek, weekStartsOn);
 
   return formatIntl(settings, start, formatToUse) + ' - ' + formatIntl(settings, end, formatToUse);
 }
 
 export function formatDate(
   date: Date | string | null | undefined,
-  periodType: PeriodType,
+  periodOrFormat: PeriodType | PeriodTypeCode | string,
   options: FormatDateOptions = {}
 ): string {
-  return formatDateWithLocale(defaultLocale, date, periodType, options);
+  if (typeof periodOrFormat === 'string' && !getPeriodTypeByCode(periodOrFormat as any)) {
+    if (!date) {
+      return '';
+    } else if (typeof date === 'string') {
+      // If periodOrFormat is string, treat as unicode/strftime format
+      date = parseDate(date);
+    }
+
+    let strftimeFormat = periodOrFormat;
+    if (!periodOrFormat.includes('%')) {
+      // Unicode format, convert to strftime format
+      strftimeFormat = convertUnicodeToStrftime(periodOrFormat);
+      // console.log({ periodOrFormat, strftimeFormat });
+    }
+
+    return timeFormat(strftimeFormat)(date);
+  }
+
+  return formatDateWithLocale(
+    defaultLocale,
+    date,
+    periodOrFormat as PeriodType | PeriodTypeCode,
+    options
+  );
 }
 
 export function updatePeriodTypeWithWeekStartsOn(
@@ -699,11 +692,11 @@ export function updatePeriodTypeWithWeekStartsOn(
 export function formatDateWithLocale(
   settings: LocaleSettings,
   date: Date | string | null | undefined,
-  periodType: PeriodType,
+  periodType: PeriodType | PeriodTypeCode,
   options: FormatDateOptions = {}
 ): string {
   if (typeof date === 'string') {
-    date = parseISO(date);
+    date = parseDate(date);
   }
 
   // Handle 'Invalid Date'
@@ -715,6 +708,11 @@ export function formatDateWithLocale(
   const weekStartsOn = options.weekStartsOn ?? settings.formats.dates.weekStartsOn;
 
   const { day, dayTime, timeOnly, week, month, monthsYear, year } = settings.formats.dates.presets;
+
+  periodType =
+    typeof periodType === 'string'
+      ? getPeriodTypeByCode(periodType)
+      : ((periodType ?? PeriodType.Day) as PeriodType);
 
   periodType = updatePeriodTypeWithWeekStartsOn(weekStartsOn, periodType) ?? periodType;
 
@@ -766,8 +764,8 @@ export function formatDateWithLocale(
 
     case PeriodType.Quarter:
       return [
-        formatIntl(settings, startOfQuarter(date), rv(month!)!),
-        formatIntl(settings, endOfQuarter(date), rv(monthsYear!)!),
+        formatIntl(settings, startOfInterval('quarter', date), rv(month!)!),
+        formatIntl(settings, endOfInterval('quarter', date), rv(monthsYear!)!),
       ].join(' - ');
 
     case PeriodType.CalendarYear:
@@ -810,7 +808,7 @@ export function formatDateWithLocale(
       return range(settings, date, 6, rv(week!)!, 2);
 
     default:
-      return formatISO(date);
+      return date.toISOString();
     // default:
     //   assertNever(periodType); // This will now report unhandled cases
   }
@@ -867,15 +865,240 @@ export function randomDate(from: Date, to: Date) {
 }
 
 // '1982-03-30'
+// '1982-03-30T04:00'
+// '1982-03-30T04:00:00'
 // '1982-03-30T11:25:59Z'
 // '1982-03-30T11:25:59-04:00'
 // '1982-03-30T11:25:59.123Z'
 // '1982-03-30T11:25:59.1234567Z'
-const DATE_FORMAT = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(.\d+|)(Z|(-|\+)\d{2}:\d{2}))?$/;
+const DATE_FORMAT = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+|)?(Z|(-|\+)\d{2}:\d{2}?)?)?)?$/;
 
 /**
- * Determine if string is UTC (yyyy-mm-ddThh:mm:ssZ) or Offset (yyyy-mm-ddThh:mm:ss-ZZ:ZZ) or Date-only (yyyy-mm-dd) date string
+ * Determine if string is valid date string
+ * - Date-only (yyyy-mm-dd)
+ * - Date with time (yyyy-mm-ddThh:mm:ss)
+ * - Date with time and timezone (yyyy-mm-ddThh:mm:ssZ)
+ * - Date with time and offset (yyyy-mm-ddThh:mm:ss-ZZ:ZZ)
+ * - Date with time and 3 digit milliseconds (yyyy-mm-ddThh:mm:ss.sss) with or without timezone / offset
+ * - Date with time and 7 digit milliseconds (yyyy-mm-ddThh:mm:ss.sssssss) with or without timezone / offset
  */
 export function isStringDate(value: string) {
   return DATE_FORMAT.test(value);
+}
+
+/**
+ * Determine if string is a date string with time (yyyy-mm-ddThh:mm:ss)
+ */
+export function isStringDateWithTime(value: string) {
+  return isStringDate(value) && value.includes('T');
+}
+
+/**
+ * Determine if string is a date string with time and timezone (yyyy-mm-ddThh:mm:ssZ) or Offset (yyyy-mm-ddThh:mm:ss-ZZ:ZZ)
+ */
+export function isStringDateWithTimezone(value: string) {
+  return isStringDateWithTime(value) && /Z$|[+-]\d{2}:\d{2}$/.test(value);
+}
+
+/** Parse a date string as a local Date if no timezone is specified
+ * @param dateStr - The date string to parse
+ * @param format - The format of the date string. If not provided, expects ISO 8601 format.
+ *   - If provided, will use the format to parse the date string.
+ *   - Supports Unicode or strftime date format strings, but will be converted to applicable strftime format before parsing.
+ * @returns A Date object
+ */
+export function parseDate(dateStr: string, format?: string) {
+  // If format is provided, use it to parse the date string
+  if (format) {
+    let strftimeFormat = format;
+    if (!format.includes('%')) {
+      // Unicode format, convert to strftime format
+      strftimeFormat = convertUnicodeToStrftime(format);
+      // console.log({ format, strftimeFormat });
+    }
+
+    return timeParse(strftimeFormat)(dateStr) ?? new Date('Invalid Date');
+  }
+
+  if (!isStringDate(dateStr)) return new Date('Invalid Date');
+
+  if (isStringDateWithTime(dateStr)) {
+    // Respect timezone.  Also parses unqualified strings like '1982-03-30T04:00' as local date
+    return new Date(dateStr);
+  }
+
+  const [date, time] = dateStr.split('T');
+  const [year, month, day] = date.split('-').map(Number);
+
+  if (time) {
+    const [hour, minute, second] = time.split(':').map(Number);
+    return new Date(year, month - 1, day, hour, minute, second);
+  } else {
+    return new Date(year, month - 1, day);
+  }
+}
+
+/** Custom time interval for quarters */
+export const timeQuarter = d3TimeInterval(
+  // floor
+  (date) => {
+    date.setMonth(date.getMonth() - (date.getMonth() % 3), 1);
+    date.setHours(0, 0, 0, 0);
+  },
+  // offset
+  (date, step) => date.setMonth(date.getMonth() + step * 3, 1),
+  // count
+  (start, end) => (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30 * 3),
+  // field
+  (date) => date.getMonth() // TODO: what should this be?
+);
+
+/** Get a time interval function by name */
+export function timeInterval(name: TimeIntervalType) {
+  switch (name) {
+    case 'millisecond':
+      return timeMillisecond;
+    case 'second':
+      return timeSecond;
+    case 'minute':
+      return timeMinute;
+    case 'hour':
+      return timeHour;
+    case 'day':
+      return timeDay;
+    case 'week':
+      return timeWeek;
+    case 'month':
+      return timeMonth;
+    case 'quarter':
+      return timeQuarter;
+    case 'year':
+      return timeYear;
+  }
+}
+
+/**
+ * Get the date at the start of the interval
+ * @param interval The time interval to use
+ * @param date Optional date to get start of interval for. If not provided, returns a function that takes a date.
+ * @returns Either a Date or a function that takes a date and returns a Date
+ */
+export function startOfInterval(interval: TimeInterval | TimeIntervalType, date: Date): Date;
+export function startOfInterval(interval: TimeInterval | TimeIntervalType): (date: Date) => Date;
+export function startOfInterval(
+  interval: TimeInterval | TimeIntervalType,
+  date?: Date
+): Date | ((date: Date) => Date) {
+  interval = typeof interval === 'string' ? timeInterval(interval) : interval;
+
+  if (date === undefined) {
+    return (date: Date) => new Date(interval.floor(date));
+  }
+
+  return new Date(interval.floor(date));
+}
+
+/**
+ * Get the date at the end of the interval
+ * Similar to `interval.ceil(date)` except:
+ *   - returns end of day instead of start of next day
+ *   - properly handles start of day (i.e. not return same date)
+ * @param interval The time interval to use
+ * @param date Optional date to get end of interval for. If not provided, returns a function that takes a date.
+ * @returns Either a Date or a function that takes a date and returns a Date
+ */
+export function endOfInterval(interval: TimeInterval | TimeIntervalType, date: Date): Date;
+export function endOfInterval(interval: TimeInterval | TimeIntervalType): (date: Date) => Date;
+export function endOfInterval(
+  interval: TimeInterval | TimeIntervalType,
+  date?: Date
+): Date | ((date: Date) => Date) {
+  interval = typeof interval === 'string' ? timeInterval(interval) : interval;
+
+  if (date === undefined) {
+    return (date: Date) => new Date(interval.offset(interval.floor(date), 1).getTime() - 1);
+  }
+
+  // Can not use `new Date(+interval.ceil(date) - 1)`; as `.ceil()` will return same date when start of the day (matching `.floor()`)
+  return new Date(interval.offset(interval.floor(date), 1).getTime() - 1);
+}
+
+/** Add or subtract an interval from a date */
+export function intervalOffset(
+  interval: TimeInterval | TimeIntervalType,
+  date: Date,
+  offset: number
+) {
+  interval = typeof interval === 'string' ? timeInterval(interval) : interval;
+  return interval.offset(date, offset);
+}
+
+/** Check if two dates are in the same interval (such as same day or month) */
+export function isSameInterval(
+  interval: TimeInterval | TimeIntervalType,
+  date1: Date,
+  date2: Date
+): boolean;
+export function isSameInterval(
+  interval: TimeInterval | TimeIntervalType
+): (date1: Date, date2: Date) => boolean;
+export function isSameInterval(
+  interval: TimeInterval | TimeIntervalType,
+  date1?: Date,
+  date2?: Date
+) {
+  interval = typeof interval === 'string' ? timeInterval(interval) : interval;
+
+  if (date1 === undefined || date2 === undefined) {
+    return (date1: Date, date2: Date) =>
+      interval.floor(date1).getTime() === interval.floor(date2).getTime();
+  }
+
+  return interval.floor(date1).getTime() === interval.floor(date2).getTime();
+}
+
+/** Get the number of intervals between two dates (based on boundaries crossed) */
+export function intervalDifference(
+  interval: CountableTimeInterval | TimeIntervalType,
+  date1: Date,
+  date2: Date
+): number;
+export function intervalDifference(
+  interval: CountableTimeInterval | TimeIntervalType
+): (date1: Date, date2: Date) => number;
+export function intervalDifference(
+  interval: CountableTimeInterval | TimeIntervalType,
+  date1?: Date,
+  date2?: Date
+) {
+  interval = typeof interval === 'string' ? timeInterval(interval) : interval;
+
+  if (date1 === undefined || date2 === undefined) {
+    return (date1: Date, date2: Date) => interval.count(date1, date2);
+  }
+
+  return interval.count(date1, date2);
+}
+
+/** Check if date is a leap year */
+export function isLeapYear(date: Date) {
+  return (
+    date.getFullYear() % 400 === 0 ||
+    (date.getFullYear() % 4 === 0 && date.getFullYear() % 100 !== 0)
+  );
+}
+
+/** Check if first date is before second date */
+export function isDateBefore(date1: Date, date2: Date) {
+  return date1.getTime() < date2.getTime();
+}
+
+/** Check if first date is after second date */
+export function isDateAfter(date1: Date, date2: Date) {
+  return date1.getTime() > date2.getTime();
+}
+
+/** Check if date is within interval */
+export function isDateWithin(date: Date, range: { start: Date; end: Date }) {
+  return date.getTime() >= range.start.getTime() && date.getTime() <= range.end.getTime();
 }

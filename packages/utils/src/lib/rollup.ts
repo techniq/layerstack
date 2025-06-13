@@ -1,5 +1,5 @@
 import { rollup } from 'd3-array';
-import { get, isFunction } from 'lodash-es';
+import { get } from 'lodash-es';
 
 export default function <T = any>(
   data: T[],
@@ -13,7 +13,7 @@ export default function <T = any>(
   // }
 
   const keyFuncs = keys.map((key) => {
-    if (isFunction(key)) {
+    if (typeof key === 'function') {
       return key;
     } else if (typeof key === 'string') {
       return (d: any) => get(d, key) || emptyKey;

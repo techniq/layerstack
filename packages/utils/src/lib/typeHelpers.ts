@@ -1,16 +1,5 @@
 // https://basarat.gitbooks.io/typescript/docs/types/never.html#use-case-exhaustive-checks
 
-// import type { colors } from '../styles/theme.js';
-// import type { ComponentProps as SvelteComponentProps, SvelteComponent } from 'svelte';
-// import type { derived, Readable } from 'svelte/store';
-// import type {
-//   FlyParams,
-//   SlideParams,
-//   BlurParams,
-//   FadeParams,
-//   ScaleParams,
-// } from 'svelte/transition';
-
 // https://www.typescriptlang.org/docs/handbook/basic-types.html#never
 export function fail(message: string): never {
   throw new Error(message);
@@ -28,8 +17,15 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
  */
 export type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N;
 
-// Get values of object (similar to Object.values())
+/**
+ * Get values of object (similar to Object.values())
+ */
 export type ValueOf<T> = T[keyof T];
+
+/**
+ * Nested Record type
+ */
+export type NestedRecord<T> = { [key: string]: T | NestedRecord<T> };
 
 // Get keys of object (strongly-typed)
 // Reason Object.keys() isn't like this by default due to runtime properties: https://github.com/Microsoft/TypeScript/pull/12253#issuecomment-263132208
