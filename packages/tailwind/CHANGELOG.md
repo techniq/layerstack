@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.15
+
+### Patch Changes
+
+- fix: Split theme generation CLI from runtime theme utils ([#80](https://github.com/techniq/layerstack/pull/80))
+
 ## 2.0.0-next.14
 
 ### Patch Changes
