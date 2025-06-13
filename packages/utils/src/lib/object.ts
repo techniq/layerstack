@@ -1,5 +1,6 @@
-import { get, camelCase, mergeWith } from 'lodash-es';
+import { get, mergeWith } from 'lodash-es';
 import { entries, fromEntries, keys } from './typeHelpers.js';
+import { toCamelCase } from './string.js';
 
 export function isLiteralObject(obj: any): obj is object {
   return obj && typeof obj === 'object' && obj.constructor === Object;
@@ -11,7 +12,7 @@ export function isEmptyObject(obj: any) {
 
 export function camelCaseKeys(obj: any) {
   return keys(obj).reduce(
-    (acc, key) => ((acc[camelCase(key ? String(key) : undefined)] = obj[key]), acc),
+    (acc, key) => ((acc[toCamelCase(key ? String(key) : '')] = obj[key]), acc),
     {} as any
   );
 }
