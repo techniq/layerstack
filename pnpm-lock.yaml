@@ -243,9 +243,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      culori:
-        specifier: ^4.0.1
-        version: 4.0.1
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
@@ -274,6 +271,9 @@ importers:
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
+      culori:
+        specifier: ^4.0.1
+        version: 4.0.1
       daisyui:
         specifier: ^4.12.24
         version: 4.12.24(postcss@8.5.3)
