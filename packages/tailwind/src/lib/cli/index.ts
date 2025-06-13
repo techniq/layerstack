@@ -5,7 +5,7 @@ import { format } from 'prettier';
 import { entries } from '@layerstack/utils';
 import { mapKeys } from '@layerstack/utils/object';
 
-import { colorNames, themeStylesString, type Colors, type SupportedColorSpace } from './theme.js';
+import { colorNames, themeStylesString, type Colors, type SupportedColorSpace } from './utils.js';
 import { themes as daisyThemes } from './daisy.js';
 import { themes as skeletonThemes } from './skeleton.js';
 
