@@ -1,5 +1,14 @@
 # @layerstack/svelte-stores
 
+## 1.0.2-next.12
+
+### Patch Changes
+
+- chore: Remove unused deps ([#76](https://github.com/techniq/layerstack/pull/76))
+
+- Updated dependencies [[`49ccf88`](https://github.com/techniq/layerstack/commit/49ccf8863b5f6402eb4caa72b53380611ae80ad1), [`1ebd4db`](https://github.com/techniq/layerstack/commit/1ebd4db5b1fb3d3d820312aa1aa5a84d7926200e)]:
+  - @layerstack/utils@2.0.0-next.12
+
 ## 1.0.2-next.11
 
 ### Patch Changes

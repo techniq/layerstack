@@ -1,5 +1,13 @@
 # @layerstack/utils
 
+## 2.0.0-next.12
+
+### Patch Changes
+
+- chore: Remove unused deps ([#76](https://github.com/techniq/layerstack/pull/76))
+
+- feat: Add string utils `toCamelCase()`, `toSnakeCase()`, `toKebabCase()`, and `toPascalCase()` ([#79](https://github.com/techniq/layerstack/pull/79))
+
 ## 2.0.0-next.11
 
 ### Patch Changes
