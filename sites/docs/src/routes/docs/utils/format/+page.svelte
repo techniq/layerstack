@@ -1,6 +1,11 @@
 <script lang="ts">
   import { TextField, DatePickerField, MenuField } from 'svelte-ux';
-  import { format, PeriodType, type FormatNumberStyle, DateToken } from '@layerstack/utils';
+  import {
+    format,
+    type FormatNumberStyle,
+    DateToken,
+    type PeriodTypeCode,
+  } from '@layerstack/utils';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
@@ -11,6 +16,20 @@
   let notation: Intl.NumberFormatOptions['notation'] = 'standard';
 
   let myDate = new Date('1982-03-30T07:11:00');
+
+  const periodTypeCodes: PeriodTypeCode[] = [
+    'day',
+    'daytime',
+    'time',
+    'week',
+    'biweek1',
+    'month',
+    'month-year',
+    'quarter',
+    'year',
+    'fiscal-year-october',
+  ];
+  let periodType: PeriodTypeCode = 'day';
 
   const locales = ['en', 'de', 'fr', 'it', 'es', 'jp', 'zh'] as const;
   let locale: (typeof locales)[number] = 'en';
@@ -42,6 +61,7 @@
       'percentRound',
       'metric',
     ].map((value) => ({ label: value, value }))}
+    stepper
   />
 
   <MenuField
@@ -51,12 +71,15 @@
       label: value ?? 'None',
       value,
     }))}
+    stepper
+    disabled={style !== 'currency' && style !== 'currencyRound'}
   />
 
   <MenuField
     label="locale"
     bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
+    stepper
   />
 
   <MenuField
@@ -66,6 +89,7 @@
       label: value,
       value,
     }))}
+    stepper
   />
 </div>
 
@@ -79,14 +103,22 @@
   <DatePickerField format="dd/MM/yyyy" label="date" bind:value={myDate}></DatePickerField>
 
   <MenuField
+    label="periodType"
+    bind:value={periodType}
+    options={periodTypeCodes.map((value) => ({ label: value, value }))}
+    stepper
+  />
+
+  <MenuField
     label="locale"
     bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
+    stepper
   />
 </div>
 
 <Preview>
-  <div>{format(myDate, PeriodType.Day)}</div>
+  <div>{format(myDate, periodType)}</div>
 </Preview>
 
 <h1>Numbers</h1>
@@ -151,7 +183,7 @@
   <div>
     <h3>With format string</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: 'eee, MMMM do',
       })}
     </Preview>
@@ -159,7 +191,7 @@
   <div>
     <h3>With descriptive tokens</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: [DateToken.DayOfWeek_short, DateToken.Month_long, DateToken.DayOfMonth_withOrdinal],
       })}
     </Preview>
@@ -167,17 +199,17 @@
   <div>
     <h3>With full intl</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: { weekday: 'short', month: 'long', day: 'numeric', withOrdinal: true },
       })}
     </Preview>
   </div>
 </div>
 
-{#each [PeriodType.Day, PeriodType.DayTime, PeriodType.TimeOnly, PeriodType.Week, PeriodType.BiWeek1, PeriodType.Month, PeriodType.MonthYear, PeriodType.Quarter, PeriodType.CalendarYear, PeriodType.FiscalYearOctober] as periodType}
-  <h2>PeriodType.{PeriodType[periodType]}</h2>
+{#each periodTypeCodes as periodType}
+  <h2>{periodType}</h2>
 
-  {#if periodType === PeriodType.Week || periodType === PeriodType.BiWeek1}
+  {#if periodType === 'week' || periodType === 'biweek1'}
     <span>
       It will take your default <b>weekStartsOn</b>
       <a
@@ -185,7 +217,7 @@
         href="https://svelte-ux.techniq.dev/customization#settings"
         target="_blank">settings</a
       >, if you want to be specific, you can also use
-      <b>{periodType === PeriodType.Week ? 'PeriodType.WeekSun' : 'PeriodType.BiWeek1Sun'}</b>
+      <b>{periodType === 'week' ? 'PeriodType.WeekSun' : 'PeriodType.BiWeek1Sun'}</b>
     </span>
   {/if}
 
