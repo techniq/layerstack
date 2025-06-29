@@ -11,7 +11,7 @@
   import Code from '$docs/Code.svelte';
 
   let value = 1234.56;
-  let style: FormatNumberStyle = 'decimal';
+  let numberType: FormatNumberStyle = 'decimal';
   let currency: Intl.NumberFormatOptions['currency'] | undefined = 'USD';
   let notation: Intl.NumberFormatOptions['notation'] = 'standard';
 
@@ -50,8 +50,8 @@
   <TextField label="value" bind:value type="decimal" />
 
   <MenuField
-    label="style"
-    bind:value={style}
+    label="type"
+    bind:value={numberType}
     options={[
       'integer',
       'decimal',
@@ -72,7 +72,7 @@
       value,
     }))}
     stepper
-    disabled={style !== 'currency' && style !== 'currencyRound'}
+    disabled={numberType !== 'currency' && numberType !== 'currencyRound'}
   />
 
   <MenuField
@@ -94,7 +94,7 @@
 </div>
 
 <Preview>
-  <div>{format(value, style, { currency, notation })}</div>
+  <div>{format(value, { type: numberType, locale, options: { currency, notation } })}</div>
 </Preview>
 
 <h2>Playground dates</h2>
@@ -118,7 +118,7 @@
 </div>
 
 <Preview>
-  <div>{format(myDate, periodType)}</div>
+  <div>{format(myDate, { type: periodType, locale })}</div>
 </Preview>
 
 <h1>Numbers</h1>

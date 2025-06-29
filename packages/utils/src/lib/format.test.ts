@@ -16,6 +16,29 @@ describe('format()', () => {
     expect(actual).equal('');
   });
 
+  describe('format based on value type', () => {
+    it('integer', () => {
+      const actual = format(1234);
+      expect(actual).equal('1,234');
+    });
+    it('decimal', () => {
+      const actual = format(1234.5678);
+      expect(actual).equal('1,234.57');
+    });
+    it('date string', () => {
+      const actual = format(testDateStr);
+      expect(actual).equal('11/21/2023');
+    });
+    it('date', () => {
+      const actual = format(parseDate(testDateStr));
+      expect(actual).equal('11/21/2023');
+    });
+    it('string', () => {
+      const actual = format('hello');
+      expect(actual).equal('hello');
+    });
+  });
+
   describe('formats number', () => {
     // See `number.test.ts` for more number tests
     it('returns original value as string for style "none"', () => {
@@ -44,6 +67,16 @@ describe('format()', () => {
     it('formats with "decimal" config with default options', () => {
       const actual = format(1234.5678, { type: 'decimal' });
       expect(actual).equal('1,234.57');
+    });
+
+    it('formats with "decimal" config with locale (es)', () => {
+      const actual = format(1234.5678, { type: 'decimal', locale: 'es' });
+      expect(actual).equal('1234,57');
+    });
+
+    it('formats with "decimal" config with locale (de)', () => {
+      const actual = format(1234.5678, { type: 'decimal', locale: 'de' });
+      expect(actual).equal('1.234,57');
     });
 
     it('formats with "decimal" config with extra options', () => {
@@ -100,32 +133,19 @@ describe('format()', () => {
       expect(actual).equal('11/21/2023');
     });
 
+    it('formats date with config with locale', () => {
+      const actual = format(testDate, { type: 'day', locale: 'es' });
+      expect(actual).equal('21/11/2023');
+    });
+
+    it('formats date with config with locale', () => {
+      const actual = format(testDate, { type: 'day', locale: 'de' });
+      expect(actual).equal('21.11.2023');
+    });
+
     it('formats date with config with extra options', () => {
       const actual = format(testDate, { type: 'day', options: { variant: 'short' } });
       expect(actual).equal('11/21');
-    });
-  });
-
-  describe('format based on value type', () => {
-    it('format based on value type (integer)', () => {
-      const actual = format(1234);
-      expect(actual).equal('1,234');
-    });
-    it('format based on value type (decimal)', () => {
-      const actual = format(1234.5678);
-      expect(actual).equal('1,234.57');
-    });
-    it('format based on value type (date string)', () => {
-      const actual = format(testDateStr);
-      expect(actual).equal('11/21/2023');
-    });
-    it('format based on value type (date)', () => {
-      const actual = format(parseDate(testDateStr));
-      expect(actual).equal('11/21/2023');
-    });
-    it('format based on value type (string)', () => {
-      const actual = format('hello');
-      expect(actual).equal('hello');
     });
   });
 });

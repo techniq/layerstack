@@ -7,7 +7,7 @@ import {
 } from './date.js';
 import { formatNumberWithLocale } from './number.js';
 import type { FormatNumberOptions, FormatNumberStyle } from './number.js';
-import { defaultLocale, type LocaleSettings } from './locale.js';
+import { createLocaleSettings, defaultLocale, type LocaleSettings } from './locale.js';
 import {
   PeriodType,
   type FormatDateOptions,
@@ -29,33 +29,51 @@ export type { FormatNumberStyle, PeriodType, PeriodTypeCode };
  */
 export function format(value: null | undefined, format?: FormatType): string;
 export function format(value: null | undefined, config: { type: FormatType }): string;
+
+// number
 export function format(
   value: number,
   format?: FormatNumberStyle | CustomFormatter,
-  options?: FormatNumberOptions
+  options?: FormatNumberOptions,
+  locale?: string
 ): string;
 export function format(
   value: number,
-  config: { type: FormatNumberStyle | CustomFormatter; options?: FormatNumberOptions }
+  config: {
+    type: FormatNumberStyle | CustomFormatter;
+    options?: FormatNumberOptions;
+    locale?: string;
+  }
 ): string;
+
+// Date
 export function format(
   value: string | Date,
   format?: PeriodType | PeriodTypeCode | CustomFormatter,
-  options?: FormatDateOptions
+  options?: FormatDateOptions,
+  locale?: string
 ): string;
 export function format(
   value: string | Date,
-  config: { type: PeriodType | PeriodTypeCode | CustomFormatter; options?: FormatDateOptions }
+  config: {
+    type: PeriodType | PeriodTypeCode | CustomFormatter;
+    options?: FormatDateOptions;
+    locale?: string;
+  }
 ): string;
+
 export function format(
   value: any,
   formatOrConfig?:
     | FormatType
-    | { type: FormatType; options?: FormatNumberOptions | FormatDateOptions },
+    | { type: FormatType; options?: FormatNumberOptions | FormatDateOptions; locale?: string },
   options?: FormatNumberOptions | FormatDateOptions
 ): any {
-  if (formatOrConfig && typeof formatOrConfig === 'object' && 'type' in formatOrConfig) {
-    return formatWithLocale(defaultLocale, value, formatOrConfig.type, formatOrConfig.options);
+  if (typeof formatOrConfig === 'object') {
+    const locale = formatOrConfig.locale
+      ? createLocaleSettings({ locale: formatOrConfig.locale })
+      : defaultLocale;
+    return formatWithLocale(locale, value, formatOrConfig.type, formatOrConfig.options);
   }
   return formatWithLocale(defaultLocale, value, formatOrConfig as FormatType, options);
 }
