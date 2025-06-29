@@ -27,7 +27,7 @@
       // @ts-expect-error
       e.target.innerText = JSON.stringify(e.detail.contentRect, null, 2);
     }}
-    class="resize overflow-auto whitespace-pre outline rounded"
+    class="resize overflow-auto whitespace-pre outline rounded-sm"
   ></div>
 </Preview>
 
@@ -40,7 +40,7 @@
       // @ts-expect-error
       e.target.innerText = JSON.stringify(e.target.getBoundingClientRect(), null, 2);
     }}
-    class="resize overflow-auto whitespace-pre outline rounded"
+    class="resize overflow-auto whitespace-pre outline rounded-sm"
   ></div>
 </Preview>
 
@@ -54,7 +54,7 @@
       e.target.style.setProperty('--color', e.detail.contentRect.width % 255);
     }}
     style:background-color="hsl(var(--color), 100%, 70%)"
-    class="resize overflow-auto p-2 rounded"
+    class="resize overflow-auto p-2 rounded-sm"
   >
     Resize and watch me change colors
   </div>

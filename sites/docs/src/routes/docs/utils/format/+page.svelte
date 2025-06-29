@@ -1,16 +1,35 @@
 <script lang="ts">
   import { TextField, DatePickerField, MenuField } from 'svelte-ux';
-  import { format, PeriodType, type FormatNumberStyle, DateToken } from '@layerstack/utils';
+  import {
+    format,
+    type FormatNumberStyle,
+    DateToken,
+    type PeriodTypeCode,
+  } from '@layerstack/utils';
 
   import Preview from '$docs/Preview.svelte';
   import Code from '$docs/Code.svelte';
 
   let value = 1234.56;
-  let style: FormatNumberStyle = 'decimal';
+  let numberType: FormatNumberStyle = 'decimal';
   let currency: Intl.NumberFormatOptions['currency'] | undefined = 'USD';
   let notation: Intl.NumberFormatOptions['notation'] = 'standard';
 
   let myDate = new Date('1982-03-30T07:11:00');
+
+  const periodTypeCodes: PeriodTypeCode[] = [
+    'day',
+    'daytime',
+    'time',
+    'week',
+    'biweek1',
+    'month',
+    'month-year',
+    'quarter',
+    'year',
+    'fiscal-year-october',
+  ];
+  let periodType: PeriodTypeCode = 'day';
 
   const locales = ['en', 'de', 'fr', 'it', 'es', 'jp', 'zh'] as const;
   let locale: (typeof locales)[number] = 'en';
@@ -31,8 +50,8 @@
   <TextField label="value" bind:value type="decimal" />
 
   <MenuField
-    label="style"
-    bind:value={style}
+    label="type"
+    bind:value={numberType}
     options={[
       'integer',
       'decimal',
@@ -42,6 +61,7 @@
       'percentRound',
       'metric',
     ].map((value) => ({ label: value, value }))}
+    stepper
   />
 
   <MenuField
@@ -51,12 +71,15 @@
       label: value ?? 'None',
       value,
     }))}
+    stepper
+    disabled={numberType !== 'currency' && numberType !== 'currencyRound'}
   />
 
   <MenuField
     label="locale"
     bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
+    stepper
   />
 
   <MenuField
@@ -66,11 +89,12 @@
       label: value,
       value,
     }))}
+    stepper
   />
 </div>
 
 <Preview>
-  <div>{format(value, style, { currency, notation })}</div>
+  <div>{format(value, { type: numberType, locale, options: { currency, notation } })}</div>
 </Preview>
 
 <h2>Playground dates</h2>
@@ -79,19 +103,27 @@
   <DatePickerField format="dd/MM/yyyy" label="date" bind:value={myDate}></DatePickerField>
 
   <MenuField
+    label="periodType"
+    bind:value={periodType}
+    options={periodTypeCodes.map((value) => ({ label: value, value }))}
+    stepper
+  />
+
+  <MenuField
     label="locale"
     bind:value={locale}
     options={locales.map((value) => ({ label: value, value }))}
+    stepper
   />
 </div>
 
 <Preview>
-  <div>{format(myDate, PeriodType.Day)}</div>
+  <div>{format(myDate, { type: periodType, locale })}</div>
 </Preview>
 
 <h1>Numbers</h1>
 
-<h2>Number Formats (default settings)</h2>
+<h2>format (default settings)</h2>
 
 <Preview showCode>
   <div>{format(1234.56, 'integer')}</div>
@@ -104,7 +136,7 @@
   <div>{format(0.5678, 'percent')}</div>
 </Preview>
 
-<h2>number formats (additional options)</h2>
+<h2>format (additional options)</h2>
 
 <span>
   You can customize numbers with the 3rd arg that is an enhanced <b>`Intl.NumberFormatOptions`</b> type.
@@ -123,6 +155,26 @@
   <div>{format(0.5678, 'percent', { fractionDigits: 1 })}</div>
 </Preview>
 
+<h2>config</h2>
+
+<span> You can customize numbers with a config option. </span>
+
+<Preview showCode>
+  <div>{format(1234.56, { type: 'integer', options: { maximumSignificantDigits: 2 } })}</div>
+  <div>{format(1234.56, { type: 'decimal', options: { maximumSignificantDigits: 5 } })}</div>
+  <div>{format(1234.56, { type: 'currency', options: { currency: 'EUR' } })}</div>
+  <div>
+    {format(123_456_789.99, {
+      type: 'currency',
+      options: { notation: 'compact', maximumSignificantDigits: 3 },
+    })}
+  </div>
+  <div>{format(0.5678, { type: 'percent', options: { signDisplay: 'always' } })}</div>
+  <div>{format(0.5678, { type: 'percentRound', options: { signDisplay: 'always' } })}</div>
+  <div>{format(1_234_567, { type: 'metric', options: { minimumSignificantDigits: 12 } })}</div>
+  <div>{format(0.5678, { type: 'percent', options: { fractionDigits: 1 } })}</div>
+</Preview>
+
 <h1>Dates</h1>
 
 <h2>Custom format</h2>
@@ -131,7 +183,7 @@
   <div>
     <h3>With format string</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: 'eee, MMMM do',
       })}
     </Preview>
@@ -139,7 +191,7 @@
   <div>
     <h3>With descriptive tokens</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: [DateToken.DayOfWeek_short, DateToken.Month_long, DateToken.DayOfMonth_withOrdinal],
       })}
     </Preview>
@@ -147,280 +199,52 @@
   <div>
     <h3>With full intl</h3>
     <Preview>
-      {format(myDate, PeriodType.Custom, {
+      {format(myDate, 'custom', {
         custom: { weekday: 'short', month: 'long', day: 'numeric', withOrdinal: true },
       })}
     </Preview>
   </div>
 </div>
 
-<h2>PeriodType Day</h2>
+{#each periodTypeCodes as periodType}
+  <h2>{periodType}</h2>
 
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Day, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
+  {#if periodType === 'week' || periodType === 'biweek1'}
+    <span>
+      It will take your default <b>weekStartsOn</b>
+      <a
+        class="text-accent-500"
+        href="https://svelte-ux.techniq.dev/customization#settings"
+        target="_blank">settings</a
+      >, if you want to be specific, you can also use
+      <b>{periodType === 'week' ? 'PeriodType.WeekSun' : 'PeriodType.BiWeek1Sun'}</b>
+    </span>
+  {/if}
 
-<h2>PeriodType DayTime</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        variant: 'short',
-      })}
-    </Preview>
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <h3>short</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          variant: 'short',
+        })}
+      </Preview>
+    </div>
+    <div>
+      <h3>default</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          // variant: 'default',
+        })}
+      </Preview>
+    </div>
+    <div>
+      <h3>long</h3>
+      <Preview>
+        {format(myDate, periodType, {
+          variant: 'long',
+        })}
+      </Preview>
+    </div>
   </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.DayTime, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType TimeOnly</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.TimeOnly, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Week</h2>
-<span>
-  It will take your default <b>weekStartsOn</b>
-  <a class="text-accent-500" href="/customization#settings">settings</a>, if you want to be
-  specific, you can also use
-  <b>PeriodType.WeekSun</b>
-</span>
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Week, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType BiWeek1</h2>
-<span>
-  It will take your default <b>weekStartsOn</b>
-  <a class="text-accent-500" href="/customization#settings">settings</a>, if you want to be
-  specific, you can also use
-  <b>PeriodType.BiWeek1Sun</b>
-</span>
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.BiWeek1, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Month</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Month, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType Quarter</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.Quarter, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType CalendarYear</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.CalendarYear, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
-
-<h2>PeriodType FiscalYearOctober</h2>
-
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <h3>short</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        variant: 'short',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>default</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        // variant: 'default',
-      })}
-    </Preview>
-  </div>
-  <div>
-    <h3>long</h3>
-    <Preview>
-      {format(myDate, PeriodType.FiscalYearOctober, {
-        variant: 'long',
-      })}
-    </Preview>
-  </div>
-</div>
+{/each}

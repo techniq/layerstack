@@ -75,7 +75,7 @@
 <h1>Examples</h1>
 
 <Preview>
-  <div class="grid grid-cols-[auto,1fr] items-center gap-2">
+  <div class="grid grid-cols-[auto_1fr] items-center gap-2">
     {#if $smScreen}
       <Icon data={mdiCheckCircle} size="1rem" class="text-success" />
     {:else}

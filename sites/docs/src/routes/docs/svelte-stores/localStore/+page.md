@@ -11,9 +11,11 @@
 ```svelte
 <script>
   import { localStore } from '@layerstack/svelte-stores';
-  import { addDays } from 'date-fns';
+  import { intervalOffset } from '@layerstack/utils';
 
-  const store = localStore('some-key', defaultValue, { expiry: addDays(new Date(), 1) });
+  const store = localStore('some-key', defaultValue, {
+    expiry: intervalOffset('day', new Date(), 1),
+  });
 </script>
 ```
 

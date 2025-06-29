@@ -1,5 +1,27 @@
 # @layerstack/docs
 
+## 1.1.0-next.1
+
+### Patch Changes
+
+- Updated dependencies [[`46c12ab`](https://github.com/techniq/layerstack/commit/46c12ab8d3848611d73d8fddb06e0039351f827c)]:
+  - @layerstack/tailwind@2.0.0-next.1
+
+## 1.1.0-next.0
+
+### Minor Changes
+
+- Tailwind 4 support ([#32](https://github.com/techniq/layerstack/pull/32))
+
+### Patch Changes
+
+- Updated dependencies [[`6cdcb26`](https://github.com/techniq/layerstack/commit/6cdcb26cabd0539cee2885efbaa39e7787a34114), [`c6bb443`](https://github.com/techniq/layerstack/commit/c6bb443d12ee12bd69417dcfa5880b6bf78c9f09), [`c13e65e`](https://github.com/techniq/layerstack/commit/c13e65e059d690cbc282635f6e48a27d715e5997)]:
+  - @layerstack/tailwind@2.0.0-next.0
+  - @layerstack/utils@1.1.0-next.0
+  - @layerstack/svelte-actions@1.0.1-next.0
+  - @layerstack/svelte-stores@1.0.2-next.0
+  - @layerstack/svelte-table@1.0.1-next.0
+
 ## 1.0.2
 
 ### Patch Changes

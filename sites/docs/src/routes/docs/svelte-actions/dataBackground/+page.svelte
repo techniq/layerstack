@@ -51,7 +51,7 @@
 />
 
 <div class="grid gap-2">
-  <div class="grid grid-cols-[2fr,1fr,1fr] gap-2">
+  <div class="grid grid-cols-[2fr_1fr_1fr] gap-2">
     <Field label="Domain">
       <ToggleGroup bind:value={domainSelected} variant="outline" inset size="sm" class="w-full">
         <ToggleOption value="original">Original</ToggleOption>
@@ -72,9 +72,9 @@
     </Field>
   </div>
 
-  <div class="grid grid-cols-[1fr,1fr] gap-2">
+  <div class="grid grid-cols-[1fr_1fr] gap-2">
     <Field label="Domain range">
-      <div class="grid grid-cols-[auto,1fr] gap-2">
+      <div class="grid grid-cols-[auto_1fr] gap-2">
         <span>min:</span>
         <NumberStepper bind:value={originalDomain[0]} dense class="w-32" />
         <span>max:</span>
@@ -83,7 +83,7 @@
     </Field>
 
     <Field label="Inset">
-      <div class="grid grid-cols-[auto,1fr] gap-2">
+      <div class="grid grid-cols-[auto_1fr] gap-2">
         <span>x:</span>
         <NumberStepper bind:value={inset[0]} dense min={0} />
         <span>y:</span>
@@ -92,7 +92,7 @@
     </Field>
   </div>
   <Field label="Tweened duration">
-    <div class="grid grid-cols-[1fr,40px] gap-3 w-full">
+    <div class="grid grid-cols-[1fr_40px] gap-3 w-full">
       <input type="range" bind:value={duration} max={1000} />
       <span class="text-right pr-1">{duration}</span>
     </div>
@@ -143,7 +143,7 @@
             <td
               class={cls(
                 'text-right border tabular-nums',
-                value > 0 ? 'from-success-300 to-success-500' : 'from-danger to-danger-300'
+                value > 0 ? 'from-success-100 to-success-500' : 'from-danger-500 to-danger-100'
               )}
               use:dataBackground={{
                 value,

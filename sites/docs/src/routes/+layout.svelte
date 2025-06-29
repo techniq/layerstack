@@ -47,13 +47,13 @@
       },
       AppBar: {
         classes:
-          'bg-primary text-primary-content shadow-md [text-shadow:1px_1px_2px_theme(colors.primary-700)]',
+          'bg-primary text-primary-content shadow-md [text-shadow:1px_1px_2px_var(--color-primary-700)]',
       },
       NavItem: {
         classes: {
           root: 'text-sm text-surface-content/70 pl-6 py-2 hover:bg-surface-100/70 relative',
           active:
-            'text-primary bg-surface-100 font-medium before:absolute before:bg-primary before:rounded-full before:w-1 before:h-2/3 before:left-[6px] shadow z-10',
+            'text-primary bg-surface-100 font-medium before:absolute before:bg-primary before:rounded-full before:w-1 before:h-2/3 before:left-[6px] shadow-sm z-10',
         },
       },
     },
@@ -138,26 +138,14 @@
 <!-- Set theme before anything renders (even when SSR is in use) -->
 <ThemeInit />
 
-<AppLayout headerHeight={96}>
+<AppLayout>
   <svelte:fragment slot="nav">
     <NavMenu />
     <!-- Spacer -->
     <div class="h-4"></div>
   </svelte:fragment>
 
-  <AppBar {title} class="pt-8">
-    <div
-      class="fixed top-0 left-0 w-full h-8 bg-primary-700 border-b border-primary-800/50 shadow flex gap-2 items-center justify-center text-sm font-medium"
-    >
-      LayerStack for Svelte 5 has been released! -
-      <a
-        href="https://next.layerstack.dev"
-        class="font-semibold underline-offset-2 hover:underline"
-      >
-        Visit the preview docs <Icon data={mdiArrowTopRight} class="text-xs mt-[-2px]" />
-      </a>
-    </div>
-
+  <AppBar {title}>
     <div slot="actions" class="flex gap-3">
       <Button
         href="https://www.layerchart.com"
@@ -178,11 +166,7 @@
       />
 
       <div class="border-r border-primary-content/20 pr-2">
-        {#if data.themes.light.length > 1 || data.themes.dark.length > 1}
-          <ThemeSelect keyboardShortcuts />
-        {:else}
-          <ThemeSwitch classes={{ switch: 'bg-black/10' }} />
-        {/if}
+        <ThemeSelect keyboardShortcuts />
       </div>
 
       {#if $lgScreen}

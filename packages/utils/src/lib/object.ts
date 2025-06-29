@@ -1,5 +1,6 @@
-import { get, camelCase, mergeWith } from 'lodash-es';
+import { get, mergeWith } from 'lodash-es';
 import { entries, fromEntries, keys } from './typeHelpers.js';
+import { toCamelCase } from './string.js';
 
 export function isLiteralObject(obj: any): obj is object {
   return obj && typeof obj === 'object' && obj.constructor === Object;
@@ -11,7 +12,7 @@ export function isEmptyObject(obj: any) {
 
 export function camelCaseKeys(obj: any) {
   return keys(obj).reduce(
-    (acc, key) => ((acc[camelCase(key ? String(key) : undefined)] = obj[key]), acc),
+    (acc, key) => ((acc[toCamelCase(key ? String(key) : '')] = obj[key]), acc),
     {} as any
   );
 }
@@ -186,4 +187,24 @@ export function pick<T extends object = {}>(obj: T, keys: string[]): Partial<T> 
  */
 export function keysByValues<T extends object>(obj: T): Record<string, keyof T> {
   return fromEntries(entries(obj).map(([key, value]) => [String(value), key]));
+}
+
+/**
+ * Map keys of an object
+ */
+export function mapKeys<T extends object>(
+  obj: T,
+  fn: (key: keyof T) => string
+): Record<string, T[keyof T]> {
+  return fromEntries(entries(obj).map(([key, value]) => [fn(key), value]));
+}
+
+/**
+ * Map values of an object
+ */
+export function mapValues<T extends object, V>(
+  obj: T,
+  fn: (value: T[keyof T]) => V
+): Record<keyof T, V> {
+  return fromEntries(entries(obj).map(([key, value]) => [key, fn(value)])) as Record<keyof T, V>;
 }
