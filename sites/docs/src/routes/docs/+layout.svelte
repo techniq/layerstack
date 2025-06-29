@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, slide } from 'svelte/transition';
   import { flatGroup } from 'd3-array';
 
   import {
@@ -15,6 +14,8 @@
     mdiGithub,
     mdiLink,
   } from '@mdi/js';
+
+  import IconAlignLeft from '~icons/lucide/align-left';
 
   import {
     ApiDocs,
@@ -36,10 +37,10 @@
   import ViewSourceButton from '$docs/ViewSourceButton.svelte';
 
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
 
-  $: [packageName, name] = $page.url.pathname.split('/').slice(2) ?? [];
-  $: title = $page.data.meta?.title ?? name;
+  $: [packageName, name] = page.url.pathname.split('/').slice(2) ?? [];
+  $: title = page.data.meta?.title ?? name;
   $: pageUrl = `${packageName}/${name}/+page.svelte?plain=1`;
   $: sourceUrl = `${packageName}/src/lib/${name}.ts`;
   $: ({
@@ -52,7 +53,7 @@
     pageSource,
     api,
     status,
-  } = $page.data.meta ?? {});
+  } = page.data.meta ?? {});
 
   $: showTableOfContents = $xlScreen;
 
@@ -164,7 +165,7 @@
 
 <div class="px-4">
   {#if !$xlScreen}
-    {#key $page.route.id}
+    {#key page.route.id}
       <Dialog
         bind:open={showTableOfContents}
         classes={{ dialog: 'w-[420px] max-w-[95vw] max-h-[95dvh]' }}
@@ -176,9 +177,24 @@
           size="sm"
           on:click={() => (showTableOfContents = false)}
         />
-        <TableOfContents
+        <!-- <TableOfContents
           icon={mdiChevronRight}
           class="px-4 py-2"
+          on:nodeClick={(e) => {
+            showTableOfContents = false;
+          }}
+        /> -->
+        <TableOfContents
+          linkIndent={12}
+          class="p-4"
+          classes={{
+            a: cls(
+              'border-l text-sm text-surface-content/50 py-[2px] hover:text-surface-content',
+              'data-active:border-primary data-active:text-primary',
+              'data-[level=1]:font-semibold'
+            ),
+          }}
+          scrollOffset={184}
           on:nodeClick={(e) => {
             showTableOfContents = false;
           }}
@@ -190,7 +206,7 @@
   <div class="grid xl:grid-cols-[1fr_auto] gap-6 pb-4">
     <div class="overflow-auto p-1">
       {#if features}
-        {#key $page.route.id}
+        {#key page.route.id}
           <h1 id="features">Features</h1>
           <ul class="grid gap-2 pl-4 text-surface-content">
             {#each features as feature}
@@ -208,7 +224,7 @@
       {#if related}
         <h1 id="related">Related</h1>
         <div class="related grid gap-3">
-          {#each flatGroup(related.map(getRelated), (d) => d.type) as [type, items]}
+          {#each flatGroup(related.map(getRelated), (d: any) => d.type) as [type, items]}
             <div>
               <h2
                 id="related-{type}"
@@ -264,12 +280,25 @@
       <div
         class="w-[224px] sticky top-[calc(var(--headerHeight)+10px)] pr-2 max-h-[calc(100dvh-64px)] overflow-auto z-60"
       >
-        <div class="text-xs uppercase leading-8 tracking-widest text-surface-content/50">
+        <div
+          class="flex gap-2 items-center text-xs font-medium uppercase pb-3 tracking-widest text-surface-content/50"
+        >
+          <IconAlignLeft />
           On this page
         </div>
         <!-- Rebuild toc when page changes -->
-        {#key $page.route.id}
-          <TableOfContents icon={mdiChevronRight} class="border-l pl-3" scrollOffset={184} />
+        {#key page.route.id}
+          <TableOfContents
+            linkIndent={12}
+            classes={{
+              a: cls(
+                'border-l text-sm text-surface-content/50 py-[2px] hover:text-surface-content',
+                'data-active:border-primary data-active:text-primary',
+                'data-[level=1]:font-semibold'
+              ),
+            }}
+            scrollOffset={184}
+          />
         {/key}
       </div>
     {/if}
