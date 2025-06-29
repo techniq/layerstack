@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.13
+
+### Patch Changes
+
+- feat(format): Support passing `locale` as part of config object ([#82](https://github.com/techniq/layerstack/pull/82))
+
 ## 2.0.0-next.12
 
 ### Patch Changes
