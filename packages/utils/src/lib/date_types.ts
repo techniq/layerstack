@@ -17,6 +17,10 @@ export enum PeriodType {
   Day = 10,
   DayTime = 11,
   TimeOnly = 15,
+  Hour = 16,
+  Minute = 17,
+  Second = 18,
+  Millisecond = 19,
 
   Week = 20, // will be replaced by WeekSun, WeekMon, etc depending on locale `weekStartsOn`
   WeekSun = 21,
@@ -57,6 +61,10 @@ export const periodTypeMappings = {
   [PeriodType.Day]: 'day',
   [PeriodType.DayTime]: 'daytime',
   [PeriodType.TimeOnly]: 'time',
+  [PeriodType.Hour]: 'hour',
+  [PeriodType.Minute]: 'minute',
+  [PeriodType.Second]: 'second',
+  [PeriodType.Millisecond]: 'millisecond',
 
   [PeriodType.WeekSun]: 'week-sun',
   [PeriodType.WeekMon]: 'week-mon',
@@ -199,6 +207,10 @@ export interface FormatDateLocaleOptions {
     day?: DateFormatVariantPreset;
     dayTime?: DateFormatVariantPreset;
     timeOnly?: DateFormatVariantPreset;
+    hour?: DateFormatVariantPreset;
+    minute?: DateFormatVariantPreset;
+    second?: DateFormatVariantPreset;
+    millisecond?: DateFormatVariantPreset;
     week?: DateFormatVariantPreset;
     month?: DateFormatVariantPreset;
     monthsYear?: DateFormatVariantPreset;

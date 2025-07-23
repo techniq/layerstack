@@ -151,6 +151,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '21 nov. 2023'],
         ],
       ],
+
       // PeriodType.DayTime
       [
         PeriodType.DayTime,
@@ -179,6 +180,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '07/03/2023 14:02:03'],
         ],
       ],
+
       // PeriodType.TimeOnly
       [
         PeriodType.TimeOnly,
@@ -207,6 +209,123 @@ describe('formatDateWithLocale()', () => {
           [fr, '14:02:03,004'],
         ],
       ],
+
+      // PeriodType.Hour
+      [
+        PeriodType.Hour,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+      [
+        PeriodType.Hour,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+      [
+        PeriodType.Hour,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+
+      // PeriodType.Minute
+      [
+        PeriodType.Minute,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        PeriodType.Minute,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        PeriodType.Minute,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+
+      // PeriodType.Second
+      [
+        PeriodType.Second,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        PeriodType.Second,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        PeriodType.Second,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+
+      // PeriodType.Millisecond
+      [
+        PeriodType.Millisecond,
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      [
+        PeriodType.Millisecond,
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      [
+        PeriodType.Millisecond,
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+
       // PeriodType.WeekSun / Mon
       [
         PeriodType.WeekSun,
@@ -244,6 +363,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '20/11/2023 - 26/11/2023'],
         ],
       ],
+
       // PeriodType.Week
       [
         PeriodType.Week,
@@ -272,6 +392,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '20/11/2023 - 26/11/2023'],
         ],
       ],
+
       // PeriodType.Month
       [
         PeriodType.Month,
@@ -300,6 +421,7 @@ describe('formatDateWithLocale()', () => {
           [fr, 'novembre 2023'],
         ],
       ],
+
       // PeriodType.MonthYear
       [
         PeriodType.MonthYear,
@@ -490,6 +612,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '21 nov. 2023'],
         ],
       ],
+
       // 'daytime'
       [
         'daytime',
@@ -518,6 +641,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '07/03/2023 14:02:03'],
         ],
       ],
+
       // 'time'
       [
         'time',
@@ -546,6 +670,123 @@ describe('formatDateWithLocale()', () => {
           [fr, '14:02:03,004'],
         ],
       ],
+
+      // hour
+      [
+        'hour',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+      [
+        'hour',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+      [
+        'hour',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02 PM'],
+          [fr, '14 h'],
+        ],
+      ],
+
+      // minute
+      [
+        'minute',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        'minute',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+      [
+        'minute',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02 PM'],
+          [fr, '14:02'],
+        ],
+      ],
+
+      // second
+      [
+        'second',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        'second',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+      [
+        'second',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03 PM'],
+          [fr, '14:02:03'],
+        ],
+      ],
+
+      // millisecond
+      [
+        'millisecond',
+        { variant: 'short' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      [
+        'millisecond',
+        { variant: 'default' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '2:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+      [
+        'millisecond',
+        { variant: 'long' },
+        dt_1M_1d_time_pm,
+        [
+          [defaultLocale, '02:02:03.004 PM'],
+          [fr, '14:02:03,004'],
+        ],
+      ],
+
       // 'week-sun'
       [
         'week-sun',
@@ -574,6 +815,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '19/11/2023 - 25/11/2023'],
         ],
       ],
+
       // 'week-mon'
       [
         'week-mon',
@@ -612,6 +854,7 @@ describe('formatDateWithLocale()', () => {
           [fr, '20/11/2023 - 26/11/2023'],
         ],
       ],
+
       // 'month'
       [
         'month',
@@ -640,6 +883,7 @@ describe('formatDateWithLocale()', () => {
           [fr, 'novembre 2023'],
         ],
       ],
+
       // 'month-year'
       [
         'month-year',
@@ -1054,6 +1298,10 @@ describe('getPeriodTypeByCode()', () => {
     ['day', PeriodType.Day],
     ['daytime', PeriodType.DayTime],
     ['time', PeriodType.TimeOnly],
+    ['hour', PeriodType.Hour],
+    ['minute', PeriodType.Minute],
+    ['second', PeriodType.Second],
+    ['millisecond', PeriodType.Millisecond],
     ['week', PeriodType.Week],
     ['week-sun', PeriodType.WeekSun],
     ['week-mon', PeriodType.WeekMon],
