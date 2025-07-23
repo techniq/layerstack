@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.14
+
+### Patch Changes
+
+- feat: Add additional time formats (hour, minute, second, millisecond). Resolves #84 ([#85](https://github.com/techniq/layerstack/pull/85))
+
 ## 2.0.0-next.13
 
 ### Patch Changes
