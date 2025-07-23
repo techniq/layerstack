@@ -69,6 +69,15 @@ export function getPeriodTypeNameWithLocale(settings: LocaleSettings, periodType
     case PeriodType.TimeOnly:
       return dico.Time;
 
+    case PeriodType.Hour:
+      return dico.Hour;
+    case PeriodType.Minute:
+      return dico.Minute;
+    case PeriodType.Second:
+      return dico.Second;
+    case PeriodType.Millisecond:
+      return dico.Millisecond;
+
     case PeriodType.WeekSun:
       return `${dico.Week} (${getDayOfWeekName(DayOfWeek.Sunday, locale)})`;
     case PeriodType.WeekMon:
@@ -480,6 +489,10 @@ export function getDateFuncsByPeriodType(
     case PeriodType.Custom:
     case PeriodType.DayTime:
     case PeriodType.TimeOnly:
+    case PeriodType.Hour:
+    case PeriodType.Minute:
+    case PeriodType.Second:
+    case PeriodType.Millisecond:
 
     case PeriodType.MonthYear:
     case null:
@@ -707,7 +720,19 @@ export function formatDateWithLocale(
 
   const weekStartsOn = options.weekStartsOn ?? settings.formats.dates.weekStartsOn;
 
-  const { day, dayTime, timeOnly, week, month, monthsYear, year } = settings.formats.dates.presets;
+  const {
+    day,
+    dayTime,
+    timeOnly,
+    hour,
+    minute,
+    second,
+    millisecond,
+    week,
+    month,
+    monthsYear,
+    year,
+  } = settings.formats.dates.presets;
 
   periodType =
     typeof periodType === 'string'
@@ -739,6 +764,18 @@ export function formatDateWithLocale(
 
     case PeriodType.TimeOnly:
       return formatIntl(settings, date, rv(timeOnly!)!);
+
+    case PeriodType.Hour:
+      return formatIntl(settings, date, rv(hour!)!);
+
+    case PeriodType.Minute:
+      return formatIntl(settings, date, rv(minute!)!);
+
+    case PeriodType.Second:
+      return formatIntl(settings, date, rv(second!)!);
+
+    case PeriodType.Millisecond:
+      return formatIntl(settings, date, rv(millisecond!)!);
 
     case PeriodType.Week: //Should never happen, but to make types happy
     case PeriodType.WeekSun:

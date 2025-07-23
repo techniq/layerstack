@@ -92,6 +92,10 @@ const defaultLocaleSettings: LocaleSettings = {
       Day: 'Day',
       DayTime: 'Day Time',
       Time: 'Time',
+      Hour: 'Hour',
+      Minute: 'Minute',
+      Second: 'Second',
+      Millisecond: 'Millisecond',
       Week: 'Week',
       BiWeek: 'Bi-Week',
       Month: 'Month',
@@ -188,6 +192,41 @@ const defaultLocaleSettings: LocaleSettings = {
         timeOnly: {
           short: [DateToken.Hour_numeric, DateToken.Minute_numeric],
           default: [DateToken.Hour_2Digit, DateToken.Minute_2Digit, DateToken.Second_2Digit],
+          long: [
+            DateToken.Hour_2Digit,
+            DateToken.Minute_2Digit,
+            DateToken.Second_2Digit,
+            DateToken.MiliSecond_3,
+          ],
+        },
+        hour: {
+          short: [DateToken.Hour_numeric],
+          default: [DateToken.Hour_numeric],
+          long: [DateToken.Hour_2Digit],
+        },
+        minute: {
+          short: [DateToken.Hour_numeric, DateToken.Minute_numeric],
+          default: [DateToken.Hour_numeric, DateToken.Minute_numeric],
+          long: [DateToken.Hour_2Digit, DateToken.Minute_2Digit],
+        },
+        second: {
+          short: [DateToken.Hour_numeric, DateToken.Minute_numeric, DateToken.Second_numeric],
+          default: [DateToken.Hour_numeric, DateToken.Minute_numeric, DateToken.Second_numeric],
+          long: [DateToken.Hour_2Digit, DateToken.Minute_2Digit, DateToken.Second_2Digit],
+        },
+        millisecond: {
+          short: [
+            DateToken.Hour_numeric,
+            DateToken.Minute_numeric,
+            DateToken.Second_numeric,
+            DateToken.MiliSecond_3,
+          ],
+          default: [
+            DateToken.Hour_numeric,
+            DateToken.Minute_numeric,
+            DateToken.Second_numeric,
+            DateToken.MiliSecond_3,
+          ],
           long: [
             DateToken.Hour_2Digit,
             DateToken.Minute_2Digit,
