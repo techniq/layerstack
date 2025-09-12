@@ -118,9 +118,9 @@ export function formatNumberWithLocale(
 }
 
 /**
- * Clamps value within min and max
+ * Clamps value within min and max.  Supports number and Date
  */
-export function clamp(value: number, min: number, max: number) {
+export function clamp<T extends number | Date>(value: T, min: T, max: T) {
   return value < min ? min : value > max ? max : value;
 }
 
