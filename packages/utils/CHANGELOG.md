@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.15
+
+### Patch Changes
+
+- feat(clamp): Update types to support `Date` ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 2.0.0-next.14
 
 ### Patch Changes
