@@ -1,10 +1,8 @@
 import { untrack } from 'svelte';
+import { Attachment } from 'svelte/attachments';
 import { Tween } from 'svelte/motion';
 import { EasingFunction } from 'svelte/transition';
 import { scaleLinear } from 'd3-scale';
-
-// Define Attachment type locally until Svelte 5.29+ is available
-export type Attachment<T extends EventTarget = Element> = (element: T) => void | (() => void);
 
 export type DataBackgroundOptions = {
   value: number | null | undefined;

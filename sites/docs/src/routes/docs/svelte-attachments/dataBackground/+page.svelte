@@ -45,7 +45,7 @@
 <h1>Usage</h1>
 
 <Code
-  source={`import { dataBackground } from '@layerstack/svelte-actions';`}
+  source={`import { dataBackground } from '@layerstack/svelte-attachments';`}
   language="javascript"
   class="mb-4"
 />

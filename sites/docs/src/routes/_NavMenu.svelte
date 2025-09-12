@@ -21,7 +21,7 @@
 
   const attachments = [
     'dataBackground',
-    // 'input',
+    'input',
     // 'layout',
     // 'mouse',
     // 'multi',

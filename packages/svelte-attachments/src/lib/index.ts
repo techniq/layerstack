@@ -1,5 +1,6 @@
 export * from './dataBackground.svelte.js';
-// export * from './input.js';
+export * from './focus.js';
+export * from './input.js';
 // export * from './layout.js';
 // export * from './mouse.js';
 // export * from './multi.js';
