@@ -1,5 +1,7 @@
 import { parseDate } from './date.js';
 
+// TODO: Support months or weeks?
+
 export type DurationOption = {
   milliseconds?: number;
   seconds?: number;
@@ -185,5 +187,26 @@ export class Duration {
 
   toString() {
     return this.format();
+  }
+
+  /**
+   * Returns the ISO 8601 duration string representation of the duration.
+   * @returns ISO 8601 duration string (e.g. "P3Y6M4DT12H30M5S")
+   * @see https://en.wikipedia.org/wiki/ISO_8601#Durations
+   */
+  toISOString() {
+    let str = 'P';
+    if (this.#years) str += this.#years + 'Y';
+    if (this.#days) str += this.#days + 'D';
+    if (this.#hours || this.#minutes || this.#seconds || this.#milliseconds) str += 'T';
+    if (this.#hours) str += this.#hours + 'H';
+    if (this.#minutes) str += this.#minutes + 'M';
+    if (this.#seconds || this.#milliseconds) {
+      str += this.#seconds;
+      if (this.#milliseconds) str += '.' + this.#milliseconds;
+      str += 'S';
+    }
+    if (str === 'P') str = 'PT0S'; // zero duration
+    return str;
   }
 }

@@ -196,4 +196,30 @@ describe('Duration', () => {
     const actual = duration.toString();
     expect(actual).equal('1d 2h 3m 4s 5ms');
   });
+
+  describe('toISOString', () => {
+    it('basic', () => {
+      const duration = new Duration({
+        duration: { years: 1, days: 2, hours: 3, minutes: 4, seconds: 5, milliseconds: 6 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('P1Y2DT3H4M5.6S');
+    });
+
+    it('years only', () => {
+      const duration = new Duration({
+        duration: { years: 1 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('P1Y');
+    });
+
+    it('hour only', () => {
+      const duration = new Duration({
+        duration: { hours: 1 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('PT1H');
+    });
+  });
 });
