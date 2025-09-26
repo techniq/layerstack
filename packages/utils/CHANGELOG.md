@@ -1,5 +1,15 @@
 # @layerstack/utils
 
+## 2.0.0-next.16
+
+### Patch Changes
+
+- fix(isActive): Do not match when path is not at the beginning ([#90](https://github.com/techniq/layerstack/pull/90))
+
+- fix(Duration): Support `.toISOString()` to output ISO 8601 duration strings (ex. `P2DT3H5M`) ([#92](https://github.com/techniq/layerstack/pull/92))
+
+- fix(Duration): Support `fractional` values (ex. `1.5s`). Useful with `minUnits` or `totalUnits` ([#92](https://github.com/techniq/layerstack/pull/92))
+
 ## 2.0.0-next.15
 
 ### Patch Changes
