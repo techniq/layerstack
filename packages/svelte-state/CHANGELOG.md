@@ -1,5 +1,12 @@
 # @layerstack/svelte-state
 
+## 0.1.0-next.21
+
+### Patch Changes
+
+- Updated dependencies [[`d43c010`](https://github.com/techniq/layerstack/commit/d43c010d45681df2c78693e59de4915ce57b3dd9), [`73c58ed`](https://github.com/techniq/layerstack/commit/73c58edd94931b5774262fed1ecfbd8ba3bd087a), [`73c58ed`](https://github.com/techniq/layerstack/commit/73c58edd94931b5774262fed1ecfbd8ba3bd087a)]:
+  - @layerstack/utils@2.0.0-next.16
+
 ## 0.1.0-next.20
 
 ### Patch Changes
