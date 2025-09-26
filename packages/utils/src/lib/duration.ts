@@ -1,4 +1,5 @@
 import { parseDate } from './date.js';
+import { round } from './number.js';
 
 // TODO: Support months or weeks?
 
@@ -134,48 +135,79 @@ export class Duration {
     options: {
       minUnits?: DurationUnits;
       totalUnits?: number;
+      fractional?: boolean;
       variant?: 'short' | 'long';
     } = {}
   ) {
-    const { minUnits, totalUnits = 99, variant = 'short' } = options;
+    const { minUnits = 99, totalUnits = 99, fractional = false, variant = 'short' } = options;
 
-    var sentenceArr = [];
-    var unitNames =
+    let sentenceArr = [];
+
+    const unitNames =
       variant === 'short'
         ? ['y', 'd', 'h', 'm', 's', 'ms']
         : ['years', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'];
 
-    var unitNums = [
+    const unitValues = [
       this.years,
       this.days,
       this.hours,
       this.minutes,
       this.seconds,
       this.milliseconds,
-    ].filter((x, i) => i <= (minUnits ?? 99));
+    ];
+
+    const filteredUnitValues = unitValues.filter((x, i) => i <= minUnits);
 
     // Combine unit numbers and names
-    for (var i in unitNums) {
+    for (let [i, unitValue] of filteredUnitValues.entries()) {
       if (sentenceArr.length >= totalUnits) {
         break;
       }
 
-      const unitNum = unitNums[i];
       let unitName = unitNames[i];
+      const isLastUnit =
+        i === filteredUnitValues.length - 1 ||
+        (unitValue !== 0 && sentenceArr.length + 1 >= totalUnits);
+
+      if (fractional && isLastUnit) {
+        // Last unit, add fractional part of next unit
+        let fraction = 0;
+        switch (i) {
+          case DurationUnits.Millisecond:
+            // No more units
+            break;
+          case DurationUnits.Second:
+            unitValue += round(this.milliseconds / 1000, 2);
+            break;
+          case DurationUnits.Minute:
+            unitValue += round(this.seconds / 60, 2);
+            break;
+          case DurationUnits.Hour:
+            unitValue += round(this.minutes / 60, 2);
+            break;
+          case DurationUnits.Day:
+            unitValue += round(this.hours / 24, 2);
+            break;
+          case DurationUnits.Year:
+            unitValue += round(this.days / 365, 2);
+            break;
+        }
+      }
 
       // Hide `0` values unless last unit (and none shown before)
-      if (unitNum !== 0 || (sentenceArr.length === 0 && Number(i) === unitNums.length - 1)) {
+      if (unitValue !== 0 || (sentenceArr.length === 0 && isLastUnit)) {
         switch (variant) {
           case 'short':
-            sentenceArr.push(unitNum + unitName);
+            sentenceArr.push(unitValue + unitName);
             break;
 
           case 'long':
-            if (unitNum === 1) {
+            if (unitValue === 1) {
               // Trim off plural `s`
               unitName = unitName.slice(0, -1);
             }
-            sentenceArr.push(unitNum + ' ' + unitName);
+            sentenceArr.push(unitValue + ' ' + unitName);
             break;
         }
       }
