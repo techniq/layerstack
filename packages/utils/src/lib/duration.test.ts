@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, test } from 'vitest';
 
-import { Duration, DurationUnits } from './duration.js';
+import { Duration, DurationOption, DurationUnits } from './duration.js';
 import { intervalOffset } from './date.js';
 
 describe('Duration', () => {
@@ -172,12 +172,80 @@ describe('Duration', () => {
       expect(actual).equal('1 day and 2 hours and 3 minutes and 4 seconds and 5 milliseconds');
     });
 
-    it('minUnits', () => {
-      const duration = new Duration({
-        duration: { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
-      });
-      const actual = duration.format({ minUnits: DurationUnits.Hour });
-      expect(actual).equal('1d 2h');
+    describe('options', () => {
+      test.each([
+        // Hour (normal, minUnits, fractional)
+        [{ days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 }, {}, '1d 2h 3m 4s 5ms'],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { minUnits: DurationUnits.Hour },
+          '1d 2h',
+        ],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { minUnits: DurationUnits.Hour, fractional: true },
+          '1d 2.05h',
+        ],
+        // Second (normal, minUnits, fractional)
+        [{ seconds: 1, milliseconds: 500 }, {}, '1s 500ms'],
+        [{ seconds: 1, milliseconds: 500 }, { minUnits: DurationUnits.Second }, '1s'],
+        [
+          { seconds: 1, milliseconds: 500 },
+          { minUnits: DurationUnits.Second, fractional: true },
+          '1.5s',
+        ],
+        // Total units
+        [{ days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 }, { totalUnits: 1 }, '1d'],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 2 },
+          '1d 2h',
+        ],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 3 },
+          '1d 2h 3m',
+        ],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 4 },
+          '1d 2h 3m 4s',
+        ],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 5 },
+          '1d 2h 3m 4s 5ms',
+        ],
+        // Total units with minUnits
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 4, minUnits: DurationUnits.Minute },
+          '1d 2h 3m',
+        ],
+        [
+          { days: 0, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 4, minUnits: DurationUnits.Minute },
+          '2h 3m',
+        ],
+        // Total units with fractional
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 1, fractional: true },
+          '1.08d',
+        ],
+        [
+          { days: 1, hours: 2, minutes: 3, seconds: 4, milliseconds: 5 },
+          { totalUnits: 4, minUnits: DurationUnits.Minute, fractional: true },
+          '1d 2h 3.07m',
+        ],
+      ] satisfies Array<[DurationOption, Parameters<Duration['format']>[0], string]>)(
+        'new Duration({ duration: %s }).format(%s) => %s',
+        (_duration, options, expected) => {
+          const duration = new Duration({ duration: _duration });
+          const actual = duration.format(options);
+          expect(actual).equal(expected);
+        }
+      );
     });
 
     it('totalUnits', () => {
@@ -195,5 +263,31 @@ describe('Duration', () => {
     });
     const actual = duration.toString();
     expect(actual).equal('1d 2h 3m 4s 5ms');
+  });
+
+  describe('toISOString', () => {
+    it('basic', () => {
+      const duration = new Duration({
+        duration: { years: 1, days: 2, hours: 3, minutes: 4, seconds: 5, milliseconds: 6 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('P1Y2DT3H4M5.6S');
+    });
+
+    it('years only', () => {
+      const duration = new Duration({
+        duration: { years: 1 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('P1Y');
+    });
+
+    it('hour only', () => {
+      const duration = new Duration({
+        duration: { hours: 1 },
+      });
+      const actual = duration.toISOString();
+      expect(actual).equal('PT1H');
+    });
   });
 });
