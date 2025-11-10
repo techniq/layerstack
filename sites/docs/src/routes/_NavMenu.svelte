@@ -19,6 +19,21 @@
     'styles',
   ];
 
+  const attachments = [
+    'dataBackground',
+    'input',
+    // 'layout',
+    // 'mouse',
+    // 'multi',
+    // 'observer',
+    // 'popover',
+    // 'portal',
+    // 'scroll',
+    // 'spotlight',
+    // 'sticky',
+    // 'styles',
+  ];
+
   const state = [
     'MediaQueryPresets',
     'PaginationState',
@@ -64,6 +79,11 @@
 <h1>svelte-actions</h1>
 {#each actions as item}
   <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-actions/{item}" />
+{/each}
+
+<h1>svelte-attachments</h1>
+{#each attachments as item}
+  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-attachments/{item}" />
 {/each}
 
 <h1>svelte-state</h1>
