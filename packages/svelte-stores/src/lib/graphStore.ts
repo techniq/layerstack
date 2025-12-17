@@ -1,6 +1,6 @@
 import { setContext, getContext } from 'svelte';
 import { writable } from 'svelte/store';
-import { merge } from 'lodash-es';
+import { merge } from '@layerstack/utils';
 
 import { parse, stringify } from '@layerstack/utils';
 

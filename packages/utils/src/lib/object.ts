@@ -1,4 +1,5 @@
-import { get, mergeWith } from 'lodash-es';
+import { get } from 'lodash-es';
+import { mergeWith } from './mergeWith.js';
 import { entries, fromEntries, keys } from './typeHelpers.js';
 import { toCamelCase } from './string.js';
 
@@ -77,7 +78,7 @@ function flatten<T>(items: T[][]): T[] {
  * @returns
  */
 export function merge<TObject, TSource>(object: TObject, source: TSource) {
-  return mergeWith(object, source, (objValue, srcValue) => {
+  return mergeWith(object, source, (objValue: any, srcValue: any) => {
     if (Array.isArray(srcValue)) {
       // Overwrite instead of merging by index with objValue (like standard lodash `merge` does)
       return srcValue;
