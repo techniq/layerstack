@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.18
+
+### Patch Changes
+
+- Add more get string syntax ([#95](https://github.com/techniq/layerstack/pull/95))
+
 ## 2.0.0-next.17
 
 ### Patch Changes

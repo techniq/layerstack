@@ -1,5 +1,14 @@
 # @layerstack/svelte-actions
 
+## 1.0.1-next.18
+
+### Patch Changes
+
+- Add more get string syntax ([#95](https://github.com/techniq/layerstack/pull/95))
+
+- Updated dependencies [[`c60cae2`](https://github.com/techniq/layerstack/commit/c60cae27e12fb01d2cd6708468d61571d8ead65b)]:
+  - @layerstack/utils@2.0.0-next.18
+
 ## 1.0.1-next.17
 
 ### Patch Changes
