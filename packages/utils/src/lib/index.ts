@@ -33,7 +33,11 @@ export {
 export * from './json.js';
 export * from './logger.js';
 export { round, clamp, randomInteger } from './number.js';
+export { get } from './get.js';
+export { set } from './set.js';
+export { isEqual } from './isEqual.js';
 export { isEmptyObject, isLiteralObject, omit, pick } from './object.js';
+export { mergeWith, merge, defaultsDeep } from './mergeWith.js';
 export * from './promise.js';
 export * from './sort.js';
 export * from './string.js';

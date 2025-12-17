@@ -1,5 +1,5 @@
 import { entries, fromEntries, type Prettify } from './typeHelpers.js';
-import { defaultsDeep } from 'lodash-es';
+import { defaultsDeep } from './mergeWith.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import {
   DateToken,
