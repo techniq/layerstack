@@ -10,7 +10,7 @@ import {
   type Patch,
 } from 'immer';
 import type { Schema } from 'zod';
-import { set } from 'lodash-es';
+import { set } from '@layerstack/utils';
 
 // Needed for finishDraft() patches/inverseChanges - https://immerjs.github.io/immer/patches
 enablePatches();
