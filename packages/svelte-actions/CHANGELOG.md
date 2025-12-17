@@ -1,5 +1,14 @@
 # @layerstack/svelte-actions
 
+## 1.0.1-next.17
+
+### Patch Changes
+
+- Remove lodash-es dependency ([#93](https://github.com/techniq/layerstack/pull/93))
+
+- Updated dependencies [[`5469634`](https://github.com/techniq/layerstack/commit/546963401fdea830b8eb8a4ced10299de14fe2c0)]:
+  - @layerstack/utils@2.0.0-next.17
+
 ## 1.0.1-next.16
 
 ### Patch Changes

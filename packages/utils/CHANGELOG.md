@@ -1,5 +1,11 @@
 # @layerstack/utils
 
+## 2.0.0-next.17
+
+### Patch Changes
+
+- Remove lodash-es dependency ([#93](https://github.com/techniq/layerstack/pull/93))
+
 ## 2.0.0-next.16
 
 ### Patch Changes
