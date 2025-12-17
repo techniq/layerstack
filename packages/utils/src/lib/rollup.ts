@@ -1,5 +1,5 @@
 import { rollup } from 'd3-array';
-import { get } from 'lodash-es';
+import { get } from './get.js';
 
 export default function <T = any>(
   data: T[],

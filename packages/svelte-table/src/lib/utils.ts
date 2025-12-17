@@ -1,6 +1,4 @@
-import { get } from 'lodash-es';
-
-import { PeriodType, parseDate } from '@layerstack/utils';
+import { PeriodType, parseDate, get } from '@layerstack/utils';
 
 import type { ColumnDef } from './types.js';
 

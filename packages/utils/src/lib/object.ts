@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get } from './get.js';
 import { mergeWith } from './mergeWith.js';
 import { entries, fromEntries, keys } from './typeHelpers.js';
 import { toCamelCase } from './string.js';
