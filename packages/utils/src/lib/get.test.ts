@@ -79,4 +79,68 @@ describe('get', () => {
     expect(get(obj, 'a.b.c.d.e.f')).toBe('deep');
     expect(get(obj, ['a', 'b', 'c', 'd', 'e', 'f'])).toBe('deep');
   });
+
+  it('returns value at number path', () => {
+    const arr = ['zero', 'one', 'two'];
+    expect(get(arr, 0)).toBe('zero');
+    expect(get(arr, 1)).toBe('one');
+    expect(get(arr, 2)).toBe('two');
+  });
+
+  it('returns defaultValue when number path does not exist', () => {
+    const arr = ['zero', 'one'];
+    expect(get(arr, 5, 'default')).toBe('default');
+  });
+
+  it('handles bracket notation with numeric indices', () => {
+    const obj = { a: [{ b: 1 }, { b: 2 }] };
+    expect(get(obj, 'a[0].b')).toBe(1);
+    expect(get(obj, 'a[1].b')).toBe(2);
+  });
+
+  it('handles bracket notation with double-quoted keys', () => {
+    const obj = { a: { 'special-key': 'value1', 'another.key': 'value2' } };
+    expect(get(obj, 'a["special-key"]')).toBe('value1');
+    expect(get(obj, 'a["another.key"]')).toBe('value2');
+  });
+
+  it('handles bracket notation with single-quoted keys', () => {
+    const obj = { a: { 'special-key': 'value1', 'another.key': 'value2' } };
+    expect(get(obj, "a['special-key']")).toBe('value1');
+    expect(get(obj, "a['another.key']")).toBe('value2');
+  });
+
+  it('handles mixed dot and bracket notation', () => {
+    const obj = { a: [{ b: { 'c-d': [1, 2, 3] } }] };
+    expect(get(obj, 'a[0].b["c-d"][2]')).toBe(3);
+  });
+
+  it('handles bracket notation at the start of path', () => {
+    const obj = { 0: 'zero', 'special-key': 'special' };
+    expect(get(obj, '[0]')).toBe('zero');
+    expect(get(obj, '["special-key"]')).toBe('special');
+  });
+
+  it('handles consecutive bracket notations', () => {
+    const obj = {
+      a: [
+        [1, 2],
+        [3, 4],
+      ],
+    };
+    expect(get(obj, 'a[0][1]')).toBe(2);
+    expect(get(obj, 'a[1][0]')).toBe(3);
+  });
+
+  it('returns defaultValue for invalid bracket notation paths', () => {
+    const obj = { a: { b: 1 } };
+    expect(get(obj, 'a[0]', 'default')).toBe('default');
+    expect(get(obj, 'a["nonexistent"]', 'default')).toBe('default');
+  });
+
+  it('handles keys with special characters via bracket notation', () => {
+    const obj = { 'key.with.dots': 'dots', 'key[with]brackets': 'brackets' };
+    expect(get(obj, '["key.with.dots"]')).toBe('dots');
+    expect(get(obj, '["key[with]brackets"]')).toBe('brackets');
+  });
 });
