@@ -1059,15 +1059,6 @@
 
 [data-theme="cyberpunk"] {
   color-scheme: light;
-  fontfamily:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    Liberation Mono,
-    Courier New,
-    monospace;
   --color-primary: hsl(340.8799 100% 69.8833%);
   --color-secondary: hsl(185.3347 100% 50%);
   --color-accent: hsl(278.9515 100% 72.6993%);
@@ -2020,10 +2011,6 @@
 
 [data-theme="wireframe"] {
   color-scheme: light;
-  fontfamily:
-    Chalkboard,
-    comic sans ms,
-    "sans-serif";
   --color-primary: hsl(0 0% 72.1569%);
   --color-secondary: hsl(0 0% 72.1569%);
   --color-accent: hsl(0 0% 72.1569%);
