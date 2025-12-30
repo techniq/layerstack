@@ -1,5 +1,11 @@
 # @layerstack/tailwind
 
+## 2.0.0-next.22
+
+### Minor Changes
+
+- Remove extra font families per Daisy UI changes ([#97](https://github.com/techniq/layerstack/pull/97))
+
 ## 2.0.0-next.21
 
 ### Patch Changes
