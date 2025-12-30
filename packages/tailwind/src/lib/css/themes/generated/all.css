@@ -1059,7 +1059,7 @@
 
 [data-theme="cyberpunk"] {
   color-scheme: light;
-  fontfamily:
+  font-family:
     ui-monospace,
     SFMono-Regular,
     Menlo,
@@ -2020,7 +2020,7 @@
 
 [data-theme="wireframe"] {
   color-scheme: light;
-  fontfamily:
+  font-family:
     Chalkboard,
     comic sans ms,
     "sans-serif";
