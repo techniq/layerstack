@@ -1,4 +1,4 @@
-import { slug as githubSlug } from 'github-slugger';
+import GithubSlugger from 'github-slugger';
 
 /**
  * Extract table of contents from markdown content
@@ -7,6 +7,11 @@ export function extractTocFromMarkdown(
 	content: string
 ): { id: string; text: string; level: number }[] {
 	const toc: { id: string; text: string; level: number }[] = [];
+
+	// A fresh slugger per document de-duplicates repeated slugs (e.g. headings
+	// `string` and `string[]` both slugify to `string`), matching `rehype-slug`'s
+	// behavior so TOC ids stay unique and line up with the rendered heading ids.
+	const slugger = new GithubSlugger();
 
 	// Strip HTML comments so commented-out headings are ignored
 	const stripped = content.replace(/<!--[\s\S]*?-->/g, '');
@@ -22,8 +27,7 @@ export function extractTocFromMarkdown(
 			.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
 			.trim();
 		if (!text) continue;
-		// Use github-slugger then strip leading/trailing dashes (matching rehypeCleanSlugIds)
-		const id = githubSlug(text);
+		const id = slugger.slug(text);
 		toc.push({ id, text, level });
 	}
 
