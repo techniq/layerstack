@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { examples } from '@layerstack/docs/context';
-	import { TableOfContents } from '@layerstack/docs/components';
+	import { RelatedLink, TableOfContents } from '@layerstack/docs/components';
 	import { cls } from '@layerstack/tailwind';
 	import { page } from '$app/state';
 
@@ -72,6 +72,15 @@
 			{#key page.url.pathname}
 				<PageComponent />
 			{/key}
+
+			{#if metadata.related?.length}
+				<h2 id="related" class="text-2xl font-semibold mt-8 mb-1">Related</h2>
+				<div class="flex flex-wrap gap-2 mt-2">
+					{#each metadata.related as related}
+						<RelatedLink value={related} />
+					{/each}
+				</div>
+			{/if}
 		</main>
 
 		{#if !metadata.hideTableOfContents && metadata.toc?.length}
