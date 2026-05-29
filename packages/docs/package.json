@@ -11,6 +11,7 @@
     "layerstack-docs": "./bin/layerstack-docs.js"
   },
   "scripts": {
+    "dev": "trap 'exit 0' INT; svelte-package --watch",
     "build": "svelte-package",
     "package": "svelte-package",
     "prepare": "svelte-kit sync",
