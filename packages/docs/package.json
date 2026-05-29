@@ -1,0 +1,182 @@
+{
+  "name": "@layerstack/docs",
+  "description": "Reusable documentation framework and tooling for LayerStack projects",
+  "author": "Sean Lynch <techniq35@gmail.com>",
+  "license": "MIT",
+  "repository": "techniq/layerstack",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "layerstack-docs": "./bin/layerstack-docs.js"
+  },
+  "scripts": {
+    "build": "svelte-package",
+    "package": "svelte-package",
+    "prepare": "svelte-kit sync",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@content-collections/core": "^0.14.3",
+    "@content-collections/markdown": "^0.1.4",
+    "@iconify-json/simple-icons": "^1.2.84",
+    "@layerstack/tailwind": "workspace:*",
+    "@layerstack/utils": "workspace:*",
+    "@shikijs/transformers": "^4.1.0",
+    "@sveltejs/svelte-json-tree": "^2.2.1",
+    "@webcontainer/api": "^1.6.4",
+    "github-slugger": "^2.0.0",
+    "mdsx": "^0.0.7",
+    "playwright": "^1.60.0",
+    "rehype-pretty-code": "^0.14.3",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-mdc": "^3.11.0",
+    "runed": "^0.37.1",
+    "sharp": "^0.34.5",
+    "shiki": "^4.1.0",
+    "svelte-ux": "2.0.0-next.22",
+    "tsx": "^4.22.3",
+    "typescript": "^5.8.3",
+    "unist-builder": "^4.0.0",
+    "unist-util-visit": "^5.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^2.21.0",
+    "@sveltejs/package": "^2.3.11",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@types/node": "^24.0.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.3.3",
+    "svelte": "^5.28.2",
+    "svelte-check": "^4.1.6",
+    "tslib": "^2.8.1",
+    "unplugin-icons": "^22.1.0",
+    "vite": "^6.3.5"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^2.0.0",
+    "svelte": "^5.0.0"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./dist/api-types.d.ts",
+      "default": "./dist/api-types.js"
+    },
+    "./catalog": {
+      "types": "./dist/catalog.d.ts",
+      "default": "./dist/catalog.js"
+    },
+    "./collections": {
+      "types": "./dist/collections.d.ts",
+      "default": "./dist/collections.js"
+    },
+    "./content": {
+      "types": "./dist/content.d.ts",
+      "default": "./dist/content.js"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "svelte": "./dist/context.js",
+      "default": "./dist/context.js"
+    },
+    "./examples": {
+      "types": "./dist/examples.d.ts",
+      "default": "./dist/examples.js"
+    },
+    "./examples-glob": {
+      "types": "./dist/examples-glob.d.ts",
+      "default": "./dist/examples-glob.js"
+    },
+    "./page-transitions": {
+      "types": "./dist/page-transitions.d.ts",
+      "default": "./dist/page-transitions.js"
+    },
+    "./project-stats": {
+      "types": "./dist/project-stats.d.ts",
+      "default": "./dist/project-stats.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "svelte": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
+    "./components/*.svelte": {
+      "types": "./dist/components/*.svelte.d.ts",
+      "svelte": "./dist/components/*.svelte",
+      "default": "./dist/components/*.svelte"
+    },
+    "./markdown": {
+      "types": "./dist/markdown/index.d.ts",
+      "default": "./dist/markdown/index.js"
+    },
+    "./markdown/config": {
+      "types": "./dist/markdown/config/index.d.ts",
+      "default": "./dist/markdown/config/index.js"
+    },
+    "./markdown/rehype/live-code": {
+      "types": "./dist/markdown/rehype/live-code.d.ts",
+      "default": "./dist/markdown/rehype/live-code.js"
+    },
+    "./markdown/components": {
+      "types": "./dist/markdown/components/index.d.ts",
+      "svelte": "./dist/markdown/components/index.js",
+      "default": "./dist/markdown/components/index.js"
+    },
+    "./markdown/components/*.svelte": {
+      "types": "./dist/markdown/components/*.svelte.d.ts",
+      "svelte": "./dist/markdown/components/*.svelte",
+      "default": "./dist/markdown/components/*.svelte"
+    },
+    "./markdown/blueprints/default/blueprint.svelte": {
+      "types": "./dist/markdown/blueprints/default/blueprint.svelte.d.ts",
+      "svelte": "./dist/markdown/blueprints/default/blueprint.svelte",
+      "default": "./dist/markdown/blueprints/default/blueprint.svelte"
+    },
+    "./content-collections": {
+      "types": "./dist/content-collections/index.d.ts",
+      "default": "./dist/content-collections/index.js"
+    },
+    "./node/stackblitz": {
+      "types": "./dist/node/stackblitz.d.ts",
+      "default": "./dist/node/stackblitz.js"
+    },
+    "./node/component-api": {
+      "types": "./dist/node/component-api.d.ts",
+      "default": "./dist/node/component-api.js"
+    },
+    "./node/example-catalog": {
+      "types": "./dist/node/example-catalog.d.ts",
+      "default": "./dist/node/example-catalog.js"
+    },
+    "./node/screenshots": {
+      "types": "./dist/node/screenshots.d.ts",
+      "default": "./dist/node/screenshots.js"
+    },
+    "./node/releases": {
+      "types": "./dist/node/releases.d.ts",
+      "default": "./dist/node/releases.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "src",
+    "templates"
+  ]
+}

@@ -94,6 +94,10 @@
   settings({ ...getSettings(), components: {} });
 </script>
 
+{#if page.data.metadata}
+  <!-- New @layerstack/docs reference content provides its own chrome (see [packageName]/[name]/+page.svelte) -->
+  <slot />
+{:else}
 <div
   class="[@media(min-height:900px)]:sticky top-[var(--headerHeight)] z-60 bg-surface-200/90 backdrop-blur-sm px-5 py-4 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)calc(100%-4px),rgba(0,0,0,0))]"
 >
@@ -304,3 +308,4 @@
     {/if}
   </div>
 </div>
+{/if}

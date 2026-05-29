@@ -1,14 +1,15 @@
 import adapter from '@sveltejs/adapter-cloudflare';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { mdsvex } from 'mdsvex';
+import { mdsx } from 'mdsx';
 
-import mdsvexConfig from './mdsvex.config.js';
+import { mdsxConfig } from './mdsx.config.js';
 import { codePreview } from './src/lib/plugins/svelte.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  extensions: ['.svelte', ...mdsvexConfig.extensions],
-  preprocess: [mdsvex(mdsvexConfig), vitePreprocess(), codePreview()],
+  extensions: ['.svelte', '.md'],
+  // `codePreview` retained during migration for legacy `<Preview>`-based pages; harmless otherwise.
+  preprocess: [mdsx(mdsxConfig), vitePreprocess(), codePreview()],
 
   vitePlugin: {
     inspector: {
@@ -21,6 +22,8 @@ const config = {
     adapter: adapter(),
     alias: {
       $docs: 'src/docs',
+      $examples: 'src/examples',
+      'content-collections': './.content-collections/generated',
       '$svelte-actions': '../../packages/svelte-actions/src/lib',
       '$svelte-state': '../../packages/svelte-state/src/lib',
       '$svelte-stores': '../../packages/svelte-stores/src/lib',
