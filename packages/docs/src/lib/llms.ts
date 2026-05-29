@@ -52,14 +52,21 @@ ${rows.join('\n')}`;
 /** Resolve the raw source for an example, by component (optional) + name. */
 export type ExampleSourceResolver = (component: string | undefined, name: string) => string | undefined;
 
+/** Build a docs URL for a (cross-component) example reference. */
+export type ExampleUrlResolver = (component: string, name: string) => string;
+
 /**
  * Replace `:example{...}` directives with inlined fenced code blocks, using a
  * caller-provided source resolver. Run this BEFORE `processMarkdownContent`.
+ *
+ * When an example's source can't be resolved, the directive becomes a "See example"
+ * reference — a markdown link if `exampleUrl` is provided, otherwise plain text.
  */
 export function inlineExampleDirectives(
 	content: string,
 	resolveSource: ExampleSourceResolver,
-	defaultComponent?: string
+	defaultComponent?: string,
+	exampleUrl?: ExampleUrlResolver
 ): string {
 	// Strip HTML comments first so commented-out examples aren't inlined
 	content = content.replace(/<!--[\s\S]*?-->/g, '');
@@ -69,7 +76,10 @@ export function inlineExampleDirectives(
 		/:example\{\s*component="([^"]+)"\s+name="([^"]+)"[^}]*\}/g,
 		(_match, component: string, name: string) => {
 			const raw = resolveSource(component, name);
-			return raw ? '```svelte\n' + trimCode(raw) + '\n```' : `See example: ${component}/${name}`;
+			if (raw) return '```svelte\n' + trimCode(raw) + '\n```';
+			return exampleUrl
+				? `See example: [${component}/${name}](${exampleUrl(component, name)})`
+				: `See example: ${component}/${name}`;
 		}
 	);
 
@@ -86,7 +96,10 @@ export function inlineExampleDirectives(
  * Convert docs markdown (with Svelte + MDC directive syntax) to vanilla markdown
  * suitable for LLM consumption.
  */
-export function processMarkdownContent(content: string): string {
+export function processMarkdownContent(
+	content: string,
+	options?: { exampleUrl?: ExampleUrlResolver }
+): string {
 	// Remove frontmatter
 	content = content.replace(/^---\n[\s\S]*?\n---\n*/, '');
 
@@ -163,10 +176,13 @@ export function processMarkdownContent(content: string): string {
 	content = content.replace(/\[:icon\{[^}]+\}\s*([^\]]+)\]/g, '$1');
 	content = content.replace(/:icon\{[^}]+\}\s*/g, '');
 
-	// Any remaining :example directives → plain text
+	// Any remaining :example directives → "See example" reference (link if a URL resolver is provided)
 	content = content.replace(
 		/:example\{\s*component="([^"]+)"\s+name="([^"]+)"[^}]*\}/g,
-		'See example: $1/$2'
+		(_match, component: string, name: string) =>
+			options?.exampleUrl
+				? `See example: [${component}/${name}](${options.exampleUrl(component, name)})`
+				: `See example: ${component}/${name}`
 	);
 	content = content.replace(/:example\{\s*name="([^"]+)"[^}]*\}/g, 'See example: $1');
 
@@ -174,4 +190,151 @@ export function processMarkdownContent(content: string): string {
 	content = content.replace(/\n{3,}/g, '\n\n');
 
 	return content.trim();
+}
+
+/**
+ * Extract a `title` from a markdown file's frontmatter, falling back to `fallback`
+ * (e.g. a title-cased filename) when absent.
+ */
+export function extractFrontmatterTitle(raw: string, fallback = ''): string {
+	const frontmatter = raw.match(/^---\n([\s\S]*?)\n---/);
+	const titleMatch = frontmatter?.[1].match(/^title:\s*(.+)$/m);
+	if (titleMatch) return titleMatch[1].trim().replace(/^["']|["']$/g, '');
+	return fallback;
+}
+
+/**
+ * Generate LLM-optimized markdown for a guide from its raw source.
+ *
+ * The consuming app resolves the raw markdown (via `import.meta.glob`); this handles
+ * the title (explicit → frontmatter → `fallbackTitle`) and content processing.
+ */
+export function generateGuideMarkdown(
+	raw: string,
+	options: { title?: string; fallbackTitle?: string } = {}
+): string {
+	const title = options.title ?? extractFrontmatterTitle(raw, options.fallbackTitle ?? '');
+	const body = processMarkdownContent(raw);
+	return title ? `# ${title}\n\n${body}` : body;
+}
+
+/** Minimal shape a doc needs to render reference markdown. */
+export interface ReferenceDoc {
+	name: string;
+	slug: string;
+	description?: string | null;
+	content?: string | null;
+	related?: string[] | null;
+}
+
+export interface ReferenceMarkdownOptions {
+	/** Heading level for the title (1 = `#`). Related/extra sections use `headingLevel + 1`. Default: 1 */
+	headingLevel?: number;
+	/** Inline `:example` directives as fenced code blocks (requires `resolveSource`). Default: false */
+	inlineExamples?: boolean;
+	/** Resolver for example source (used when `inlineExamples`). */
+	resolveSource?: ExampleSourceResolver;
+	/** URL resolver for non-inlined cross-component `:example` references. */
+	exampleUrl?: ExampleUrlResolver;
+	/** Default component for same-component `:example{name}` directives (e.g. the doc's slug). */
+	defaultComponent?: string;
+	/** Sections inserted after the description, before the processed content (e.g. metadata). */
+	leadingSections?: (string | null | undefined)[];
+	/** Sections inserted after the processed content, before Related (e.g. API, Examples). */
+	extraSections?: (string | null | undefined)[];
+	/** Render Related items as links via this URL builder; omit for a plain `- name` list. */
+	relatedUrl?: (name: string) => string;
+}
+
+/**
+ * Generate LLM-optimized markdown for a reference doc (component/util/etc.):
+ * `title → description → [leading] → content → [extra] → Related`.
+ *
+ * App-specific sections (metadata, API tables, example listings) are passed via
+ * `leadingSections` / `extraSections` so the orchestration stays shared.
+ */
+export function generateReferenceMarkdown(
+	doc: ReferenceDoc,
+	options: ReferenceMarkdownOptions = {}
+): string {
+	const {
+		headingLevel = 1,
+		inlineExamples = false,
+		resolveSource,
+		exampleUrl,
+		defaultComponent,
+		leadingSections = [],
+		extraSections = [],
+		relatedUrl
+	} = options;
+	const h = (level: number) => '#'.repeat(level);
+
+	const sections: string[] = [`${h(headingLevel)} ${doc.name}`];
+	if (doc.description) sections.push(doc.description);
+
+	for (const section of leadingSections) {
+		if (section) sections.push(section);
+	}
+
+	if (doc.content) {
+		let content = doc.content;
+		if (inlineExamples && resolveSource) {
+			content = inlineExampleDirectives(content, resolveSource, defaultComponent, exampleUrl);
+		}
+		const processed = processMarkdownContent(content, { exampleUrl });
+		if (processed) sections.push(processed);
+	}
+
+	for (const section of extraSections) {
+		if (section) sections.push(section);
+	}
+
+	if (doc.related?.length) {
+		sections.push(`${h(headingLevel + 1)} Related`);
+		sections.push(
+			doc.related.map((r) => (relatedUrl ? `- [${r}](${relatedUrl(r)})` : `- ${r}`)).join('\n')
+		);
+	}
+
+	return sections.join('\n\n');
+}
+
+/** An item in a markdown link list. */
+export interface LinkListItem {
+	name: string;
+	url: string;
+	description?: string | null;
+}
+
+/** Render a `## Title` section with a bulleted list of links: `- [name](url): description`. */
+export function linkListSection(
+	title: string,
+	items: LinkListItem[],
+	options: { headingLevel?: number } = {}
+): string {
+	const h = '#'.repeat(options.headingLevel ?? 2);
+	const lines = items.map(
+		(item) => `- [${item.name}](${item.url})${item.description ? `: ${item.description}` : ''}`
+	);
+	return `${h} ${title}\n\n${lines.join('\n')}`;
+}
+
+/**
+ * Group docs by a segment of their slug (default: the first, i.e. the package),
+ * sorted by key. Pass `sort` (e.g. `sortCollection`) to order within each group.
+ */
+export function groupBySlugSegment<T extends { slug: string }>(
+	docs: T[],
+	options: { segment?: number; sort?: (group: T[]) => T[] } = {}
+): [string, T[]][] {
+	const segment = options.segment ?? 0;
+	const byKey = new Map<string, T[]>();
+	for (const doc of docs) {
+		const key = doc.slug.split('/')[segment];
+		if (!byKey.has(key)) byKey.set(key, []);
+		byKey.get(key)!.push(doc);
+	}
+	return [...byKey.entries()]
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([key, group]) => [key, options.sort ? options.sort(group) : group]);
 }
