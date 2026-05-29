@@ -1,54 +1,27 @@
 <script lang="ts">
   import { NavItem } from 'svelte-ux';
+  import { allReferences, allGuides } from 'content-collections';
+  import { sortCollection } from '@layerstack/docs/collections';
 
   import { page } from '$app/stores';
   import { mdiFormatListBulleted, mdiHome } from '@mdi/js';
 
-  const actions = [
-    'dataBackground',
-    'input',
-    'layout',
-    'mouse',
-    'multi',
-    'observer',
-    'popover',
-    'portal',
-    'scroll',
-    'spotlight',
-    'sticky',
-    'styles',
-  ];
+  // Guides (drafts excluded), sorted
+  const guides = sortCollection(allGuides.filter((g) => !g.draft));
 
-  const state = [
-    'MediaQueryPresets',
-    'PaginationState',
-    'SelectionState',
-    'TimerState',
-    'UniqueState',
-  ];
-
-  const stores = [
-    'changeStore',
-    'debounceStore',
-    'dirtyStore',
-    'fetchStore',
-    'formStore',
-    'graphStore',
-    'localStore',
-    'mapStore',
-    'matchMedia',
-    'paginationStore',
-    'promiseStore',
-    'queryParamsStore',
-    'selectionStore',
-    'tableOrderStore',
-    'timerStore',
-    'uniqueStore',
-  ];
-
-  const table = ['actions', 'stores'];
-  const tailwind = ['utils'];
-  const utils = ['Duration', 'format', 'json', 'Logger', 'string'];
+  // Reference docs grouped by package (first slug segment), packages sorted
+  // alphabetically and items sorted within each via `sortCollection`.
+  const packages = (() => {
+    const byPackage = new Map<string, typeof allReferences>();
+    for (const ref of allReferences) {
+      const pkg = ref.slug.split('/')[0];
+      if (!byPackage.has(pkg)) byPackage.set(pkg, []);
+      byPackage.get(pkg)!.push(ref);
+    }
+    return [...byPackage.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([pkg, refs]) => [pkg, sortCollection(refs)] as const);
+  })();
 </script>
 
 <NavItem text="Introduction" icon={mdiHome} currentUrl={$page.url} path="/" />
@@ -61,32 +34,16 @@
   target="_blank"
 />
 
-<h1>svelte-actions</h1>
-{#each actions as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-actions/{item}" />
-{/each}
+{#if guides.length}
+  <h1>Guides</h1>
+  {#each guides as guide}
+    <NavItem text={guide.name} currentUrl={$page.url} path="/docs/guides/{guide.slug}" />
+  {/each}
+{/if}
 
-<h1>svelte-state</h1>
-{#each state as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-state/{item}" />
-{/each}
-
-<h1>svelte-stores</h1>
-{#each stores as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-stores/{item}" />
-{/each}
-
-<h1>svelte-table</h1>
-{#each table as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/svelte-table/{item}" />
-{/each}
-
-<h1>tailwind</h1>
-{#each tailwind as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/tailwind/{item}" />
-{/each}
-
-<h1>utils</h1>
-{#each utils as item}
-  <NavItem text={item} currentUrl={$page.url} path="/docs/utils/{item}" />
+{#each packages as [pkg, refs]}
+  <h1>{pkg}</h1>
+  {#each refs as ref}
+    <NavItem text={ref.name} currentUrl={$page.url} path="/docs/{ref.slug}" />
+  {/each}
 {/each}

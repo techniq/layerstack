@@ -1,14 +1,16 @@
 import { allReferences } from 'content-collections';
-import { error, text } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { generateReferenceMarkdown } from '$lib/llms';
+import { markdownResponse } from '@layerstack/docs/llms';
 
-/** Serve the raw markdown for a reference doc (consumed by `OpenWithButton`'s page/LLM actions). */
-export const GET = ({ params }) => {
+/** LLM-optimized markdown for a reference doc (page content + inlined examples). */
+export const GET: RequestHandler = async ({ params }) => {
 	const slug = `${params.packageName}/${params.name}`;
 	const doc = allReferences.find((r) => r.slug === slug);
 	if (!doc) {
 		error(404, 'Not found');
 	}
 
-	const body = [`# ${doc.title}`, doc.description, doc.content].filter(Boolean).join('\n\n');
-	return text(body);
+	return markdownResponse(generateReferenceMarkdown(doc), `${params.name}.md`);
 };

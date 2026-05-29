@@ -9,7 +9,6 @@
     Button,
     Icon,
     MenuButton,
-    QuickSearch,
     ThemeInit,
     ThemeSelect,
     ThemeSwitch,
@@ -18,13 +17,13 @@
     settings,
   } from 'svelte-ux';
 
-  import { entries } from '@layerstack/utils';
   import { lgScreen } from '@layerstack/svelte-stores';
+  import { Search } from '@layerstack/docs/components';
 
   import NavMenu from './_NavMenu.svelte';
 
   import { dev } from '$app/environment';
-  import { afterNavigate, goto } from '$app/navigation';
+  import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
 
   import './app.css';
@@ -63,21 +62,6 @@
   afterNavigate(() => {
     mainEl.scrollTo({ top: 0, behavior: 'instant' });
   });
-
-  const groups = ['components', 'actions', 'stores', 'utils'];
-  const quickSearchOptions = entries(
-    import.meta.glob('./docs/**/+page.(md|svelte)', { query: '?raw', eager: true })
-  )
-    .flatMap(([file, source]) => {
-      const url = file.replace('.', '').replace(/\/\+page.(md|svelte)/, '');
-      const [_, docs, group, name] = url.split('/');
-      return {
-        label: name,
-        value: url,
-        group: group,
-      };
-    })
-    .sort((a, b) => groups.indexOf(a.group) - groups.indexOf(b.group));
 
   let currentPath = '';
   onMount(() => {
@@ -155,14 +139,7 @@
         LayerChart
       </Button>
 
-      <QuickSearch
-        options={quickSearchOptions}
-        on:change={(e) => {
-          // @ts-expect-error
-          goto(e.detail.value);
-        }}
-        classes={{ button: 'max-sm:-mr-3' }}
-      />
+      <Search />
 
       <div class="border-r border-primary-content/20 pr-2">
         <ThemeSelect keyboardShortcuts />

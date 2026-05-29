@@ -23,10 +23,12 @@
   "dependencies": {
     "@content-collections/core": "^0.14.3",
     "@content-collections/markdown": "^0.1.4",
+    "@iconify-json/lucide": "^1.2.53",
     "@iconify-json/simple-icons": "^1.2.84",
     "@layerstack/tailwind": "workspace:*",
     "@layerstack/utils": "workspace:*",
     "@shikijs/transformers": "^4.1.0",
+    "flexsearch": "^0.8.212",
     "@sveltejs/svelte-json-tree": "^2.2.1",
     "@webcontainer/api": "^1.6.4",
     "github-slugger": "^2.0.0",
@@ -109,6 +111,14 @@
     "./project-stats": {
       "types": "./dist/project-stats.d.ts",
       "default": "./dist/project-stats.js"
+    },
+    "./llms": {
+      "types": "./dist/llms.d.ts",
+      "default": "./dist/llms.js"
+    },
+    "./search": {
+      "types": "./dist/search.d.ts",
+      "default": "./dist/search.js"
     },
     "./components": {
       "types": "./dist/components/index.d.ts",

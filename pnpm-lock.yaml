@@ -29,6 +29,9 @@ importers:
       '@content-collections/markdown':
         specifier: ^0.1.4
         version: 0.1.4(@content-collections/core@0.14.3(typescript@5.8.3))
+      '@iconify-json/lucide':
+        specifier: ^1.2.53
+        version: 1.2.53
       '@iconify-json/simple-icons':
         specifier: ^1.2.84
         version: 1.2.84
@@ -47,6 +50,9 @@ importers:
       '@webcontainer/api':
         specifier: ^1.6.4
         version: 1.6.4
+      flexsearch:
+        specifier: ^0.8.212
+        version: 0.8.212
       github-slugger:
         specifier: ^2.0.0
         version: 2.0.0
@@ -2391,6 +2397,9 @@ packages:
     resolution: {integrity: sha512-/3FfIa8mbrg3xE7+wAhWeV+bd7L2Mof+xtZb5dRDKZ+wDvYJK4WDYeIOuOhre5Yv5aQObZrlbRmk3RTSiuQBtw==}
     engines: {node: '>=18'}
     hasBin: true
+
+  flexsearch@0.8.212:
+    resolution: {integrity: sha512-wSyJr1GUWoOOIISRu+X2IXiOcVfg9qqBRyCPRUdLMIGJqPzMo+jMRlvE83t14v1j0dRMEaBbER/adQjp6Du2pw==}
 
   foreground-child@3.3.0:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
@@ -5397,6 +5406,8 @@ snapshots:
       path-exists: 4.0.0
 
   flat@6.0.1: {}
+
+  flexsearch@0.8.212: {}
 
   foreground-child@3.3.0:
     dependencies:

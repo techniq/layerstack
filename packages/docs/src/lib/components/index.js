@@ -9,6 +9,7 @@ export { default as Json } from './Json.svelte';
 export { default as LoadingPlaceholder } from './LoadingPlaceholder.svelte';
 export { default as OpenWithButton } from './OpenWithButton.svelte';
 export { default as RelatedLink } from './RelatedLink.svelte';
+export { default as Search } from './Search.svelte';
 export { default as Step } from './Step.svelte';
 export { default as Steps } from './Steps.svelte';
 export { default as TableOfContents } from './TableOfContents.svelte';
