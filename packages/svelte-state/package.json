@@ -6,8 +6,9 @@
   "repository": "techniq/layerstack",
   "version": "0.1.0-next.23",
   "scripts": {
-    "dev": "rimraf dist && tsc -p tsconfig.build.json --watch",
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "clean": "rimraf dist",
+    "build": "pnpm clean && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
