@@ -3,13 +3,11 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsx } from 'mdsx';
 
 import { mdsxConfig } from './mdsx.config.js';
-import { codePreview } from './src/lib/plugins/svelte.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   extensions: ['.svelte', '.md'],
-  // `codePreview` retained during migration for legacy `<Preview>`-based pages; harmless otherwise.
-  preprocess: [mdsx(mdsxConfig), vitePreprocess(), codePreview()],
+  preprocess: [mdsx(mdsxConfig), vitePreprocess()],
 
   vitePlugin: {
     inspector: {
@@ -21,7 +19,6 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      $docs: 'src/docs',
       $examples: 'src/examples',
       'content-collections': './.content-collections/generated',
       // Resolve workspace libraries to their *source* during dev/build so Vite compiles

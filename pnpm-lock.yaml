@@ -495,18 +495,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      prism-svelte:
-        specifier: ^0.5.0
-        version: 0.5.0
-      prism-themes:
-        specifier: ^1.9.0
-        version: 1.9.0
-      prismjs:
-        specifier: ^1.30.0
-        version: 1.30.0
-      sveld:
-        specifier: ^0.22.1
-        version: 0.22.1(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.22.3)(yaml@2.9.0))(postcss@8.5.3)
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.3.0
@@ -553,12 +541,6 @@ importers:
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
-      '@types/prismjs':
-        specifier: ^1.26.5
-        version: 1.26.5
-      mdsvex:
-        specifier: ^0.12.5
-        version: 0.12.6(svelte@5.28.6)
       mdsx:
         specifier: ^0.0.7
         version: 0.0.7(svelte@5.28.6)
@@ -580,9 +562,6 @@ importers:
       svelte-check:
         specifier: ^4.1.6
         version: 4.1.7(picomatch@4.0.2)(svelte@5.28.6)(typescript@5.8.3)
-      svelte-json-tree:
-        specifier: ^2.2.0
-        version: 2.2.0(svelte@5.28.6)
       svelte-ux:
         specifier: 2.0.0-next.22
         version: 2.0.0-next.22(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.22.3)(yaml@2.9.0))(postcss@8.5.3)(svelte@5.28.6)
@@ -1939,9 +1918,6 @@ packages:
   '@types/node@24.0.1':
     resolution: {integrity: sha512-MX4Zioh39chHlDJbKmEgydJDS3tspMP/lnQC67G3SWsTnb9NeYVWOjkxpOSy4oMfPs4StcWHwBrvUb4ybfnuaw==}
 
-  '@types/prismjs@1.26.5':
-    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
-
   '@types/resolve@1.17.1':
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
 
@@ -2782,11 +2758,6 @@ packages:
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
 
-  mdsvex@0.12.6:
-    resolution: {integrity: sha512-pupx2gzWh3hDtm/iDW4WuCpljmyHbHi34r7ktOqpPGvyiM4MyfNgdJ3qMizXdgCErmvYC9Nn/qyjePy+4ss9Wg==}
-    peerDependencies:
-      svelte: ^3.56.0 || ^4.0.0 || ^5.0.0-next.120
-
   mdsx@0.0.7:
     resolution: {integrity: sha512-Ftgb6Yq47WMaYoFznJ+jNxnn82sDUvot9Nw2uSaolbkghUV6Le1stDzEVHClaKA1hMJnc+jbMagK/HM7nT6FJg==}
     peerDependencies:
@@ -3139,9 +3110,6 @@ packages:
   printable-characters@1.0.42:
     resolution: {integrity: sha512-dKp+C4iXWK4vVYZmYSd0KBH5F/h1HoZRsbJ82AVKRO3PEo8L4lBS/vLwhVtpwwuYcoIsVY+1JYKR268yn480uQ==}
 
-  prism-svelte@0.4.7:
-    resolution: {integrity: sha512-yABh19CYbM24V7aS7TuPYRNMqthxwbvx6FF/Rw920YbyBWO3tnyPIqRMgHuSVsLmuHkkBS1Akyof463FVdkeDQ==}
-
   prism-svelte@0.5.0:
     resolution: {integrity: sha512-db91Bf3pRGKDPz1lAqLFSJXeW13mulUJxhycysFpfXV5MIK7RgWWK2E5aPAa71s8TCzQUXxF5JOV42/iOs6QkA==}
 
@@ -3414,11 +3382,6 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
-  svelte-json-tree@2.2.0:
-    resolution: {integrity: sha512-zcfepTrJ6xhpdgRZEujmiFh+ainRw7HO4Bsoh8PMAsm7fkgUPtnrZi3An8tmCFY8jajYhMrauHsd1S1XTeuiCw==}
-    peerDependencies:
-      svelte: ^4.0.0
-
   svelte-preprocess@6.0.3:
     resolution: {integrity: sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==}
     engines: {node: '>= 18.0.0'}
@@ -3580,32 +3543,20 @@ packages:
   unist-builder@4.0.0:
     resolution: {integrity: sha512-wmRFnH+BLpZnTKpc5L7O67Kac89s9HMrtELpnNaE6TAobq5DTZZs5YaTQfAZBA9bFPECx2uVAPO31c+GVug8mg==}
 
-  unist-util-is@4.1.0:
-    resolution: {integrity: sha512-ZOQSsnce92GrxSqlnEEseX0gi7GH9zTJZ0p9dtu87WRb/37mMPO2Ilx1s/t9vBHrFhbgweUwb+t7cIn5dxPhZg==}
-
   unist-util-is@6.0.0:
     resolution: {integrity: sha512-2qCTHimwdxLfz+YzdGfkqNlH0tLi9xjTnHddPmJwtIG9MGsdbutfTc4P+haPD7l7Cjxf/WZj+we5qfVPvvxfYw==}
 
   unist-util-position@5.0.0:
     resolution: {integrity: sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==}
 
-  unist-util-stringify-position@2.0.3:
-    resolution: {integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==}
-
   unist-util-stringify-position@4.0.0:
     resolution: {integrity: sha512-0ASV06AAoKCDkS2+xw5RXJywruurpbC4JZSm7nr7MOt1ojAzvyyaO+UxZf18j8FCF6kmzCZKcAgN/yu2gm2XgQ==}
-
-  unist-util-visit-parents@3.1.1:
-    resolution: {integrity: sha512-1KROIZWo6bcMrZEwiH2UrXDyalAa0uqzWCxCJj6lPOvTve2WkfgCytoDTPaMnodXh1WrXOq0haVYHj99ynJlsg==}
 
   unist-util-visit-parents@6.0.1:
     resolution: {integrity: sha512-L/PqWzfTP9lzzEa6CKs0k2nARxTdZduw3zyh8d2NVBnsyvHjSX4TWse388YrrQKbvI8w20fGjGlhgT96WwKykw==}
 
   unist-util-visit-parents@6.0.2:
     resolution: {integrity: sha512-goh1s1TBrqSqukSc8wrjwWhL0hiJxgA8m4kFxGlQ+8FYQ3C/m11FcTs4YYem7V664AhHVvgoQLk890Ssdsr2IQ==}
-
-  unist-util-visit@2.0.3:
-    resolution: {integrity: sha512-iJ4/RczbJMkD0712mGktuGpm/U4By4FfDonL7N/9tATGIF4imikjOuagyMY53tnZq3NP6BcmlrHhEKAfGWjh7Q==}
 
   unist-util-visit@5.0.0:
     resolution: {integrity: sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==}
@@ -3649,9 +3600,6 @@ packages:
 
   vfile-location@5.0.3:
     resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
-
-  vfile-message@2.0.4:
-    resolution: {integrity: sha512-DjssxRGkMvifUOJre00juHoP9DPWuzjxKuMDrhNbk2TdaYYBNMStsNhEOt3idrtI12VQYM/1+iM0KOzXi4pxwQ==}
 
   vfile-message@4.0.3:
     resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
@@ -4976,8 +4924,6 @@ snapshots:
     dependencies:
       undici-types: 7.8.0
 
-  '@types/prismjs@1.26.5': {}
-
   '@types/resolve@1.17.1':
     dependencies:
       '@types/node': 24.0.1
@@ -5904,16 +5850,6 @@ snapshots:
 
   mdn-data@2.0.30: {}
 
-  mdsvex@0.12.6(svelte@5.28.6):
-    dependencies:
-      '@types/mdast': 4.0.4
-      '@types/unist': 2.0.11
-      prism-svelte: 0.4.7
-      prismjs: 1.30.0
-      svelte: 5.28.6
-      unist-util-visit: 2.0.3
-      vfile-message: 2.0.4
-
   mdsx@0.0.7(svelte@5.28.6):
     dependencies:
       esrap: 1.4.6
@@ -6351,8 +6287,6 @@ snapshots:
 
   printable-characters@1.0.42: {}
 
-  prism-svelte@0.4.7: {}
-
   prism-svelte@0.5.0: {}
 
   prism-themes@1.9.0: {}
@@ -6752,10 +6686,6 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
-  svelte-json-tree@2.2.0(svelte@5.28.6):
-    dependencies:
-      svelte: 5.28.6
-
   svelte-preprocess@6.0.3(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.22.3)(yaml@2.9.0))(postcss@8.5.3)(svelte@4.2.19)(typescript@5.8.3):
     dependencies:
       svelte: 4.2.19
@@ -6938,8 +6868,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.2
 
-  unist-util-is@4.1.0: {}
-
   unist-util-is@6.0.0:
     dependencies:
       '@types/unist': 3.0.2
@@ -6948,18 +6876,9 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.2
 
-  unist-util-stringify-position@2.0.3:
-    dependencies:
-      '@types/unist': 2.0.11
-
   unist-util-stringify-position@4.0.0:
     dependencies:
       '@types/unist': 3.0.3
-
-  unist-util-visit-parents@3.1.1:
-    dependencies:
-      '@types/unist': 2.0.11
-      unist-util-is: 4.1.0
 
   unist-util-visit-parents@6.0.1:
     dependencies:
@@ -6970,12 +6889,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.0
-
-  unist-util-visit@2.0.3:
-    dependencies:
-      '@types/unist': 2.0.11
-      unist-util-is: 4.1.0
-      unist-util-visit-parents: 3.1.1
 
   unist-util-visit@5.0.0:
     dependencies:
@@ -7015,11 +6928,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.2
       vfile: 6.0.3
-
-  vfile-message@2.0.4:
-    dependencies:
-      '@types/unist': 2.0.11
-      unist-util-stringify-position: 2.0.3
 
   vfile-message@4.0.3:
     dependencies:

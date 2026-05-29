@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import posthog from 'posthog-js';
-  import 'prism-themes/themes/prism-vsc-dark-plus.css';
   import { mdiArrowTopRight, mdiDotsVertical, mdiGithub, mdiTwitter } from '@mdi/js';
 
   import {
