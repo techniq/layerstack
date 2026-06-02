@@ -4,6 +4,8 @@ node_modules
 /dist
 /.svelte-kit
 /.content-collections
+/.live-code
+/.wrangler
 /package
 .env
 .env.*
