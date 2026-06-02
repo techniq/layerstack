@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Duration, DurationUnits } from '@layerstack/utils';
+  import { Duration, DurationUnits } from '@layerstack/utils';
 </script>
 
 <div>{new Duration({ start: '1982-03-30' }).format()}</div>

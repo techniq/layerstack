@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
-	import { TextField } from 'svelte-ux';
-	import { debounceStore } from '@layerstack/svelte-stores';
+  import { writable } from 'svelte/store';
+  import { TextField } from 'svelte-ux';
+  import { debounceStore } from '@layerstack/svelte-stores';
 
-	const value = writable('');
-	const debouncedValue = debounceStore(value);
+  const value = writable('');
+  const debouncedValue = debounceStore(value);
 </script>
 
 <TextField bind:value={$value} label="Value" />

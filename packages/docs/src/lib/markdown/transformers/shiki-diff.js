@@ -4,43 +4,43 @@
  * @returns {import('shiki').ShikiTransformer}
  */
 export function shikiDiffTransformer() {
-	return {
-		name: 'diff-transformer',
-		code(node) {
-			// Trigger on either ```diff (language) or ```<lang> diff (meta string)
-			const metaString = this.options.meta?.__raw || '';
-			const lang = this.options.lang || '';
-			if (lang !== 'diff' && !metaString.includes('diff')) return;
+  return {
+    name: 'diff-transformer',
+    code(node) {
+      // Trigger on either ```diff (language) or ```<lang> diff (meta string)
+      const metaString = this.options.meta?.__raw || '';
+      const lang = this.options.lang || '';
+      if (lang !== 'diff' && !metaString.includes('diff')) return;
 
-			// Add class to the pre element
-			this.addClassToHast(this.pre, 'has-diff');
+      // Add class to the pre element
+      this.addClassToHast(this.pre, 'has-diff');
 
-			// Get all line elements
-			const lines = node.children.filter((child) => child.type === 'element');
+      // Get all line elements
+      const lines = node.children.filter((child) => child.type === 'element');
 
-			for (const line of lines) {
-				// Get all text tokens in this line
-				const tokens = line.children.filter((child) => child.type === 'element');
+      for (const line of lines) {
+        // Get all text tokens in this line
+        const tokens = line.children.filter((child) => child.type === 'element');
 
-				if (tokens.length === 0) continue;
+        if (tokens.length === 0) continue;
 
-				// Check the first token's text content
-				const firstToken = tokens[0];
-				const textNodes = firstToken.children?.filter((child) => child.type === 'text');
+        // Check the first token's text content
+        const firstToken = tokens[0];
+        const textNodes = firstToken.children?.filter((child) => child.type === 'text');
 
-				if (!textNodes || textNodes.length === 0) continue;
+        if (!textNodes || textNodes.length === 0) continue;
 
-				const firstText = textNodes[0];
-				const text = firstText.value;
+        const firstText = textNodes[0];
+        const text = firstText.value;
 
-				if (text.startsWith('+')) {
-					this.addClassToHast(line, 'diff-add');
-					firstText.value = text.slice(1);
-				} else if (text.startsWith('-')) {
-					this.addClassToHast(line, 'diff-remove');
-					firstText.value = text.slice(1);
-				}
-			}
-		}
-	};
+        if (text.startsWith('+')) {
+          this.addClassToHast(line, 'diff-add');
+          firstText.value = text.slice(1);
+        } else if (text.startsWith('-')) {
+          this.addClassToHast(line, 'diff-remove');
+          firstText.value = text.slice(1);
+        }
+      }
+    },
+  };
 }

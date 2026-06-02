@@ -51,236 +51,228 @@ import ts from 'typescript';
  * delegator re-exports the public Props type, which is what docs reference.
  */
 export function getSvelteFiles(dir) {
-    const files = [];
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-            // Recursively scan subdirectories (charts, layers, tooltip)
-            files.push(...getSvelteFiles(fullPath));
-        }
-        else if (entry.isFile() && entry.name.endsWith('.svelte')) {
-            if (/\.(svg|canvas|html|base)\.svelte$/.test(entry.name))
-                continue;
-            files.push(fullPath);
-        }
+  const files = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      // Recursively scan subdirectories (charts, layers, tooltip)
+      files.push(...getSvelteFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.svelte')) {
+      if (/\.(svg|canvas|html|base)\.svelte$/.test(entry.name)) continue;
+      files.push(fullPath);
     }
-    return files;
+  }
+  return files;
 }
 /**
  * Extract JSDoc comments from a node
  */
 function extractJsDoc(node) {
-    const jsDocTags = ts.getJSDocTags(node);
-    const jsDocComments = node.jsDoc;
-    let description;
-    const tags = {};
-    let defaultValue;
-    // Extract description from JSDoc comment
-    if (jsDocComments && jsDocComments.length > 0) {
-        const comment = jsDocComments[0].comment;
-        if (typeof comment === 'string') {
-            description = comment;
-        }
-        else if (Array.isArray(comment)) {
-            description = comment.map((c) => c.text).join('');
-        }
+  const jsDocTags = ts.getJSDocTags(node);
+  const jsDocComments = node.jsDoc;
+  let description;
+  const tags = {};
+  let defaultValue;
+  // Extract description from JSDoc comment
+  if (jsDocComments && jsDocComments.length > 0) {
+    const comment = jsDocComments[0].comment;
+    if (typeof comment === 'string') {
+      description = comment;
+    } else if (Array.isArray(comment)) {
+      description = comment.map((c) => c.text).join('');
     }
-    // Extract tags
-    for (const tag of jsDocTags) {
-        const tagName = tag.tagName.text;
-        let tagValue = '';
-        if (tag.comment) {
-            if (typeof tag.comment === 'string') {
-                tagValue = tag.comment;
-            }
-            else if (Array.isArray(tag.comment)) {
-                tagValue = tag.comment.map((c) => c.text).join('');
-            }
-        }
-        if (tagName === 'default') {
-            defaultValue = tagValue;
-        }
-        else {
-            tags[tagName] = tagValue;
-        }
+  }
+  // Extract tags
+  for (const tag of jsDocTags) {
+    const tagName = tag.tagName.text;
+    let tagValue = '';
+    if (tag.comment) {
+      if (typeof tag.comment === 'string') {
+        tagValue = tag.comment;
+      } else if (Array.isArray(tag.comment)) {
+        tagValue = tag.comment.map((c) => c.text).join('');
+      }
     }
-    return {
-        description,
-        tags: Object.keys(tags).length > 0 ? tags : undefined,
-        default: defaultValue
-    };
+    if (tagName === 'default') {
+      defaultValue = tagValue;
+    } else {
+      tags[tagName] = tagValue;
+    }
+  }
+  return {
+    description,
+    tags: Object.keys(tags).length > 0 ? tags : undefined,
+    default: defaultValue,
+  };
 }
 /**
  * Get type as string
  */
 function getTypeString(typeNode, checker) {
-    if (!typeNode)
-        return 'any';
-    // Use the printer to get a string representation
-    const printer = ts.createPrinter({ removeComments: true });
-    const typeString = printer.printNode(ts.EmitHint.Unspecified, typeNode, typeNode.getSourceFile());
-    // Normalize whitespace - collapse multiple spaces/newlines into single spaces
-    return typeString.replace(/\s+/g, ' ').trim();
+  if (!typeNode) return 'any';
+  // Use the printer to get a string representation
+  const printer = ts.createPrinter({ removeComments: true });
+  const typeString = printer.printNode(ts.EmitHint.Unspecified, typeNode, typeNode.getSourceFile());
+  // Normalize whitespace - collapse multiple spaces/newlines into single spaces
+  return typeString.replace(/\s+/g, ' ').trim();
 }
 /**
  * Extract properties from a type literal or interface
  */
 function extractProperties(node, checker) {
-    const properties = [];
-    for (const member of node.members) {
-        if (ts.isPropertySignature(member) && member.name) {
-            const name = member.name.getText();
-            const required = !member.questionToken; // Inverted: required = not optional
-            const type = getTypeString(member.type, checker);
-            const jsDoc = extractJsDoc(member);
-            // Check if this is a nested object type
-            let nestedProperties;
-            if (member.type && ts.isTypeLiteralNode(member.type)) {
-                nestedProperties = extractProperties(member.type, checker);
-            }
-            properties.push({
-                name,
-                type,
-                required,
-                ...jsDoc,
-                ...(nestedProperties && nestedProperties.length > 0 ? { properties: nestedProperties } : {})
-            });
-        }
+  const properties = [];
+  for (const member of node.members) {
+    if (ts.isPropertySignature(member) && member.name) {
+      const name = member.name.getText();
+      const required = !member.questionToken; // Inverted: required = not optional
+      const type = getTypeString(member.type, checker);
+      const jsDoc = extractJsDoc(member);
+      // Check if this is a nested object type
+      let nestedProperties;
+      if (member.type && ts.isTypeLiteralNode(member.type)) {
+        nestedProperties = extractProperties(member.type, checker);
+      }
+      properties.push({
+        name,
+        type,
+        required,
+        ...jsDoc,
+        ...(nestedProperties && nestedProperties.length > 0
+          ? { properties: nestedProperties }
+          : {}),
+      });
     }
-    return properties;
+  }
+  return properties;
 }
 /**
  * Resolve intersection types and extract all properties
  */
 function extractPropertiesFromType(typeNode, checker, sourceFile) {
-    let properties = [];
-    if (ts.isIntersectionTypeNode(typeNode)) {
-        // Handle intersection types (A & B & C)
-        for (const type of typeNode.types) {
-            properties = properties.concat(extractPropertiesFromType(type, checker, sourceFile));
-        }
+  let properties = [];
+  if (ts.isIntersectionTypeNode(typeNode)) {
+    // Handle intersection types (A & B & C)
+    for (const type of typeNode.types) {
+      properties = properties.concat(extractPropertiesFromType(type, checker, sourceFile));
     }
-    else if (ts.isTypeLiteralNode(typeNode)) {
-        // Handle inline type literals
-        properties = extractProperties(typeNode, checker);
-    }
-    else if (ts.isTypeReferenceNode(typeNode)) {
-        // Handle type references (e.g., CommonStyleProps)
-        const typeName = typeNode.typeName.getText();
-        // Try to find the type definition in the same file
-        ts.forEachChild(sourceFile, (node) => {
-            if (ts.isTypeAliasDeclaration(node) && node.name.text === typeName) {
-                properties = properties.concat(extractPropertiesFromType(node.type, checker, sourceFile));
-            }
-            else if (ts.isInterfaceDeclaration(node) && node.name.text === typeName) {
-                properties = properties.concat(extractProperties(node, checker));
-            }
-        });
-    }
-    return properties;
+  } else if (ts.isTypeLiteralNode(typeNode)) {
+    // Handle inline type literals
+    properties = extractProperties(typeNode, checker);
+  } else if (ts.isTypeReferenceNode(typeNode)) {
+    // Handle type references (e.g., CommonStyleProps)
+    const typeName = typeNode.typeName.getText();
+    // Try to find the type definition in the same file
+    ts.forEachChild(sourceFile, (node) => {
+      if (ts.isTypeAliasDeclaration(node) && node.name.text === typeName) {
+        properties = properties.concat(extractPropertiesFromType(node.type, checker, sourceFile));
+      } else if (ts.isInterfaceDeclaration(node) && node.name.text === typeName) {
+        properties = properties.concat(extractProperties(node, checker));
+      }
+    });
+  }
+  return properties;
 }
 /**
  * Extract element type from generic types like SVGAttributes<SVGRectElement>
  */
 function extractElementType(typeString) {
-    const match = typeString.match(/(?:SVG|HTML)Attributes<(\w+)>/);
-    return match?.[1];
+  const match = typeString.match(/(?:SVG|HTML)Attributes<(\w+)>/);
+  return match?.[1];
 }
 /**
  * Parse extended types from an intersection type
  */
 function parseExtendedTypes(typeNode, sourceFile) {
-    const extendedTypes = [];
-    if (!ts.isIntersectionTypeNode(typeNode)) {
-        return extendedTypes;
-    }
-    for (const type of typeNode.types) {
-        const typeText = type.getText(sourceFile);
-        // Skip the base PropsWithoutHTML type (but not Without<> that contains PropsWithoutHTML)
-        if (!typeText.startsWith('Without<') && typeText.includes('PropsWithoutHTML')) {
-            continue;
-        }
-        // Check if this is a Without<> wrapper (used to exclude props)
-        // Extract the element type from inside Without<SVGAttributes<Element>, ...>
-        const elementTypeFromWithout = extractElementType(typeText);
-        if (typeText.startsWith('Without<') && elementTypeFromWithout) {
-            extendedTypes.push({
-                name: elementTypeFromWithout.replace(/Element$/, 'Attributes'),
-                fullType: typeText,
-                elementType: elementTypeFromWithout,
-                isLibraryType: true
-            });
-            continue;
-        }
-        // Check if this is an SVG/HTML Attributes type
-        const elementType = extractElementType(typeText);
-        if (elementType) {
-            extendedTypes.push({
-                name: elementType.replace(/Element$/, 'Attributes'),
-                fullType: typeText,
-                elementType,
-                isLibraryType: true
-            });
-            continue;
-        }
-        // Check if this is a reference to another type (like CommonEvents)
-        if (ts.isTypeReferenceNode(type)) {
-            const typeName = type.typeName.getText(sourceFile);
-            extendedTypes.push({
-                name: typeName,
-                fullType: typeText,
-                isLibraryType: false // We should extract these types
-            });
-        }
-    }
+  const extendedTypes = [];
+  if (!ts.isIntersectionTypeNode(typeNode)) {
     return extendedTypes;
+  }
+  for (const type of typeNode.types) {
+    const typeText = type.getText(sourceFile);
+    // Skip the base PropsWithoutHTML type (but not Without<> that contains PropsWithoutHTML)
+    if (!typeText.startsWith('Without<') && typeText.includes('PropsWithoutHTML')) {
+      continue;
+    }
+    // Check if this is a Without<> wrapper (used to exclude props)
+    // Extract the element type from inside Without<SVGAttributes<Element>, ...>
+    const elementTypeFromWithout = extractElementType(typeText);
+    if (typeText.startsWith('Without<') && elementTypeFromWithout) {
+      extendedTypes.push({
+        name: elementTypeFromWithout.replace(/Element$/, 'Attributes'),
+        fullType: typeText,
+        elementType: elementTypeFromWithout,
+        isLibraryType: true,
+      });
+      continue;
+    }
+    // Check if this is an SVG/HTML Attributes type
+    const elementType = extractElementType(typeText);
+    if (elementType) {
+      extendedTypes.push({
+        name: elementType.replace(/Element$/, 'Attributes'),
+        fullType: typeText,
+        elementType,
+        isLibraryType: true,
+      });
+      continue;
+    }
+    // Check if this is a reference to another type (like CommonEvents)
+    if (ts.isTypeReferenceNode(type)) {
+      const typeName = type.typeName.getText(sourceFile);
+      extendedTypes.push({
+        name: typeName,
+        fullType: typeText,
+        isLibraryType: false, // We should extract these types
+      });
+    }
+  }
+  return extendedTypes;
 }
 /**
  * Find the main Props type for a component
  * Looks for patterns like: ComponentPropsWithoutHTML, ComponentProps
  */
 function findPropsTypeName(componentName, moduleScript) {
-    // Try different patterns in order of preference
-    const patterns = [
-        // First try exported types with exact component name match
-        { pattern: `${componentName}PropsWithoutHTML`, requireExport: true },
-        { pattern: `${componentName}Props`, requireExport: true },
-        // Then try non-exported types with exact component name match
-        { pattern: `${componentName}PropsWithoutHTML`, requireExport: false },
-        { pattern: `${componentName}Props`, requireExport: false },
-        // Finally, try any exported Props type
-        { regex: new RegExp(`export type (\\w*PropsWithoutHTML)`, 'g') },
-        { regex: new RegExp(`export type (\\w*Props)(?!WithoutHTML)`, 'g') },
-        // Last resort: any Props type (exported or not)
-        { regex: new RegExp(`type (\\w*PropsWithoutHTML)`, 'g') },
-        { regex: new RegExp(`type (\\w*Props)(?!WithoutHTML)`, 'g') }
-    ];
-    for (const config of patterns) {
-        if ('regex' in config && config.regex) {
-            // For regex patterns, find all matches
-            const matches = [...moduleScript.matchAll(config.regex)];
-            if (matches.length > 0) {
-                // Prefer types ending with "WithoutHTML"
-                const withoutHTMLMatch = matches.find((m) => m[1].endsWith('WithoutHTML'));
-                if (withoutHTMLMatch) {
-                    return withoutHTMLMatch[1];
-                }
-                // Otherwise return the first match
-                return matches[0][1];
-            }
+  // Try different patterns in order of preference
+  const patterns = [
+    // First try exported types with exact component name match
+    { pattern: `${componentName}PropsWithoutHTML`, requireExport: true },
+    { pattern: `${componentName}Props`, requireExport: true },
+    // Then try non-exported types with exact component name match
+    { pattern: `${componentName}PropsWithoutHTML`, requireExport: false },
+    { pattern: `${componentName}Props`, requireExport: false },
+    // Finally, try any exported Props type
+    { regex: new RegExp(`export type (\\w*PropsWithoutHTML)`, 'g') },
+    { regex: new RegExp(`export type (\\w*Props)(?!WithoutHTML)`, 'g') },
+    // Last resort: any Props type (exported or not)
+    { regex: new RegExp(`type (\\w*PropsWithoutHTML)`, 'g') },
+    { regex: new RegExp(`type (\\w*Props)(?!WithoutHTML)`, 'g') },
+  ];
+  for (const config of patterns) {
+    if ('regex' in config && config.regex) {
+      // For regex patterns, find all matches
+      const matches = [...moduleScript.matchAll(config.regex)];
+      if (matches.length > 0) {
+        // Prefer types ending with "WithoutHTML"
+        const withoutHTMLMatch = matches.find((m) => m[1].endsWith('WithoutHTML'));
+        if (withoutHTMLMatch) {
+          return withoutHTMLMatch[1];
         }
-        else if ('pattern' in config && config.pattern) {
-            // String pattern
-            const searchStr = config.requireExport
-                ? `export type ${config.pattern}`
-                : `type ${config.pattern}`;
-            if (moduleScript.includes(searchStr)) {
-                return config.pattern;
-            }
-        }
+        // Otherwise return the first match
+        return matches[0][1];
+      }
+    } else if ('pattern' in config && config.pattern) {
+      // String pattern
+      const searchStr = config.requireExport
+        ? `export type ${config.pattern}`
+        : `type ${config.pattern}`;
+      if (moduleScript.includes(searchStr)) {
+        return config.pattern;
+      }
     }
-    return null;
+  }
+  return null;
 }
 /**
  * Inline `export type { Foo } from './X.shared.svelte.js'` re-exports by
@@ -289,40 +281,43 @@ function findPropsTypeName(componentName, moduleScript) {
  * `*.shared.svelte.ts`, so without this the TS parser sees no type definition.
  */
 function resolveSharedReExports(filePath, moduleScript) {
-    const reExportRegex = /export\s+type\s*\{[^}]+\}\s*from\s+['"](\.\/[^'"]+\.shared\.svelte)\.js['"]\s*;?/g;
-    const dir = path.dirname(filePath);
-    let combined = moduleScript;
-    for (const match of moduleScript.matchAll(reExportRegex)) {
-        const sharedPath = path.join(dir, `${match[1].slice(2)}.ts`);
-        if (fs.existsSync(sharedPath)) {
-            combined += '\n' + fs.readFileSync(sharedPath, 'utf-8');
-        }
+  const reExportRegex =
+    /export\s+type\s*\{[^}]+\}\s*from\s+['"](\.\/[^'"]+\.shared\.svelte)\.js['"]\s*;?/g;
+  const dir = path.dirname(filePath);
+  let combined = moduleScript;
+  for (const match of moduleScript.matchAll(reExportRegex)) {
+    const sharedPath = path.join(dir, `${match[1].slice(2)}.ts`);
+    if (fs.existsSync(sharedPath)) {
+      combined += '\n' + fs.readFileSync(sharedPath, 'utf-8');
     }
-    return combined;
+  }
+  return combined;
 }
 /**
  * Extract component API from a Svelte file
  */
 export function extractComponentAPI(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    // Extract the module script content
-    const moduleScriptMatch = content.match(/<script[^>]*lang="ts"[^>]*module[^>]*>([\s\S]*?)<\/script>/);
-    if (!moduleScriptMatch) {
-        return null;
-    }
-    const moduleScript = resolveSharedReExports(filePath, moduleScriptMatch[1]);
-    // Look for the main Props type
-    const componentName = path.basename(filePath, '.svelte');
-    const propsTypeName = findPropsTypeName(componentName, moduleScript);
-    if (!propsTypeName) {
-        return null;
-    }
-    // Create a temporary TypeScript file for parsing
-    const tempFile = `temp-${componentName}.ts`;
-    const tempPath = path.join(path.dirname(filePath), tempFile);
-    // Write the module script to a temp file with necessary imports resolved
-    // We keep the original imports but add stub types for common ones that might not resolve
-    const tempContent = `
+  const content = fs.readFileSync(filePath, 'utf-8');
+  // Extract the module script content
+  const moduleScriptMatch = content.match(
+    /<script[^>]*lang="ts"[^>]*module[^>]*>([\s\S]*?)<\/script>/
+  );
+  if (!moduleScriptMatch) {
+    return null;
+  }
+  const moduleScript = resolveSharedReExports(filePath, moduleScriptMatch[1]);
+  // Look for the main Props type
+  const componentName = path.basename(filePath, '.svelte');
+  const propsTypeName = findPropsTypeName(componentName, moduleScript);
+  if (!propsTypeName) {
+    return null;
+  }
+  // Create a temporary TypeScript file for parsing
+  const tempFile = `temp-${componentName}.ts`;
+  const tempPath = path.join(path.dirname(filePath), tempFile);
+  // Write the module script to a temp file with necessary imports resolved
+  // We keep the original imports but add stub types for common ones that might not resolve
+  const tempContent = `
 import type { SVGAttributes, HTMLAttributes, MouseEventHandler, PointerEventHandler } from 'svelte/elements';
 import type { Snippet, Component } from 'svelte';
 
@@ -366,141 +361,143 @@ type Placement = 'top' | 'right' | 'bottom' | 'left';
 
 ${moduleScript}
 `;
-    fs.writeFileSync(tempPath, tempContent);
-    try {
-        // Parse the TypeScript file
-        const program = ts.createProgram([tempPath], {
-            target: ts.ScriptTarget.ES2020,
-            module: ts.ModuleKind.ESNext
-        });
-        const sourceFile = program.getSourceFile(tempPath);
-        if (!sourceFile) {
-            return null;
-        }
-        const checker = program.getTypeChecker();
-        let properties = [];
-        const extendedTypes = [];
-        // Find the PropsWithoutHTML type for properties
-        ts.forEachChild(sourceFile, (node) => {
-            if (ts.isTypeAliasDeclaration(node) && node.name.text === propsTypeName) {
-                properties = extractPropertiesFromType(node.type, checker, sourceFile);
+  fs.writeFileSync(tempPath, tempContent);
+  try {
+    // Parse the TypeScript file
+    const program = ts.createProgram([tempPath], {
+      target: ts.ScriptTarget.ES2020,
+      module: ts.ModuleKind.ESNext,
+    });
+    const sourceFile = program.getSourceFile(tempPath);
+    if (!sourceFile) {
+      return null;
+    }
+    const checker = program.getTypeChecker();
+    let properties = [];
+    const extendedTypes = [];
+    // Find the PropsWithoutHTML type for properties
+    ts.forEachChild(sourceFile, (node) => {
+      if (ts.isTypeAliasDeclaration(node) && node.name.text === propsTypeName) {
+        properties = extractPropertiesFromType(node.type, checker, sourceFile);
+      }
+    });
+    // Also look for the full Props type to extract extended types
+    // Try both removing "WithoutHTML" and looking for types that end with "Props"
+    const possibleFullPropsNames = [
+      propsTypeName.replace('WithoutHTML', ''),
+      `${componentName}Props`,
+    ];
+    for (const fullPropsTypeName of possibleFullPropsNames) {
+      ts.forEachChild(sourceFile, (node) => {
+        if (ts.isTypeAliasDeclaration(node) && node.name.text === fullPropsTypeName) {
+          const newExtendedTypes = parseExtendedTypes(node.type, sourceFile);
+          // Merge with existing, avoiding duplicates
+          for (const extType of newExtendedTypes) {
+            if (!extendedTypes.some((et) => et.name === extType.name)) {
+              extendedTypes.push(extType);
             }
-        });
-        // Also look for the full Props type to extract extended types
-        // Try both removing "WithoutHTML" and looking for types that end with "Props"
-        const possibleFullPropsNames = [
-            propsTypeName.replace('WithoutHTML', ''),
-            `${componentName}Props`
-        ];
-        for (const fullPropsTypeName of possibleFullPropsNames) {
-            ts.forEachChild(sourceFile, (node) => {
-                if (ts.isTypeAliasDeclaration(node) && node.name.text === fullPropsTypeName) {
-                    const newExtendedTypes = parseExtendedTypes(node.type, sourceFile);
-                    // Merge with existing, avoiding duplicates
-                    for (const extType of newExtendedTypes) {
-                        if (!extendedTypes.some((et) => et.name === extType.name)) {
-                            extendedTypes.push(extType);
-                        }
+          }
+          // Extract properties from non-library extended types (like CommonEvents)
+          for (const extType of extendedTypes) {
+            if (!extType.isLibraryType) {
+              // Find this type definition and extract its properties
+              ts.forEachChild(sourceFile, (typeNode) => {
+                if (ts.isTypeAliasDeclaration(typeNode) && typeNode.name.text === extType.name) {
+                  const extProperties = extractPropertiesFromType(
+                    typeNode.type,
+                    checker,
+                    sourceFile
+                  );
+                  // Add these properties to the main list, avoiding duplicates
+                  for (const prop of extProperties) {
+                    if (!properties.some((p) => p.name === prop.name)) {
+                      properties.push(prop);
                     }
-                    // Extract properties from non-library extended types (like CommonEvents)
-                    for (const extType of extendedTypes) {
-                        if (!extType.isLibraryType) {
-                            // Find this type definition and extract its properties
-                            ts.forEachChild(sourceFile, (typeNode) => {
-                                if (ts.isTypeAliasDeclaration(typeNode) && typeNode.name.text === extType.name) {
-                                    const extProperties = extractPropertiesFromType(typeNode.type, checker, sourceFile);
-                                    // Add these properties to the main list, avoiding duplicates
-                                    for (const prop of extProperties) {
-                                        if (!properties.some((p) => p.name === prop.name)) {
-                                            properties.push(prop);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
+                  }
                 }
-            });
+              });
+            }
+          }
         }
-        if (properties.length === 0) {
-            return null;
-        }
-        const result = {
-            generatedAt: new Date().toISOString(),
-            component: componentName,
-            propsType: propsTypeName,
-            properties
-        };
-        // Only add extends if there are extended types
-        if (extendedTypes.length > 0) {
-            result.extends = extendedTypes;
-        }
-        return result;
+      });
     }
-    finally {
-        // Clean up temp file
-        if (fs.existsSync(tempPath)) {
-            fs.unlinkSync(tempPath);
-        }
+    if (properties.length === 0) {
+      return null;
     }
+    const result = {
+      generatedAt: new Date().toISOString(),
+      component: componentName,
+      propsType: propsTypeName,
+      properties,
+    };
+    // Only add extends if there are extended types
+    if (extendedTypes.length > 0) {
+      result.extends = extendedTypes;
+    }
+    return result;
+  } finally {
+    // Clean up temp file
+    if (fs.existsSync(tempPath)) {
+      fs.unlinkSync(tempPath);
+    }
+  }
 }
 /**
  * Extract APIs for all components in a directory
  */
 export function extractAPIs(dir) {
-    const svelteFiles = getSvelteFiles(dir);
-    const apis = [];
-    for (const filePath of svelteFiles) {
-        const api = extractComponentAPI(filePath);
-        if (api) {
-            apis.push(api);
-        }
+  const svelteFiles = getSvelteFiles(dir);
+  const apis = [];
+  for (const filePath of svelteFiles) {
+    const api = extractComponentAPI(filePath);
+    if (api) {
+      apis.push(api);
     }
-    return apis.sort((a, b) => a.component.localeCompare(b.component));
+  }
+  return apis.sort((a, b) => a.component.localeCompare(b.component));
 }
 export function writeComponentAPIs({ componentsDir, outputDir, logger = console }) {
-    logger.log('Extracting component APIs...');
-    const svelteFiles = getSvelteFiles(componentsDir);
-    logger.log(`Found ${svelteFiles.length} Svelte files`);
-    const apis = [];
-    for (const filePath of svelteFiles) {
-        const componentName = path.basename(filePath, '.svelte');
-        logger.log(`Processing ${componentName}...`);
-        const api = extractComponentAPI(filePath);
-        if (api) {
-            apis.push(api);
-            logger.log(`  ✓ Extracted ${api.properties.length} properties`);
-        }
-        else {
-            logger.log(`  ⚠ No Props type found`);
-        }
+  logger.log('Extracting component APIs...');
+  const svelteFiles = getSvelteFiles(componentsDir);
+  logger.log(`Found ${svelteFiles.length} Svelte files`);
+  const apis = [];
+  for (const filePath of svelteFiles) {
+    const componentName = path.basename(filePath, '.svelte');
+    logger.log(`Processing ${componentName}...`);
+    const api = extractComponentAPI(filePath);
+    if (api) {
+      apis.push(api);
+      logger.log(`  ✓ Extracted ${api.properties.length} properties`);
+    } else {
+      logger.log(`  ⚠ No Props type found`);
     }
-    // Sort by component name
-    apis.sort((a, b) => a.component.localeCompare(b.component));
-    // Create output directory if it doesn't exist
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-    }
-    // Write individual component files
-    logger.log(`\nWriting individual component files...`);
-    for (const api of apis) {
-        const componentFile = path.join(outputDir, `${api.component}.json`);
-        fs.writeFileSync(componentFile, JSON.stringify(api, null, 2));
-    }
-    // Write index file with list of all components
-    const indexFile = path.join(outputDir, 'index.json');
-    const indexOutput = {
-        generatedAt: new Date().toISOString(),
-        components: apis.map((api) => ({
-            component: api.component,
-            propsType: api.propsType,
-            propertyCount: api.properties.length,
-            file: `${api.component}.json`
-        }))
-    };
-    fs.writeFileSync(indexFile, JSON.stringify(indexOutput, null, 2));
-    logger.log(`\n✅ Generated ${apis.length} component API files in ${outputDir}`);
-    logger.log(`✅ Generated index file: ${indexFile}`);
-    logger.log(`   Extracted ${apis.length} component APIs`);
-    return apis;
+  }
+  // Sort by component name
+  apis.sort((a, b) => a.component.localeCompare(b.component));
+  // Create output directory if it doesn't exist
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  // Write individual component files
+  logger.log(`\nWriting individual component files...`);
+  for (const api of apis) {
+    const componentFile = path.join(outputDir, `${api.component}.json`);
+    fs.writeFileSync(componentFile, JSON.stringify(api, null, 2));
+  }
+  // Write index file with list of all components
+  const indexFile = path.join(outputDir, 'index.json');
+  const indexOutput = {
+    generatedAt: new Date().toISOString(),
+    components: apis.map((api) => ({
+      component: api.component,
+      propsType: api.propsType,
+      propertyCount: api.properties.length,
+      file: `${api.component}.json`,
+    })),
+  };
+  fs.writeFileSync(indexFile, JSON.stringify(indexOutput, null, 2));
+  logger.log(`\n✅ Generated ${apis.length} component API files in ${outputDir}`);
+  logger.log(`✅ Generated index file: ${indexFile}`);
+  logger.log(`   Extracted ${apis.length} component APIs`);
+  return apis;
 }

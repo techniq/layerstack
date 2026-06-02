@@ -11,8 +11,8 @@ import { SelectionState } from '@layerstack/svelte-state';
 
 const state = new SelectionState();
 
-state.current.has(value)
-state.current.size
+state.current.has(value);
+state.current.size;
 state.add(value);
 state.delete(value);
 state.toggle(value);

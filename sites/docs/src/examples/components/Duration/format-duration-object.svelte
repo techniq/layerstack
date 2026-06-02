@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Duration } from '@layerstack/utils';
+  import { Duration } from '@layerstack/utils';
 </script>
 
 <div>{new Duration({ duration: { milliseconds: 300 } }).format()}</div>

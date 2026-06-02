@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format } from '@layerstack/utils';
+  import { format } from '@layerstack/utils';
 </script>
 
 <div>{format(1234.56, 'integer')}</div>

@@ -11,15 +11,15 @@ import { PaginationState } from '@layerstack/svelte-state';
 
 const state = new PaginationState({ total: 100 });
 
-state.page
-state.perPage
-state.total
-state.totalPages
-state.from
-state.to
-state.isFirst
-state.isLast
-state.hasPrevious
-state.hasNext
-state.slice(data)
+state.page;
+state.perPage;
+state.total;
+state.totalPages;
+state.from;
+state.to;
+state.isFirst;
+state.isLast;
+state.hasPrevious;
+state.hasNext;
+state.slice(data);
 ```

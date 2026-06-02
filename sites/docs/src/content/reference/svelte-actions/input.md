@@ -7,7 +7,13 @@ related: [components/TextField, components/Input]
 ## Usage
 
 ```js
-import { autoFocus, autoHeight, blurOnEscape, selectOnFocus, debounceEvent } from '@layerstack/svelte-actions';
+import {
+  autoFocus,
+  autoHeight,
+  blurOnEscape,
+  selectOnFocus,
+  debounceEvent,
+} from '@layerstack/svelte-actions';
 ```
 
 ## autoFocus

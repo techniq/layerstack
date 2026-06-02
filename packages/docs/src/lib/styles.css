@@ -17,89 +17,89 @@
 /* Shiki light/dark theming */
 code[data-theme*=' '],
 code[data-theme*=' '] span {
-	@apply text-(--shiki-light) dark:text-(--shiki-dark);
+  @apply text-(--shiki-light) dark:text-(--shiki-dark);
 }
 
 /* Inline code styling */
 code:not(pre > code):not(.custom) {
-	@apply text-sm font-medium bg-primary/5 text-primary font-mono px-1.5 rounded border border-primary/50;
+  @apply text-sm font-medium bg-primary/5 text-primary font-mono px-1.5 rounded border border-primary/50;
 }
 
 /* Code block figure container */
 figure[data-rehype-pretty-code-figure] {
-	/* Title/filename display - hidden, handled by pre.svelte component */
-	& figcaption[data-rehype-pretty-code-title] {
-		@apply hidden;
-	}
+  /* Title/filename display - hidden, handled by pre.svelte component */
+  & figcaption[data-rehype-pretty-code-title] {
+    @apply hidden;
+  }
 
-	/* Pre element within figure */
-	& pre {
-		@apply my-0 rounded-none border-0;
-	}
+  /* Pre element within figure */
+  & pre {
+    @apply my-0 rounded-none border-0;
+  }
 }
 
 /* Code block highlighting */
 pre {
-	/* Diff highlighting */
-	&.has-diff {
-		& .diff-add {
-			@apply bg-green-500/15 dark:bg-green-500/10 border-l-[3px] border-l-green-500 pl-2 -ml-2;
-		}
+  /* Diff highlighting */
+  &.has-diff {
+    & .diff-add {
+      @apply bg-green-500/15 dark:bg-green-500/10 border-l-[3px] border-l-green-500 pl-2 -ml-2;
+    }
 
-		& .diff-remove {
-			@apply bg-red-500/15 dark:bg-red-500/10 border-l-[3px] border-l-red-500 pl-2 -ml-2 opacity-70;
-		}
-	}
+    & .diff-remove {
+      @apply bg-red-500/15 dark:bg-red-500/10 border-l-[3px] border-l-red-500 pl-2 -ml-2 opacity-70;
+    }
+  }
 
-	/* Line highlighting */
-	& .highlighted {
-		@apply bg-blue-500/10 dark:bg-blue-500/8 border-l-[3px] border-l-blue-500 pl-2 -ml-2;
-	}
+  /* Line highlighting */
+  & .highlighted {
+    @apply bg-blue-500/10 dark:bg-blue-500/8 border-l-[3px] border-l-blue-500 pl-2 -ml-2;
+  }
 }
 
 /* Line numbers */
 code[data-line-numbers] {
-	counter-reset: line;
+  counter-reset: line;
 }
 
 code[data-line-numbers] > [data-line]::before {
-	counter-increment: line;
-	content: counter(line);
-	@apply inline-block w-4 mr-6 pr-2 text-right text-surface-content/40;
-	@apply border-r border-surface-content/10;
+  counter-increment: line;
+  content: counter(line);
+  @apply inline-block w-4 mr-6 pr-2 text-right text-surface-content/40;
+  @apply border-r border-surface-content/10;
 }
 
 /* Steps component styling - inspired by Docus */
 .steps {
-	@apply ms-4 pl-7 border-l border-surface-content/10;
-	counter-reset: step;
+  @apply ms-4 pl-7 border-l border-surface-content/10;
+  counter-reset: step;
 
-	/* Headings (h2, h3, h4) in steps */
-	& :is(h2, h3, h4) {
-		counter-increment: step;
-		@apply relative font-semibold text-lg mb-2 mt-6 first:mt-0;
+  /* Headings (h2, h3, h4) in steps */
+  & :is(h2, h3, h4) {
+    counter-increment: step;
+    @apply relative font-semibold text-lg mb-2 mt-6 first:mt-0;
 
-		/* Counter circle */
-		&::before {
-			content: counter(step);
-			@apply absolute size-6 -left-10 bg-surface-100 rounded-full;
-			@apply font-semibold text-sm tabular-nums;
-			@apply inline-flex items-center justify-center;
-			@apply ring-1 ring-surface-content/20;
-		}
-	}
+    /* Counter circle */
+    &::before {
+      content: counter(step);
+      @apply absolute size-6 -left-10 bg-surface-100 rounded-full;
+      @apply font-semibold text-sm tabular-nums;
+      @apply inline-flex items-center justify-center;
+      @apply ring-1 ring-surface-content/20;
+    }
+  }
 }
 
 /* Disable view transitions for reduced motion */
 @media (prefers-reduced-motion: reduce) {
-	::view-transition-old(root),
-	::view-transition-new(root) {
-		animation: none;
-	}
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }
 
 ::view-transition-old(*),
 ::view-transition-new(*),
 html:active-view-transition {
-	scroll-behavior: auto;
+  scroll-behavior: auto;
 }

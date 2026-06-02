@@ -18,6 +18,6 @@ const binRel = typeof tsxPkg.bin === 'string' ? tsxPkg.bin : tsxPkg.bin.tsx;
 const tsxBin = join(dirname(tsxPkgPath), binRel);
 
 const child = spawn(process.execPath, [tsxBin, cliPath, ...process.argv.slice(2)], {
-	stdio: 'inherit'
+  stdio: 'inherit',
 });
 child.on('exit', (code) => process.exit(code ?? 0));

@@ -30,17 +30,17 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** Strip leading/trailing dashes from heading IDs produced by rehype-slug. */
 export function rehypeCleanSlugIds() {
-	return (tree) => {
-		visit(tree, 'element', (node) => {
-			if (/^h[1-6]$/.test(node.tagName) && node.properties?.id) {
-				node.properties.id = node.properties.id.replace(/^-+|-+$/g, '');
-			}
-		});
-	};
+  return (tree) => {
+    visit(tree, 'element', (node) => {
+      if (/^h[1-6]$/.test(node.tagName) && node.properties?.id) {
+        node.properties.id = node.properties.id.replace(/^-+|-+$/g, '');
+      }
+    });
+  };
 }
 
 export function getDefaultBlueprintPath() {
-	return join(__dirname, '../blueprints/default/blueprint.svelte');
+  return join(__dirname, '../blueprints/default/blueprint.svelte');
 }
 
 /**
@@ -56,40 +56,39 @@ export function getDefaultBlueprintPath() {
  * }} [options]
  */
 export function createMdsxConfig(options = {}) {
-	return defineConfig({
-		extensions: ['.md'],
-		remarkPlugins: [
-			remarkGfm,
-			remarkMDC,
-			[
-				remarkComponents,
-				{
-					markdownComponentsPath:
-						options.markdownComponentsPath ?? '@layerstack/docs/markdown/components',
-					exampleComponentPath: options.exampleComponentPath ?? '$lib/components'
-				}
-			],
-			[
-				remarkLiveCode,
-				{
-					outputDir: options.liveCodeOutputDir,
-					importPrefix: options.liveCodeImportPrefix,
-					liveCodeComponent:
-						options.liveCodeComponent ??
-						'@layerstack/docs/markdown/components/LiveCode.svelte'
-				}
-			]
-		],
-		rehypePlugins: [
-			rehypeSlug,
-			rehypeCleanSlugIds,
-			[rehypePrettyCode, prettyCodeOptions],
-			rehypeCodeBlocks
-		],
-		blueprints: {
-			default: {
-				path: options.blueprintPath ?? getDefaultBlueprintPath()
-			}
-		}
-	});
+  return defineConfig({
+    extensions: ['.md'],
+    remarkPlugins: [
+      remarkGfm,
+      remarkMDC,
+      [
+        remarkComponents,
+        {
+          markdownComponentsPath:
+            options.markdownComponentsPath ?? '@layerstack/docs/markdown/components',
+          exampleComponentPath: options.exampleComponentPath ?? '$lib/components',
+        },
+      ],
+      [
+        remarkLiveCode,
+        {
+          outputDir: options.liveCodeOutputDir,
+          importPrefix: options.liveCodeImportPrefix,
+          liveCodeComponent:
+            options.liveCodeComponent ?? '@layerstack/docs/markdown/components/LiveCode.svelte',
+        },
+      ],
+    ],
+    rehypePlugins: [
+      rehypeSlug,
+      rehypeCleanSlugIds,
+      [rehypePrettyCode, prettyCodeOptions],
+      rehypeCodeBlocks,
+    ],
+    blueprints: {
+      default: {
+        path: options.blueprintPath ?? getDefaultBlueprintPath(),
+      },
+    },
+  });
 }

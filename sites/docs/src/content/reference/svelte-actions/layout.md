@@ -7,7 +7,11 @@ related: [components/Overflow]
 ## Usage
 
 ```js
-import { remainingViewportHeight, remainingViewportWidth, overflow } from '@layerstack/svelte-actions';
+import {
+  remainingViewportHeight,
+  remainingViewportWidth,
+  overflow,
+} from '@layerstack/svelte-actions';
 ```
 
 ## remainingViewportHeight

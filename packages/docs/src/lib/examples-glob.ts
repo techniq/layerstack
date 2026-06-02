@@ -8,28 +8,28 @@
  * Using import.meta.glob causes Vite to pre-transform all matched files during development.
  */
 export const componentExamples: Record<string, () => Promise<unknown>> = import.meta.glob(
-	'/src/examples/components/**/*.svelte',
-	{
-		import: 'default'
-	}
+  '/src/examples/components/**/*.svelte',
+  {
+    import: 'default',
+  }
 );
 export const componentSources: Record<string, () => Promise<unknown>> = import.meta.glob(
-	'/src/examples/components/**/*.svelte',
-	{
-		import: 'default',
-		query: '?raw'
-	}
+  '/src/examples/components/**/*.svelte',
+  {
+    import: 'default',
+    query: '?raw',
+  }
 );
 export const utilExamples: Record<string, () => Promise<unknown>> = import.meta.glob(
-	'/src/examples/utils/**/*.svelte',
-	{
-		import: 'default'
-	}
+  '/src/examples/utils/**/*.svelte',
+  {
+    import: 'default',
+  }
 );
 export const utilSources: Record<string, () => Promise<unknown>> = import.meta.glob(
-	'/src/examples/utils/**/*.svelte',
-	{
-		import: 'default',
-		query: '?raw'
-	}
+  '/src/examples/utils/**/*.svelte',
+  {
+    import: 'default',
+    query: '?raw',
+  }
 );

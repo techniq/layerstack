@@ -1,108 +1,108 @@
 import { allReferences, allGuides, type Reference } from 'content-collections';
 import { sortCollection } from '@layerstack/docs/collections';
 import {
-	generateGuideMarkdown as generateGuideMarkdownContent,
-	generateReferenceMarkdown as generateReferenceMarkdownDoc,
-	groupBySlugSegment,
-	linkListSection,
-	type ExampleSourceResolver
+  generateGuideMarkdown as generateGuideMarkdownContent,
+  generateReferenceMarkdown as generateReferenceMarkdownDoc,
+  groupBySlugSegment,
+  linkListSection,
+  type ExampleSourceResolver,
 } from '@layerstack/docs/llms';
 
 const exampleSources = import.meta.glob<string>('/src/examples/**/*.svelte', {
-	eager: true,
-	query: '?raw',
-	import: 'default'
+  eager: true,
+  query: '?raw',
+  import: 'default',
 });
 
 const guideSources = import.meta.glob<string>('/src/content/guides/**/*.md', {
-	eager: true,
-	query: '?raw',
-	import: 'default'
+  eager: true,
+  query: '?raw',
+  import: 'default',
 });
 
 const resolveExampleSource: ExampleSourceResolver = (component, name) => {
-	if (!component) return undefined;
-	return exampleSources[`/src/examples/components/${component}/${name}.svelte`];
+  if (!component) return undefined;
+  return exampleSources[`/src/examples/components/${component}/${name}.svelte`];
 };
 
 /** Group reference docs by their package (first slug segment), sorted within each group. */
 function referencesByPackage(): [string, Reference[]][] {
-	return groupBySlugSegment(allReferences, { sort: sortCollection });
+  return groupBySlugSegment(allReferences, { sort: sortCollection });
 }
 
 /** LLM-optimized markdown for a single reference doc (examples inlined). */
 export function generateReferenceMarkdown(doc: Reference): string {
-	return generateReferenceMarkdownDoc(doc, {
-		inlineExamples: true,
-		resolveSource: resolveExampleSource,
-		defaultComponent: doc.slug.split('/').pop()
-	});
+  return generateReferenceMarkdownDoc(doc, {
+    inlineExamples: true,
+    resolveSource: resolveExampleSource,
+    defaultComponent: doc.slug.split('/').pop(),
+  });
 }
 
 /** LLM-optimized markdown for a guide. */
 export function generateGuideMarkdown(name: string): string {
-	const raw = guideSources[`/src/content/guides/${name}.md`];
-	if (!raw) throw new Error(`Guide "${name}" not found`);
-	return generateGuideMarkdownContent(raw, { fallbackTitle: name });
+  const raw = guideSources[`/src/content/guides/${name}.md`];
+  if (!raw) throw new Error(`Guide "${name}" not found`);
+  return generateGuideMarkdownContent(raw, { fallbackTitle: name });
 }
 
 /** Root `/llms.txt` index — links to each page's `/llms.txt`. */
 export function generateLlmsTxt(baseUrl: string): string {
-	const sections: string[] = [
-		`# LayerStack Documentation for LLMs
+  const sections: string[] = [
+    `# LayerStack Documentation for LLMs
 
 > LayerStack is a collection of Svelte actions, stores, state, table utilities, and general utils for Svelte.
 
-This file links to LLM-optimized documentation in markdown format. Append \`/llms.txt\` to any page URL for its markdown, or see [/docs/llms.txt](${baseUrl}/docs/llms.txt) for everything in one file.`
-	];
+This file links to LLM-optimized documentation in markdown format. Append \`/llms.txt\` to any page URL for its markdown, or see [/docs/llms.txt](${baseUrl}/docs/llms.txt) for everything in one file.`,
+  ];
 
-	const guides = sortCollection(allGuides.filter((g) => !g.draft));
-	if (guides.length) {
-		sections.push(
-			linkListSection(
-				'Guides',
-				guides.map((g) => ({
-					name: g.name,
-					url: `${baseUrl}/docs/guides/${g.slug}/llms.txt`,
-					description: g.description
-				}))
-			)
-		);
-	}
+  const guides = sortCollection(allGuides.filter((g) => !g.draft));
+  if (guides.length) {
+    sections.push(
+      linkListSection(
+        'Guides',
+        guides.map((g) => ({
+          name: g.name,
+          url: `${baseUrl}/docs/guides/${g.slug}/llms.txt`,
+          description: g.description,
+        }))
+      )
+    );
+  }
 
-	for (const [pkg, docs] of referencesByPackage()) {
-		sections.push(
-			linkListSection(
-				pkg,
-				docs.map((d) => ({
-					name: d.name,
-					url: `${baseUrl}/docs/${d.slug}/llms.txt`,
-					description: d.description
-				}))
-			)
-		);
-	}
+  for (const [pkg, docs] of referencesByPackage()) {
+    sections.push(
+      linkListSection(
+        pkg,
+        docs.map((d) => ({
+          name: d.name,
+          url: `${baseUrl}/docs/${d.slug}/llms.txt`,
+          description: d.description,
+        }))
+      )
+    );
+  }
 
-	return sections.join('\n\n');
+  return sections.join('\n\n');
 }
 
 /** `/docs/llms.txt` — the full documentation inlined into one file. */
 export function generateFullLlmsTxt(baseUrl: string): string {
-	const sections: string[] = [
-		`# LayerStack Full Documentation for LLMs
+  const sections: string[] = [
+    `# LayerStack Full Documentation for LLMs
 
 > LayerStack is a collection of Svelte actions, stores, state, table utilities, and general utils for Svelte.
 
-This file contains the complete LLM-optimized documentation. Index: [/llms.txt](${baseUrl}/llms.txt).`
-	];
+This file contains the complete LLM-optimized documentation. Index: [/llms.txt](${baseUrl}/llms.txt).`,
+  ];
 
-	for (const [pkg, docs] of referencesByPackage()) {
-		sections.push('---');
-		sections.push(`# ${pkg}`);
-		for (const doc of docs) {
-			sections.push(generateReferenceMarkdown(doc));
-		}
-	}
+  for (const [pkg, docs] of referencesByPackage()) {
+    sections.push('---');
+    sections.push(`# ${pkg}`);
+    for (const doc of docs) {
+      sections.push(generateReferenceMarkdown(doc));
+    }
+  }
 
-	return sections.join('\n\n');
+  return sections.join('\n\n');
 }

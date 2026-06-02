@@ -87,7 +87,8 @@
     </div>
   </Field>
 
-  <Button on:click={() => (values = getValues())} variant="fill" color="primary">Update data</Button>
+  <Button on:click={() => (values = getValues())} variant="fill" color="primary">Update data</Button
+  >
 </div>
 
 <table class="w-full border">

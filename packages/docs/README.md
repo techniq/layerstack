@@ -33,7 +33,7 @@ docs-app/
 import { createMdsxConfig } from '@layerstack/docs/markdown/config';
 
 export const mdsxConfig = createMdsxConfig({
-	exampleComponentPath: '$lib/components'
+  exampleComponentPath: '$lib/components',
 });
 ```
 
@@ -48,8 +48,8 @@ Add a `sourceFile:` frontmatter (relative to `packages/`) only to override the i
 import { createContentConfig } from '@layerstack/docs/content-collections';
 
 export default createContentConfig({
-	packageName: 'layerstack',
-	repo: 'techniq/layerstack'
+  packageName: 'layerstack',
+  repo: 'techniq/layerstack',
 });
 ```
 
@@ -67,13 +67,13 @@ export default createContentConfig({
 
 ```jsonc
 {
-	"scripts": {
-		"generate:api": "layerstack-docs generate-api ../packages/<pkg>/src/lib/components generated/api",
-		"generate:catalog": "layerstack-docs generate-catalog ../packages/<pkg>/src/lib/components src/examples/components src/examples/catalog",
-		"generate:screenshots": "layerstack-docs generate-screenshots src/examples/components static/screenshots",
-		"generate:stackblitz": "layerstack-docs generate-stackblitz src static/stackblitz-files.json [remote-sources.json]",
-		"generate:releases": "layerstack-docs generate-releases techniq/<repo> generated/releases"
-	}
+  "scripts": {
+    "generate:api": "layerstack-docs generate-api ../packages/<pkg>/src/lib/components generated/api",
+    "generate:catalog": "layerstack-docs generate-catalog ../packages/<pkg>/src/lib/components src/examples/components src/examples/catalog",
+    "generate:screenshots": "layerstack-docs generate-screenshots src/examples/components static/screenshots",
+    "generate:stackblitz": "layerstack-docs generate-stackblitz src static/stackblitz-files.json [remote-sources.json]",
+    "generate:releases": "layerstack-docs generate-releases techniq/<repo> generated/releases",
+  },
 }
 ```
 

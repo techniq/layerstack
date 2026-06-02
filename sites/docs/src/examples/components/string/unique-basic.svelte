@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { uniqueId } from '@layerstack/utils';
+  import { uniqueId } from '@layerstack/utils';
 </script>
 
 <div>{uniqueId('checkbox-')}</div>
