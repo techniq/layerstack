@@ -80,7 +80,7 @@
 
   <div class="mt-16 mb-4">
     <a
-      href="https://github.com/techniq/layerstack/blob/main/sites/docs/src/content/reference/{metadata
+      href="https://github.com/techniq/layerstack/blob/main/docs/src/content/reference/{metadata
         ._meta.filePath}"
       class="inline-flex items-center gap-1 text-sm text-surface-content/50 hover:text-surface-content"
       target="_blank"

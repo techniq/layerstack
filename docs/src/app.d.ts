@@ -1,4 +1,4 @@
-/// <reference path="../../../packages/svelte-actions/src/lib/types.d.ts" />
+/// <reference path="../../packages/svelte-actions/src/lib/types.d.ts" />
 export * from 'unplugin-icons/types/svelte';
 
 // See https://kit.svelte.dev/docs/types#app

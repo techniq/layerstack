@@ -6,6 +6,6 @@ export default createContentConfig({
   packageName: 'layerstack',
   repo: 'techniq/layerstack',
   branch: 'main',
-  // `sites/docs` -> repo root `packages`
-  packagesRoot: '../../packages',
+  // `docs` -> repo root `packages`
+  packagesRoot: '../packages',
 });
