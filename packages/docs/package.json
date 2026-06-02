@@ -8,7 +8,7 @@
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "layerstack-docs": "./bin/layerstack-docs.js"
+    "layerstack-docs": "./dist/cli.js"
   },
   "scripts": {
     "dev": "trap 'exit 0' INT; svelte-package --watch",
@@ -42,7 +42,6 @@
     "sharp": "^0.34.5",
     "shiki": "^4.1.0",
     "svelte-ux": "2.0.0-next.22",
-    "tsx": "^4.22.3",
     "typescript": "^5.8.3",
     "unist-builder": "^4.0.0",
     "unist-util-visit": "^5.1.0",
@@ -186,8 +185,6 @@
   },
   "files": [
     "dist",
-    "bin",
-    "src",
     "templates"
   ]
 }

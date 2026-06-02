@@ -86,9 +86,6 @@ importers:
       svelte-ux:
         specifier: 2.0.0-next.22
         version: 2.0.0-next.22(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.22.3)(yaml@2.9.0))(postcss@8.5.3)(svelte@5.28.6)
-      tsx:
-        specifier: ^4.22.3
-        version: 4.22.3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -5345,6 +5342,7 @@ snapshots:
       '@esbuild/win32-arm64': 0.28.0
       '@esbuild/win32-ia32': 0.28.0
       '@esbuild/win32-x64': 0.28.0
+    optional: true
 
   escape-string-regexp@5.0.0: {}
 
@@ -6856,6 +6854,7 @@ snapshots:
       esbuild: 0.28.0
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   typescript@5.8.3: {}
 

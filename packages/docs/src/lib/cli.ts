@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * `layerstack-docs` CLI — build-time generators for LayerStack docs apps.
  *
@@ -8,11 +9,11 @@
  *   generate-stackblitz  <source-dir> <output-file> [remote-sources-file] [--template-dir <dir>] [--source out=src ...] [--remote out=src ...]
  *   generate-releases    <owner/repo> <output-dir>
  */
-import { writeComponentAPIs } from './lib/node/component-api.js';
-import { writeExampleCatalogs } from './lib/node/example-catalog.js';
-import { generateScreenshots } from './lib/node/screenshots.js';
-import { generateStackBlitzFiles, getDefaultStackBlitzTemplateDir } from './lib/node/stackblitz.js';
-import { generateReleases } from './lib/node/releases.js';
+import { writeComponentAPIs } from './node/component-api.js';
+import { writeExampleCatalogs } from './node/example-catalog.js';
+import { generateScreenshots } from './node/screenshots.js';
+import { generateStackBlitzFiles, getDefaultStackBlitzTemplateDir } from './node/stackblitz.js';
+import { generateReleases } from './node/releases.js';
 
 type ParsedArgs = {
   positionals: string[];
