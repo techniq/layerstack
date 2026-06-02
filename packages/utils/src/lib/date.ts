@@ -1,5 +1,5 @@
 import {
-  CountableTimeInterval,
+  type CountableTimeInterval,
   timeDay,
   timeHour,
   timeMillisecond,
@@ -32,7 +32,7 @@ import {
   type FormatDateOptions,
   type DateFormatVariantPreset,
   periodTypeMappings,
-  PeriodTypeCode,
+  type PeriodTypeCode,
   type TimeIntervalType,
 } from './date_types.js';
 import { defaultLocale, type LocaleSettings } from './locale.js';

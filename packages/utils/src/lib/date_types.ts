@@ -1,5 +1,5 @@
 import type { DateRange } from './dateRange.js';
-import { ValueOf } from './typeHelpers.js';
+import type { ValueOf } from './typeHelpers.js';
 
 export type SelectedDate = Date | Date[] | DateRange | null | undefined;
 
