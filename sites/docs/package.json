@@ -12,11 +12,10 @@
     "preview": "vite preview",
     "package": "svelte-package",
     "prepublishOnly": "svelte-package",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check .",
-    "format": "prettier --write .",
-    "prepare": "svelte-kit sync"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.4",
