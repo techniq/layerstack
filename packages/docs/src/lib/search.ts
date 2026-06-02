@@ -1,4 +1,5 @@
 import FlexSearch, { type Index as FlexSearchIndex } from 'flexsearch';
+import { stripMarkdown } from './markdown/utils.js';
 
 /**
  * A single searchable entry. `type` is intentionally a free string so each docs app
@@ -110,4 +111,114 @@ export function search(query: string): SearchEntry[] {
       ...entry,
       content: entry.type === 'example' ? entry.content : getSnippet(entry.content, searchTerm),
     }));
+}
+
+// ─── Index builders (build-time) ──────────────────────────────────────────────
+// Helpers for assembling the `/api/search.json` payload from content collections.
+
+export type TocEntry = { id: string; text: string; level: number };
+
+/** Minimal content-collection document shape consumed by {@link buildSearchEntries}. */
+export type SearchDoc = {
+  name: string;
+  slug: string;
+  description?: string | null;
+  content: string;
+  toc: TocEntry[];
+};
+
+/**
+ * Extract the cleaned text under each heading from markdown, keyed by heading text.
+ * Gives per-heading search entries a content snippet.
+ */
+export function extractHeadingContents(markdown: string, toc: TocEntry[]): Map<string, string> {
+  const result = new Map<string, string>();
+  const headingPositions: { text: string; start: number; end: number }[] = [];
+
+  for (const heading of toc) {
+    // Match the heading line, allowing trailing MDC directives (e.g. `## Title :icon{...}`)
+    const headingPattern = new RegExp(
+      `^#{1,6}\\s+${escapeRegex(heading.text)}(?:\\s*:[a-zA-Z][\\w-]*\\{[^}]*\\})*\\s*$`,
+      'gm'
+    );
+    const match = headingPattern.exec(markdown);
+    if (match) {
+      headingPositions.push({
+        text: heading.text,
+        start: match.index + match[0].length,
+        end: markdown.length,
+      });
+    }
+  }
+
+  headingPositions.sort((a, b) => a.start - b.start);
+  for (let i = 0; i < headingPositions.length - 1; i++) {
+    const nextHeadingMatch = markdown.slice(headingPositions[i].start).match(/^#{1,6}\s+/m);
+    if (nextHeadingMatch) {
+      headingPositions[i].end = headingPositions[i].start + (nextHeadingMatch.index ?? 0);
+    }
+  }
+
+  for (const pos of headingPositions) {
+    const rawContent = markdown.slice(pos.start, pos.end).trim();
+    result.set(pos.text, stripMarkdown(rawContent).slice(0, 200));
+  }
+
+  return result;
+}
+
+/**
+ * Build a page `SearchEntry` plus one entry per heading for each doc in a collection.
+ * Pass a `category` resolver to tag page entries (set `headingCategory` to also tag headings).
+ */
+export function buildSearchEntries<T extends SearchDoc>(
+  docs: T[],
+  config: {
+    /** Entry `type` for the page (and `parentType` for its headings), e.g. `reference`. */
+    type: string;
+    /** Slug prefix prepended to each doc's slug, e.g. `docs/components`. */
+    slugPrefix: string;
+    /** Optional category resolver applied to page entries. */
+    category?: (doc: T) => string | undefined;
+    /** Also apply `category` to heading entries (default `false`). */
+    headingCategory?: boolean;
+  }
+): SearchEntry[] {
+  return docs.flatMap((doc) => {
+    const parentSlug = config.slugPrefix ? `${config.slugPrefix}/${doc.slug}` : doc.slug;
+    const category = config.category?.(doc);
+    const description = doc.description ?? '';
+    const content = stripMarkdown(doc.content);
+
+    const pageEntry: SearchEntry = {
+      title: doc.name,
+      slug: parentSlug,
+      content: description ? `${description} ${content}` : content,
+      type: config.type,
+      ...(category != null ? { category } : {}),
+    };
+
+    const headingContents = extractHeadingContents(doc.content, doc.toc);
+    const seen = new Set<string>();
+    const headingEntries = doc.toc
+      .filter((heading) => {
+        if (seen.has(heading.id)) return false;
+        seen.add(heading.id);
+        return true;
+      })
+      .map(
+        (heading): SearchEntry => ({
+          title: heading.text,
+          slug: `${parentSlug}#${heading.id}`,
+          content: headingContents.get(heading.text) || doc.name,
+          type: 'heading',
+          parent: doc.name,
+          parentSlug,
+          parentType: config.type,
+          ...(config.headingCategory && category != null ? { category } : {}),
+        })
+      );
+
+    return [pageEntry, ...headingEntries];
+  });
 }

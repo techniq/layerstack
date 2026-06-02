@@ -107,3 +107,43 @@ export function createExampleLoaders(options: {
 
   return { loadExample, loadExamples, loadExampleByPath };
 }
+
+/**
+ * Convenience wrapper around {@link createExampleLoaders} for the conventional
+ * `import.meta.glob`-backed setup. Pass the (literal) dynamic `import()` calls and glob
+ * maps — this derives the path lookups and unwraps `?raw` modules for you.
+ *
+ * ```ts
+ * export const { loadExample, loadExamples, loadExampleByPath } = createGlobExampleLoaders({
+ *   loadComponentExample: (type, component, name) =>
+ *     import(`../examples/${type}/${component}/${name}.svelte`),
+ *   loadRawExampleModule: (type, component, name) =>
+ *     import(`../examples/${type}/${component}/${name}.svelte?raw`),
+ *   pathExamples: import.meta.glob<{ default: Component }>(['/src/routes/**\/*.svelte']),
+ *   rawPathExamples: import.meta.glob<string>(['/src/routes/**\/*.svelte'], {
+ *     query: '?raw',
+ *     import: 'default',
+ *   }),
+ * });
+ * ```
+ */
+export function createGlobExampleLoaders(options: {
+  loadComponentExample: ComponentExampleImporter;
+  loadRawExampleModule: (
+    type: ExampleType,
+    component: string,
+    name: string
+  ) => Promise<{ default: string }>;
+  pathExamples: Record<string, () => Promise<{ default: Component }>>;
+  rawPathExamples: Record<string, () => Promise<string>>;
+  warn?: typeof console.warn;
+}) {
+  return createExampleLoaders({
+    loadComponentExample: options.loadComponentExample,
+    loadRawExample: async (type, component, name) =>
+      (await options.loadRawExampleModule(type, component, name)).default,
+    loadPathExample: (path) => options.pathExamples[path]?.(),
+    loadRawPathExample: (path) => options.rawPathExamples[path]?.(),
+    warn: options.warn,
+  });
+}
