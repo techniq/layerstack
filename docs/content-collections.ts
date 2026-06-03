@@ -5,7 +5,6 @@ export default createContentConfig({
   // organized by package under `src/content/reference/<package>/<name>.md`.
   packageName: 'layerstack',
   repo: 'techniq/layerstack',
-  branch: 'main',
   // `docs` -> repo root `packages`
   packagesRoot: '../packages',
 });

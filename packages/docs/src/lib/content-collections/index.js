@@ -89,7 +89,7 @@ function normalizeOptions(options) {
   return {
     packageName: options.packageName,
     repo: options.repo ?? `techniq/${options.packageName}`,
-    branch: options.branch ?? 'next',
+    branch: options.branch ?? 'main',
     packagesRoot: options.packagesRoot ?? '../packages',
     referenceDirectory: options.referenceDirectory ?? 'src/content/reference',
   };
