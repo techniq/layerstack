@@ -30,6 +30,9 @@
   let ghLink = $derived(data.pr_id ? `${baseGh}/pull/${data.pr_id}` : baseGh);
   let title = $derived(data.pr_id ? `🚧 (pr:${data.pr_id}) - LayerStack` : 'LayerStack');
 
+  // The landing page (`/`) renders full-bleed — no sidebar/content padding.
+  let isHome = $derived(page.url.pathname === '/');
+
   settings({
     components: {},
     // svelte-ignore state_referenced_locally
@@ -174,6 +177,7 @@
     class={cls(
       'bg-surface-300/30 sticky top-16 hidden max-h-[calc(100dvh-64px)] border-r border-primary/10 transition-[width]',
       'lg:grid lg:grid-rows-[1fr_56px]',
+      isHome && 'lg:hidden',
       showSidebar ? 'w-62' : 'w-0'
     )}
   >
@@ -208,7 +212,7 @@
     <NavMenu onItemClick={() => (showDrawer = false)} />
   </Drawer>
 
-  <main class="flex-1 min-w-0 px-6 py-4 lg:px-20 lg:py-8">
+  <main class={cls('flex-1 min-w-0', !isHome && 'px-6 py-4 lg:px-20 lg:py-8')}>
     {@render children()}
   </main>
 
