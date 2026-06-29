@@ -7,7 +7,7 @@
     "@layerstack/svelte-table": "1.0.0",
     "@layerstack/tailwind": "1.0.0",
     "@layerstack/utils": "1.0.0",
-    "@layerstack/docs": "1.0.1",
+    "@layerstack/docs": "0.0.0",
     "@layerstack/svelte-state": "0.0.0"
   },
   "changesets": [
