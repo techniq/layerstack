@@ -13,6 +13,7 @@
     "dev": "trap 'exit 0' INT; svelte-package --watch",
     "build": "svelte-package",
     "package": "svelte-package",
+    "prepublishOnly": "svelte-package",
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
