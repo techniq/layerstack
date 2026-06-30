@@ -29,6 +29,10 @@ jobs:
 
       - run: pnpm --filter "./packages/*" build
 
+      # Build the docs site before `pnpm check`: it generates the `content-collections`
+      # module at build time, which the type-check then consumes.
+      - run: pnpm --filter "./docs" build
+
       - run: pnpm check
 
       - run: pnpm lint
@@ -36,5 +40,3 @@ jobs:
       - run: pnpm test:unit
         env:
           CI: true
-
-      - run: pnpm --filter "./sites/*" build

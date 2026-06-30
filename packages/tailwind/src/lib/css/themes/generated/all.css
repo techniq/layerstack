@@ -1059,6 +1059,15 @@
 
 [data-theme="cyberpunk"] {
   color-scheme: light;
+  fontfamily:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
   --color-primary: hsl(340.8799 100% 69.8833%);
   --color-secondary: hsl(185.3347 100% 50%);
   --color-accent: hsl(278.9515 100% 72.6993%);
@@ -1580,7 +1589,7 @@
   --color-danger-800: hsl(357.1922 53.6188% 43.5134%);
   --color-danger-900: hsl(357.1922 55.0988% 34.9232%);
   --color-surface-200: hsl(0 13.0424% 6.8651%);
-  --color-surface-300: hsl(360 14.1163% 5.7928%);
+  --color-surface-300: hsl(0 14.1163% 5.7928%);
   --color-surface-content: hsl(0.603 1.4217% 79.1884%);
 }
 
@@ -2011,6 +2020,10 @@
 
 [data-theme="wireframe"] {
   color-scheme: light;
+  fontfamily:
+    Chalkboard,
+    comic sans ms,
+    "sans-serif";
   --color-primary: hsl(0 0% 72.1569%);
   --color-secondary: hsl(0 0% 72.1569%);
   --color-accent: hsl(0 0% 72.1569%);
