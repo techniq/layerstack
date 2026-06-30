@@ -1,4 +1,4 @@
-import FlexSearch, { type Index as FlexSearchIndex } from 'flexsearch';
+import type { Index as FlexSearchIndex } from 'flexsearch';
 import { stripMarkdown } from './markdown/utils.js';
 
 /**
@@ -36,6 +36,11 @@ let initialized = false;
  */
 export async function initSearch(endpoint = '/api/search.json'): Promise<void> {
   if (initialized) return;
+
+  // Lazy-load flexsearch so the (CommonJS) module is only pulled into the client
+  // bundle when search is actually initialized — keeps it out of SSR/worker bundles
+  // where its `require("worker_threads")` breaks (e.g. Cloudflare Workers).
+  const { default: FlexSearch } = await import('flexsearch');
 
   const response = await fetch(endpoint);
   searchData = await response.json();
