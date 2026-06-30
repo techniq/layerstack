@@ -4,7 +4,7 @@
   "author": "Sean Lynch <techniq35@gmail.com>",
   "license": "MIT",
   "repository": "techniq/layerstack",
-  "version": "0.0.0",
+  "version": "1.0.0-next.0",
   "type": "module",
   "bin": {
     "layerstack-docs": "./dist/cli.js"
@@ -63,7 +63,6 @@
     "@sveltejs/kit": "^2.0.0",
     "svelte": "^5.0.0"
   },
-  "type": "module",
   "main": "./dist/index.js",
   "svelte": "./dist/index.js",
   "types": "./dist/index.d.ts",
