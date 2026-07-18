@@ -25,12 +25,13 @@ Measured against the layerchart docs site, the config/route files are ~60–100%
 
 Hard constraint to remember: **pnpm uses a strict, non-flat `node_modules`**, so a consumer can only
 import packages it declares directly. Anything imported in the consumer's own config/source must be a
-direct dep even if `@layerstack/docs` also depends on it. Bundling that import *inside* a
+direct dep even if `@layerstack/docs` also depends on it. Bundling that import _inside_ a
 `@layerstack/docs` export is what lets the consumer drop the dep.
 
 ## Recommendations (ranked by impact on new-project setup)
 
 ### 1. Single Vite plugin + preprocessor wrapper — biggest "reduce packages" win
+
 - `@layerstack/docs/vite` → `layerstackDocs()` that internally runs `@content-collections/vite` +
   `unplugin-icons` (+ optionally `@tailwindcss/vite`).
 - `@layerstack/docs/preprocess` → `markdownPreprocess()` wrapping `mdsx(createMdsxConfig(...))`.
@@ -44,16 +45,19 @@ Caveat: `~icons/<set>` virtual imports and Tailwind `@source` globs resolve agai
 tree, so project-specific icon sets (`logos`, `vscode-icons`) and the `@source` lines stay.
 
 ### 2. Plugin-driven generators — kills the `prebuild` chain
+
 Run `generate-api`/`catalog`/`stackblitz`/`releases` from `layerstackDocs()`'s `buildStart` hook,
 driven by one `layerstack-docs.config.ts`. Removes the 5 `generate:*` scripts + `prebuild` from
 `package.json`. (`generate-screenshots` needs a live server → stays a separate script.)
 
 ### 3. `layerstack-docs init` scaffold — biggest win for a brand-new project
+
 A degit-style template or `npm create @layerstack/docs` that lays down configs, `src/content/` +
 `src/examples/` dirs, base routes, and `app.css`. Turns day-one from "copy layerchart/docs and delete
 stuff" into one command. The `templates/` dir already exists (StackBlitz) — extend the pattern.
 
 ### 4. Route + CSS presets — shrink the remaining hand-written files
+
 - `docs/guides/[...name]/+page.svelte` is 100% boilerplate (`<PageComponent />` wrapper);
   `/api/search.json` and `/llms.txt` are ~80–95% boilerplate. Export reusable page components /
   endpoint factories so each route file becomes a one-line re-export. (SvelteKit still needs the
@@ -62,16 +66,19 @@ stuff" into one command. The `templates/` dir already exists (StackBlitz) — ex
   collapsing `app.css`'s ~200 boilerplate lines to one `@import` + the project's `@theme` colors.
 
 ### 5. Glue-layer factories accept project hooks
+
 `content.ts`, `examples.ts`, `searchContent.ts` already use factories but still hand-write the same
 glob/metadata wiring (~60% project-specific). Tighten factory signatures (pass collections + a
 metadata resolver) to shave the repeated parts.
 
 ## Suggested order
+
 1 + 2 are highest leverage and most self-contained (remove ~4 deps + most of two config files, low
 risk). 3 is the headline feature for new projects but more work. The honest limit: the eslint stack,
 `tailwindcss`, `@source` globs, and project-specific bits (externals, theme colors, custom icons, nav)
 always stay in the consumer.
 
 ## Proving ground
+
 When implementing, wire the layerchart docs site to each change as the test, and measure exactly how
 many direct deps / config lines drop.

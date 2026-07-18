@@ -45,9 +45,7 @@
   // (via `tick`) so it doesn't linger and conflict with the next transition.
   // Mount-time check only (were we navigated to a listing from this link?), so read the
   // current values untracked rather than subscribing.
-  let enableViewTransition = $state(
-    untrack(() => navigating.from?.url.pathname === resolvedHref)
-  );
+  let enableViewTransition = $state(untrack(() => navigating.from?.url.pathname === resolvedHref));
   beforeNavigate((navigation) => {
     if (navigation.to?.url.pathname === resolvedHref) {
       enableViewTransition = true;
