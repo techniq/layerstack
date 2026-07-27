@@ -19,6 +19,16 @@ export const componentSchema = z.object({
    */
   withinLayer: z.boolean().default(true),
   related: z.array(z.string()).default([]),
+  /**
+   * Components whose generated API to document on this page. Use for compound components
+   * to show each part (e.g. `Tooltip.Root`, `Tooltip.Item`) on a single page. Each entry is
+   * either a component name (label derived relative to the page, e.g. `TooltipItem` ->
+   * `Tooltip.Item`) or `{ name, label }` for an explicit heading. When omitted, defaults to
+   * the page's own component.
+   */
+  components: z
+    .array(z.union([z.string(), z.object({ name: z.string(), label: z.string().optional() })]))
+    .optional(),
   resize: z.boolean().optional(),
   tableOfContents: z.boolean().default(true),
   order: z.number().optional(),
@@ -157,37 +167,60 @@ export function createContentConfig(options) {
           // ignore malformed generated catalog files
         }
       }
-      const apiPath = join(process.cwd(), `generated/api/${path}.json`);
-      let api = null;
-      if (existsSync(apiPath)) {
-        try {
-          api = JSON.parse(readFileSync(apiPath, 'utf-8'));
-          const renderInline = async (text) => {
-            const html = await compileMarkdown(
-              context,
-              { ...doc, content: text },
-              {
-                remarkPlugins: [remarkGfm],
-              }
-            );
-            return html
-              .replace(/^<p>/, '')
-              .replace(/<\/p>\s*$/, '')
-              .trim();
-          };
-          const walk = async (props = []) => {
-            for (const p of props) {
-              if (p.description) p.descriptionHtml = await renderInline(p.description);
-              if (p.properties) await walk(p.properties);
-            }
-          };
-          await walk(api.properties);
-          if (api.properties?.length) {
-            toc.push({ id: 'api-reference', text: 'API Reference', level: 2 });
+      const renderInline = async (text) => {
+        const html = await compileMarkdown(
+          context,
+          { ...doc, content: text },
+          {
+            remarkPlugins: [remarkGfm],
           }
+        );
+        return html
+          .replace(/^<p>/, '')
+          .replace(/<\/p>\s*$/, '')
+          .trim();
+      };
+      const walkProps = async (props = []) => {
+        for (const p of props) {
+          if (p.description) p.descriptionHtml = await renderInline(p.description);
+          if (p.properties) await walkProps(p.properties);
+        }
+      };
+      const loadApi = async (componentName) => {
+        const componentApiPath = join(process.cwd(), `generated/api/${componentName}.json`);
+        if (!existsSync(componentApiPath)) return null;
+        try {
+          const parsed = JSON.parse(readFileSync(componentApiPath, 'utf-8'));
+          await walkProps(parsed.properties);
+          return parsed;
         } catch {
           // ignore malformed generated API files
+          return null;
         }
+      };
+      // Derive a display label for a sub-component relative to the page's component, e.g.
+      // page "Tooltip" + "TooltipItem" -> "Tooltip.Item". Unrelated names are left as-is.
+      const deriveLabel = (componentName) =>
+        componentName !== name && componentName.startsWith(name)
+          ? `${name}.${componentName.slice(name.length)}`
+          : componentName;
+      // Default to the page's own component (existing behavior) unless `components` enumerates
+      // the parts of a compound component. Entries may be a string or `{ name, label }`.
+      const componentList = (doc.components?.length ? doc.components : [path]).map((entry) =>
+        typeof entry === 'string'
+          ? { name: entry, label: deriveLabel(entry) }
+          : { name: entry.name, label: entry.label ?? deriveLabel(entry.name) }
+      );
+      // One entry per documented component (the `ComponentAPI` plus a display `label`).
+      const apis = [];
+      for (const entry of componentList) {
+        const componentApi = await loadApi(entry.name);
+        if (componentApi?.properties?.length) {
+          apis.push({ ...componentApi, label: entry.label });
+        }
+      }
+      if (apis.length) {
+        toc.push({ id: 'api-reference', text: 'API Reference', level: 2 });
       }
       if (doc.related.length) {
         toc.push({ id: 'related', text: 'Related', level: 2 });
@@ -202,7 +235,7 @@ export function createContentConfig(options) {
         sourceUrls,
         defaultExample: getFirstExampleName(doc.content) ?? catalogFirstExample,
         toc,
-        api,
+        apis,
       };
     },
   });
