@@ -1,5 +1,11 @@
 # @layerstack/docs
 
+## 1.0.0-next.4
+
+### Patch Changes
+
+- feat(docs): Support passing explicit `components` as frontmatter for multi-component docs (ex. LayerChart's Tooltip.\*) ([#31](https://github.com/techniq/layerstack/pull/31))
+
 ## 1.0.0-next.3
 
 ### Patch Changes
