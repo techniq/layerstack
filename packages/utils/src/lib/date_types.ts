@@ -102,7 +102,8 @@ export const periodTypeMappings = {
 
 export type PeriodTypeCode = ValueOf<typeof periodTypeMappings>;
 
-export type TimeIntervalType =
+/** Time intervals that floor and offset on *local* calendar boundaries. */
+export type LocalTimeIntervalType =
   | 'millisecond'
   | 'second'
   | 'minute'
@@ -112,6 +113,15 @@ export type TimeIntervalType =
   | 'month'
   | 'quarter'
   | 'year';
+
+/**
+ * UTC counterparts of {@link LocalTimeIntervalType}, floored and offset on UTC boundaries and
+ * so unaffected by the ambient timezone or by DST. Use these for values keyed on a UTC
+ * calendar date. Named to match d3-time's exports (`utcDay`, `utcMonth`, ...).
+ */
+export type UtcTimeIntervalType = `utc${Capitalize<LocalTimeIntervalType>}`;
+
+export type TimeIntervalType = LocalTimeIntervalType | UtcTimeIntervalType;
 
 export enum DayOfWeek {
   Sunday = 0,
@@ -198,6 +208,11 @@ export type FormatDateOptions = {
   weekStartsOn?: DayOfWeek;
   variant?: DateFormatVariant | 'custom';
   custom?: CustomIntlDateTimeFormatOptions;
+  /**
+   * Render the date's UTC calendar fields rather than the local ones — pair with `utc` on
+   * `getDateFuncsByPeriodType()` so period math and display agree.
+   */
+  utc?: boolean;
 };
 
 export interface FormatDateLocaleOptions {
