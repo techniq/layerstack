@@ -1,5 +1,15 @@
 # @layerstack/utils
 
+## 2.0.0-next.19
+
+### Patch Changes
+
+- fix(date): Correct `utcToLocalDate()` shifting the year by ±1 near a year boundary, and preserve milliseconds in both `utcToLocalDate()` and `localToUtcDate()` ([#106](https://github.com/techniq/layerstack/pull/106))
+
+- feat(date): Add UTC time intervals (`'utcDay'`, `'utcMonth'`, ...) to `TimeIntervalType`, usable anywhere an interval name is accepted (`startOfInterval('utcDay', date)`, `intervalOffset('utcMonth', date, -1)`, ...), along with a `utcQuarter` interval ([#106](https://github.com/techniq/layerstack/pull/106))
+
+- feat(date): Add a `utc` option to date utils (ex. `formatDate()`, `formatIntl()`, etc) so period math and display can both run on UTC boundaries ([#106](https://github.com/techniq/layerstack/pull/106))
+
 ## 2.0.0-next.18
 
 ### Patch Changes

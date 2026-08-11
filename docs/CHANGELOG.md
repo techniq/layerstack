@@ -1,5 +1,18 @@
 # @layerstack/docs
 
+## 1.1.0-next.7
+
+### Patch Changes
+
+- Updated dependencies [[`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c)]:
+  - @layerstack/utils@2.0.0-next.19
+  - @layerstack/docs@1.0.0-next.5
+  - @layerstack/svelte-actions@1.0.1-next.19
+  - @layerstack/svelte-state@0.1.0-next.24
+  - @layerstack/svelte-stores@1.0.2-next.19
+  - @layerstack/svelte-table@1.0.1-next.19
+  - @layerstack/tailwind@2.0.0-next.23
+
 ## 1.1.0-next.6
 
 ### Patch Changes
