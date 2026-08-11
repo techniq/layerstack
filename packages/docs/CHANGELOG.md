@@ -1,5 +1,13 @@
 # @layerstack/docs
 
+## 1.0.0-next.5
+
+### Patch Changes
+
+- Updated dependencies [[`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c)]:
+  - @layerstack/utils@2.0.0-next.19
+  - @layerstack/tailwind@2.0.0-next.23
+
 ## 1.0.0-next.4
 
 ### Patch Changes
