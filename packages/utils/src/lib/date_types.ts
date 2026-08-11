@@ -208,6 +208,11 @@ export type FormatDateOptions = {
   weekStartsOn?: DayOfWeek;
   variant?: DateFormatVariant | 'custom';
   custom?: CustomIntlDateTimeFormatOptions;
+  /**
+   * Render the date's UTC calendar fields rather than the local ones — pair with `utc` on
+   * `getDateFuncsByPeriodType()` so period math and display agree.
+   */
+  utc?: boolean;
 };
 
 export interface FormatDateLocaleOptions {

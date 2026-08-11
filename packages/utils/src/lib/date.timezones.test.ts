@@ -1,13 +1,18 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import {
   endOfInterval,
+  formatDate,
+  getDateFuncsByPeriodType,
+  getMonthDaysByWeek,
   intervalOffset,
   localToUtcDate,
   startOfInterval,
   timeInterval,
   utcToLocalDate,
 } from './date.js';
-import type { TimeIntervalType } from './date_types.js';
+import { getDateRangePresets } from './dateRange.js';
+import { PeriodType, type TimeIntervalType } from './date_types.js';
+import { defaultLocale } from './locale.js';
 
 /**
  * Timezone-independent invariants: the `utcToLocalDate()` / `localToUtcDate()` pair, and the
@@ -178,6 +183,114 @@ describe.each(TIMEZONES)('TZ=%s', (timeZone) => {
       ['utcYear', '2026-01-01T00:00:00.000Z'],
     ] as [TimeIntervalType, string][])('%s floors to %s in every zone', (interval, expected) => {
       expect(startOfInterval(interval, date).toISOString()).equal(expected);
+    });
+  });
+
+  describe('{ utc: true }', () => {
+    // `2026-08-10T00:00:00Z` is the previous day west of UTC and midday-ish east of it, so any
+    // helper that leaks local time reports a different calendar day in at least one zone.
+    const date = new Date('2026-08-10T00:00:00.000Z');
+
+    describe('formatDate()', () => {
+      it('renders the UTC calendar day for a unicode/strftime format', () => {
+        expect(formatDate(date, 'yyyy-MM-dd', { utc: true })).equal('2026-08-10');
+      });
+
+      it('renders the UTC calendar day for a period type', () => {
+        expect(formatDate(date, PeriodType.Day, { utc: true, variant: 'short' })).equal('8/10');
+      });
+
+      it('differs from local formatting exactly when the UTC day differs', () => {
+        // Proves `utc` actually takes effect: it must change the output wherever the local and
+        // UTC calendar days disagree, and leave it alone where they agree.
+        const sameCalendarDay = date.getDate() === date.getUTCDate();
+        const asUtc = formatDate(date, PeriodType.Day, { utc: true, variant: 'short' });
+        const asLocal = formatDate(date, PeriodType.Day, { variant: 'short' });
+        expect(asUtc === asLocal).equal(sameCalendarDay);
+      });
+
+      it('renders the UTC month/year', () => {
+        expect(formatDate(date, PeriodType.MonthYear, { utc: true })).contains('2026');
+        expect(
+          formatDate(new Date('2026-12-31T23:59:59.999Z'), PeriodType.CalendarYear, {
+            utc: true,
+          })
+        ).equal('2026');
+      });
+
+      it('honours an explicit timeZone in custom Intl options over utc', () => {
+        const formatted = formatDate(date, PeriodType.Custom, {
+          utc: true,
+          custom: { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' },
+        });
+        expect(formatted).equal('08/10/2026');
+      });
+    });
+
+    describe('getDateFuncsByPeriodType()', () => {
+      it('floors a day on the UTC boundary', () => {
+        const { start, end } = getDateFuncsByPeriodType(defaultLocale, PeriodType.Day, {
+          utc: true,
+        });
+        expect(start(date).toISOString()).equal('2026-08-10T00:00:00.000Z');
+        expect(end(date).toISOString()).equal('2026-08-10T23:59:59.999Z');
+      });
+
+      it('floors a week on the UTC boundary', () => {
+        const { start, end } = getDateFuncsByPeriodType(defaultLocale, PeriodType.WeekMon, {
+          utc: true,
+        });
+        // 2026-08-10 is a Monday
+        expect(start(date).toISOString()).equal('2026-08-10T00:00:00.000Z');
+        expect(end(date).toISOString()).equal('2026-08-16T23:59:59.999Z');
+      });
+
+      it('floors a month/quarter/year on the UTC boundary', () => {
+        for (const [periodType, from, to] of [
+          [PeriodType.Month, '2026-08-01T00:00:00.000Z', '2026-08-31T23:59:59.999Z'],
+          [PeriodType.Quarter, '2026-07-01T00:00:00.000Z', '2026-09-30T23:59:59.999Z'],
+          [PeriodType.CalendarYear, '2026-01-01T00:00:00.000Z', '2026-12-31T23:59:59.999Z'],
+        ] as const) {
+          const { start, end } = getDateFuncsByPeriodType(defaultLocale, periodType, { utc: true });
+          expect(start(date).toISOString()).equal(from);
+          expect(end(date).toISOString()).equal(to);
+        }
+      });
+
+      it('floors a fiscal year on the UTC boundary', () => {
+        const { start, end } = getDateFuncsByPeriodType(
+          defaultLocale,
+          PeriodType.FiscalYearOctober,
+          { utc: true }
+        );
+        expect(start(date).toISOString()).equal('2025-10-01T00:00:00.000Z');
+        expect(end(date).toISOString()).equal('2026-09-30T23:59:59.999Z');
+      });
+
+      it('floors a bi-week on the UTC boundary', () => {
+        const { start, end } = getDateFuncsByPeriodType(defaultLocale, PeriodType.BiWeek1Sun, {
+          utc: true,
+        });
+        // Whatever the bi-week grid resolves to, both ends must land on UTC midnight/end-of-day
+        expect(start(date).toISOString()).match(/T00:00:00\.000Z$/);
+        expect(end(date).toISOString()).match(/T00:00:00\.000Z$/);
+      });
+    });
+
+    it('getMonthDaysByWeek() returns UTC-midnight days', () => {
+      const weeks = getMonthDaysByWeek(date, 0, { utc: true });
+      for (const day of weeks.flat()) {
+        expect(day.toISOString()).match(/T00:00:00\.000Z$/);
+      }
+    });
+
+    it('getDateRangePresets() derives presets from UTC boundaries', () => {
+      const presets = getDateRangePresets(defaultLocale, PeriodType.Day, { utc: true });
+      expect(presets.length).toBeGreaterThan(0);
+      for (const { value } of presets) {
+        expect(value.from!.toISOString()).match(/T00:00:00\.000Z$/);
+        expect(value.to!.toISOString()).match(/T23:59:59\.999Z$/);
+      }
     });
   });
 });

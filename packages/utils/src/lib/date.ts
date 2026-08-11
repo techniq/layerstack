@@ -17,15 +17,21 @@ import {
   timeFriday,
   timeSaturday,
   utcDay,
+  utcFriday,
   utcHour,
   utcMillisecond,
   utcMinute,
+  utcMonday,
   utcMonth,
+  utcSaturday,
   utcSecond,
+  utcThursday,
+  utcTuesday,
+  utcWednesday,
   utcWeek,
   utcYear,
 } from 'd3-time';
-import { timeFormat, timeParse } from 'd3-time-format';
+import { timeFormat, timeParse, utcFormat } from 'd3-time-format';
 import { min, max } from 'd3-array';
 
 import { hasKeyOf } from './typeGuards.js';
@@ -211,17 +217,29 @@ export function getMonths(year = new Date().getFullYear()) {
 
 export function getMonthDaysByWeek(
   dateInTheMonth: Date,
-  weekStartsOn: DayOfWeek = DayOfWeek.Sunday
+  weekStartsOn: DayOfWeek = DayOfWeek.Sunday,
+  options?: { utc?: boolean }
 ): Date[][] {
-  const startOfFirstWeek = startOfWeek(startOfInterval('month', dateInTheMonth), weekStartsOn);
-  const endOfLastWeek = endOfWeek(endOfInterval('month', dateInTheMonth), weekStartsOn);
+  const monthInterval = options?.utc ? 'utcMonth' : 'month';
+  const dayInterval = options?.utc ? 'utcDay' : 'day';
+
+  const startOfFirstWeek = startOfWeek(
+    startOfInterval(monthInterval, dateInTheMonth),
+    weekStartsOn,
+    options
+  );
+  const endOfLastWeek = endOfWeek(
+    endOfInterval(monthInterval, dateInTheMonth),
+    weekStartsOn,
+    options
+  );
 
   const list = [];
 
   let valueToAdd = startOfFirstWeek;
   while (valueToAdd <= endOfLastWeek) {
     list.push(valueToAdd);
-    valueToAdd = intervalOffset('day', valueToAdd, 1);
+    valueToAdd = intervalOffset(dayInterval, valueToAdd, 1);
   }
 
   return chunk(list, 7) as Date[][];
@@ -255,26 +273,38 @@ export function getMaxSelectedDate(date: SelectedDate | null | undefined) {
  * Fiscal Year
  */
 
-export function getFiscalYear(date: Date | null = new Date(), options?: { startMonth?: number }) {
+export function getFiscalYear(
+  date: Date | null = new Date(),
+  options?: { startMonth?: number; utc?: boolean }
+) {
   if (date === null) {
     // null explicitly passed in (default value overridden)
     return NaN;
   }
 
   const startMonth = (options && options.startMonth) || 10;
-  return date.getMonth() >= startMonth - 1 ? date.getFullYear() + 1 : date.getFullYear();
+  const month = options?.utc ? date.getUTCMonth() : date.getMonth();
+  const year = options?.utc ? date.getUTCFullYear() : date.getFullYear();
+  return month >= startMonth - 1 ? year + 1 : year;
 }
 
 export function getFiscalYearRange(
   date = new Date(),
-  options?: { startMonth?: number; numberOfMonths?: number }
+  options?: { startMonth?: number; numberOfMonths?: number; utc?: boolean }
 ) {
   const fiscalYear = getFiscalYear(date, options);
   const startMonth = (options && options.startMonth) || 10;
   const numberOfMonths = (options && options.numberOfMonths) || 12;
+  const utc = options?.utc ?? false;
 
-  const startDate = new Date((fiscalYear || 0) - 1, startMonth - 1, 1);
-  const endDate = endOfInterval('month', intervalOffset('month', startDate, numberOfMonths - 1));
+  const startDate = utc
+    ? new Date(Date.UTC((fiscalYear || 0) - 1, startMonth - 1, 1))
+    : new Date((fiscalYear || 0) - 1, startMonth - 1, 1);
+  const monthInterval = utc ? 'utcMonth' : 'month';
+  const endDate = endOfInterval(
+    monthInterval,
+    intervalOffset(monthInterval, startDate, numberOfMonths - 1)
+  );
 
   return { startDate, endDate };
 }
@@ -287,8 +317,12 @@ export function endOfFiscalYear(date: Date, options?: Parameters<typeof getFisca
   return getFiscalYearRange(date, options).endDate;
 }
 
-export function isSameFiscalYear(dateLeft: Date, dateRight: Date) {
-  return getFiscalYear(dateLeft) === getFiscalYear(dateRight);
+export function isSameFiscalYear(
+  dateLeft: Date,
+  dateRight: Date,
+  options?: Parameters<typeof getFiscalYear>[1]
+) {
+  return getFiscalYear(dateLeft, options) === getFiscalYear(dateRight, options);
 }
 
 /*
@@ -296,163 +330,148 @@ export function isSameFiscalYear(dateLeft: Date, dateRight: Date) {
  */
 
 const biweekBaseDates = [new Date('1799-12-22T00:00'), new Date('1799-12-15T00:00')];
+/** UTC counterparts of `biweekBaseDates` (the strings above parse as *local* midnight) */
+const utcBiweekBaseDates = [new Date(Date.UTC(1799, 11, 22)), new Date(Date.UTC(1799, 11, 15))];
 
-export function startOfBiWeek(date: Date, week: number, startOfWeek: DayOfWeek) {
-  var weekBaseDate = biweekBaseDates[week - 1];
-  var baseDate = intervalOffset('day', weekBaseDate, startOfWeek);
-  var periodsSince = Math.floor(intervalDifference('day', baseDate, date) / 14);
-  return intervalOffset('day', baseDate, periodsSince * 14);
+export function startOfBiWeek(
+  date: Date,
+  week: number,
+  startOfWeek: DayOfWeek,
+  options?: { utc?: boolean }
+) {
+  const dayInterval = options?.utc ? 'utcDay' : 'day';
+  const weekBaseDate = (options?.utc ? utcBiweekBaseDates : biweekBaseDates)[week - 1];
+  const baseDate = intervalOffset(dayInterval, weekBaseDate, startOfWeek);
+  const periodsSince = Math.floor(intervalDifference(dayInterval, baseDate, date) / 14);
+  return intervalOffset(dayInterval, baseDate, periodsSince * 14);
 }
 
-export function endOfBiWeek(date: Date, week: number, startOfWeek: DayOfWeek) {
-  return intervalOffset('day', startOfBiWeek(date, week, startOfWeek), 13);
+export function endOfBiWeek(
+  date: Date,
+  week: number,
+  startOfWeek: DayOfWeek,
+  options?: { utc?: boolean }
+) {
+  return intervalOffset(
+    options?.utc ? 'utcDay' : 'day',
+    startOfBiWeek(date, week, startOfWeek, options),
+    13
+  );
 }
 
-function startOfWeek(date: Date, weekStartsOn: DayOfWeek) {
+/** The d3 interval for a week beginning on `weekStartsOn`, local or UTC */
+function weekInterval(weekStartsOn: DayOfWeek, utc = false) {
   switch (weekStartsOn) {
     case DayOfWeek.Sunday:
-      return startOfInterval(timeWeek, date);
+      return utc ? utcWeek : timeWeek;
     case DayOfWeek.Monday:
-      return startOfInterval(timeMonday, date);
+      return utc ? utcMonday : timeMonday;
     case DayOfWeek.Tuesday:
-      return startOfInterval(timeTuesday, date);
+      return utc ? utcTuesday : timeTuesday;
     case DayOfWeek.Wednesday:
-      return startOfInterval(timeWednesday, date);
+      return utc ? utcWednesday : timeWednesday;
     case DayOfWeek.Thursday:
-      return startOfInterval(timeThursday, date);
+      return utc ? utcThursday : timeThursday;
     case DayOfWeek.Friday:
-      return startOfInterval(timeFriday, date);
+      return utc ? utcFriday : timeFriday;
     case DayOfWeek.Saturday:
-      return startOfInterval(timeSaturday, date);
+      return utc ? utcSaturday : timeSaturday;
   }
 }
 
-function endOfWeek(date: Date, weekStartsOn: DayOfWeek) {
-  switch (weekStartsOn) {
-    case DayOfWeek.Sunday:
-      return endOfInterval(timeWeek, date);
-    case DayOfWeek.Monday:
-      return endOfInterval(timeMonday, date);
-    case DayOfWeek.Tuesday:
-      return endOfInterval(timeTuesday, date);
-    case DayOfWeek.Wednesday:
-      return endOfInterval(timeWednesday, date);
-    case DayOfWeek.Thursday:
-      return endOfInterval(timeThursday, date);
-    case DayOfWeek.Friday:
-      return endOfInterval(timeFriday, date);
-    case DayOfWeek.Saturday:
-      return endOfInterval(timeSaturday, date);
-  }
+function startOfWeek(date: Date, weekStartsOn: DayOfWeek, options?: { utc?: boolean }) {
+  return startOfInterval(weekInterval(weekStartsOn, options?.utc), date);
 }
 
+function endOfWeek(date: Date, weekStartsOn: DayOfWeek, options?: { utc?: boolean }) {
+  return endOfInterval(weekInterval(weekStartsOn, options?.utc), date);
+}
+
+/**
+ * Get the start/end/add/difference/isSame functions for a period type.
+ *
+ * @param options.utc Operate on UTC boundaries instead of local ones, so results are
+ *   unaffected by the ambient timezone or by DST. Note this changes only the *math* — pair it
+ *   with `utc` on `formatDate()` to also render the UTC calendar fields.
+ */
 export function getDateFuncsByPeriodType(
   settings: LocaleSettings,
-  periodType: PeriodType | null | undefined
+  periodType: PeriodType | null | undefined,
+  options?: { utc?: boolean }
 ) {
   if (settings) {
     periodType = updatePeriodTypeWithWeekStartsOn(settings.formats.dates.weekStartsOn, periodType);
   }
 
+  const utc = options?.utc ?? false;
+  const dayInterval = utc ? 'utcDay' : 'day';
+  const weekIntervalName = utc ? 'utcWeek' : 'week';
+  const monthInterval = utc ? 'utcMonth' : 'month';
+  const quarterInterval = utc ? 'utcQuarter' : 'quarter';
+  const yearInterval = utc ? 'utcYear' : 'year';
+
   switch (periodType) {
     case PeriodType.Day:
       return {
-        start: startOfInterval('day'),
-        end: endOfInterval('day'),
-        add: (date: Date, amount: number) => intervalOffset('day', date, amount),
-        difference: intervalDifference('day'),
-        isSame: isSameInterval('day'),
+        start: startOfInterval(dayInterval),
+        end: endOfInterval(dayInterval),
+        add: (date: Date, amount: number) => intervalOffset(dayInterval, date, amount),
+        difference: intervalDifference(dayInterval),
+        isSame: isSameInterval(dayInterval),
       };
 
     case PeriodType.Week:
     case PeriodType.WeekSun:
-      return {
-        start: startOfInterval(timeWeek),
-        end: endOfInterval(timeWeek),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeWeek),
-        isSame: isSameInterval(timeWeek),
-      };
     case PeriodType.WeekMon:
-      return {
-        start: startOfInterval(timeMonday),
-        end: endOfInterval(timeMonday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeMonday),
-        isSame: isSameInterval(timeMonday),
-      };
     case PeriodType.WeekTue:
-      return {
-        start: startOfInterval(timeTuesday),
-        end: endOfInterval(timeTuesday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeTuesday),
-        isSame: isSameInterval(timeTuesday),
-      };
     case PeriodType.WeekWed:
-      return {
-        start: startOfInterval(timeWednesday),
-        end: endOfInterval(timeWednesday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeWednesday),
-        isSame: isSameInterval(timeWednesday),
-      };
     case PeriodType.WeekThu:
-      return {
-        start: startOfInterval(timeThursday),
-        end: endOfInterval(timeThursday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeThursday),
-        isSame: isSameInterval(timeThursday),
-      };
     case PeriodType.WeekFri:
+    case PeriodType.WeekSat: {
+      // `PeriodType.Week` has no day of week of its own — it only reaches here when `settings`
+      // is absent (so `updatePeriodTypeWithWeekStartsOn` did not resolve it), and the previous
+      // behaviour was to fall through to Sunday.
+      const interval = weekInterval(getDayOfWeek(periodType) ?? DayOfWeek.Sunday, utc);
       return {
-        start: startOfInterval(timeFriday),
-        end: endOfInterval(timeFriday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeFriday),
-        isSame: isSameInterval(timeFriday),
+        start: startOfInterval(interval),
+        end: endOfInterval(interval),
+        add: (date: Date, amount: number) => intervalOffset(weekIntervalName, date, amount),
+        difference: intervalDifference(interval),
+        isSame: isSameInterval(interval),
       };
-    case PeriodType.WeekSat:
-      return {
-        start: startOfInterval(timeSaturday),
-        end: endOfInterval(timeSaturday),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount),
-        difference: intervalDifference(timeSaturday),
-        isSame: isSameInterval(timeSaturday),
-      };
+    }
 
     case PeriodType.Month:
       return {
-        start: startOfInterval('month'),
-        end: endOfInterval('month'),
-        add: (date: Date, amount: number) => intervalOffset('month', date, amount),
-        difference: intervalDifference('month'),
-        isSame: isSameInterval('month'),
+        start: startOfInterval(monthInterval),
+        end: endOfInterval(monthInterval),
+        add: (date: Date, amount: number) => intervalOffset(monthInterval, date, amount),
+        difference: intervalDifference(monthInterval),
+        isSame: isSameInterval(monthInterval),
       };
     case PeriodType.Quarter:
       return {
-        start: startOfInterval('quarter'),
-        end: endOfInterval('quarter'),
-        add: (date: Date, amount: number) => intervalOffset('quarter', date, amount),
-        difference: intervalDifference('quarter'),
-        isSame: isSameInterval('quarter'),
+        start: startOfInterval(quarterInterval),
+        end: endOfInterval(quarterInterval),
+        add: (date: Date, amount: number) => intervalOffset(quarterInterval, date, amount),
+        difference: intervalDifference(quarterInterval),
+        isSame: isSameInterval(quarterInterval),
       };
     case PeriodType.CalendarYear:
       return {
-        start: startOfInterval('year'),
-        end: endOfInterval('year'),
-        add: (date: Date, amount: number) => intervalOffset('year', date, amount),
-        difference: intervalDifference('year'),
-        isSame: isSameInterval('year'),
+        start: startOfInterval(yearInterval),
+        end: endOfInterval(yearInterval),
+        add: (date: Date, amount: number) => intervalOffset(yearInterval, date, amount),
+        difference: intervalDifference(yearInterval),
+        isSame: isSameInterval(yearInterval),
       };
     case PeriodType.FiscalYearOctober:
       return {
-        start: startOfFiscalYear,
-        end: endOfFiscalYear,
-        add: (date: Date, amount: number) => intervalOffset('year', date, amount),
-        difference: intervalDifference('year'),
-        isSame: isSameFiscalYear,
+        start: (date: Date) => startOfFiscalYear(date, { utc }),
+        end: (date: Date) => endOfFiscalYear(date, { utc }),
+        add: (date: Date, amount: number) => intervalOffset(yearInterval, date, amount),
+        difference: intervalDifference(yearInterval),
+        isSame: (dateLeft: Date, dateRight: Date) => isSameFiscalYear(dateLeft, dateRight, { utc }),
       };
 
     // BiWeek 1
@@ -476,18 +495,18 @@ export function getDateFuncsByPeriodType(
       const week = getPeriodTypeCode(periodType).startsWith('BIWEEK1') ? 1 : 2;
       const dayOfWeek = getDayOfWeek(periodType)!;
       return {
-        start: (date: Date) => startOfBiWeek(date, week, dayOfWeek),
-        end: (date: Date) => endOfBiWeek(date, week, dayOfWeek),
-        add: (date: Date, amount: number) => intervalOffset('week', date, amount * 2),
+        start: (date: Date) => startOfBiWeek(date, week, dayOfWeek, { utc }),
+        end: (date: Date) => endOfBiWeek(date, week, dayOfWeek, { utc }),
+        add: (date: Date, amount: number) => intervalOffset(weekIntervalName, date, amount * 2),
         difference: (dateLeft: Date, dateRight: Date) => {
           // TODO: Use interval based on start of bi-week (sunday, monday, etc)
-          return intervalDifference('week', dateLeft, dateRight) / 2;
+          return intervalDifference(weekIntervalName, dateLeft, dateRight) / 2;
         },
         isSame: (dateLeft: Date, dateRight: Date) => {
           return isSameInterval(
-            'day',
-            startOfBiWeek(dateLeft, week, dayOfWeek),
-            startOfBiWeek(dateRight, week, dayOfWeek)
+            dayInterval,
+            startOfBiWeek(dateLeft, week, dayOfWeek, { utc }),
+            startOfBiWeek(dateRight, week, dayOfWeek, { utc })
           );
         },
       };
@@ -507,11 +526,11 @@ export function getDateFuncsByPeriodType(
     case undefined:
       // Default to end of day if periodType == null, etc
       return {
-        start: startOfInterval('day'),
-        end: endOfInterval('day'),
-        add: (date: Date, amount: number) => intervalOffset('day', date, amount),
-        difference: intervalDifference('day'),
-        isSame: isSameInterval('day'),
+        start: startOfInterval(dayInterval),
+        end: endOfInterval(dayInterval),
+        add: (date: Date, amount: number) => intervalOffset(dayInterval, date, amount),
+        difference: intervalDifference(dayInterval),
+        isSame: isSameInterval(dayInterval),
       };
 
     default:
@@ -519,10 +538,17 @@ export function getDateFuncsByPeriodType(
   }
 }
 
+/**
+ * Format a date with `Intl.DateTimeFormat`.
+ *
+ * @param options.utc Render the date's UTC calendar fields rather than the local ones. An
+ *   explicit `timeZone` in `tokens_or_intlOptions` takes precedence.
+ */
 export function formatIntl(
   settings: LocaleSettings,
   dt: Date,
-  tokens_or_intlOptions: CustomIntlDateTimeFormatOptions
+  tokens_or_intlOptions: CustomIntlDateTimeFormatOptions,
+  options?: { utc?: boolean }
 ) {
   const {
     locale,
@@ -530,6 +556,8 @@ export function formatIntl(
       dates: { ordinalSuffixes: suffixes },
     },
   } = settings;
+
+  const timeZone = options?.utc ? 'UTC' : undefined;
 
   function formatIntlOrdinal(formatter: Intl.DateTimeFormat, with_ordinal = false) {
     if (with_ordinal) {
@@ -553,7 +581,10 @@ export function formatIntl(
 
   if (typeof tokens_or_intlOptions !== 'string' && !Array.isArray(tokens_or_intlOptions)) {
     return formatIntlOrdinal(
-      new Intl.DateTimeFormat(locale, tokens_or_intlOptions),
+      new Intl.DateTimeFormat(locale, {
+        timeZone,
+        ...tokens_or_intlOptions,
+      }),
       tokens_or_intlOptions.withOrdinal
     );
   }
@@ -564,6 +595,8 @@ export function formatIntl(
 
   // Order of includes check is important! (longest first)
   const formatter = new Intl.DateTimeFormat(locale, {
+    timeZone,
+
     year: tokens.includes(DateToken.Year_numeric)
       ? 'numeric'
       : tokens.includes(DateToken.Year_2Digit)
@@ -628,16 +661,23 @@ function range(
   date: Date,
   weekStartsOn: DayOfWeek,
   formatToUse: CustomIntlDateTimeFormatOptions,
-  biWeek: undefined | 1 | 2 = undefined // undefined means that it's not a bi-week
+  biWeek: undefined | 1 | 2 = undefined, // undefined means that it's not a bi-week
+  options?: { utc?: boolean }
 ) {
   const start =
     biWeek === undefined
-      ? startOfWeek(date, weekStartsOn)
-      : startOfBiWeek(date, biWeek, weekStartsOn);
+      ? startOfWeek(date, weekStartsOn, options)
+      : startOfBiWeek(date, biWeek, weekStartsOn, options);
   const end =
-    biWeek === undefined ? endOfWeek(date, weekStartsOn) : endOfBiWeek(date, biWeek, weekStartsOn);
+    biWeek === undefined
+      ? endOfWeek(date, weekStartsOn, options)
+      : endOfBiWeek(date, biWeek, weekStartsOn, options);
 
-  return formatIntl(settings, start, formatToUse) + ' - ' + formatIntl(settings, end, formatToUse);
+  return (
+    formatIntl(settings, start, formatToUse, options) +
+    ' - ' +
+    formatIntl(settings, end, formatToUse, options)
+  );
 }
 
 export function formatDate(
@@ -660,7 +700,7 @@ export function formatDate(
       // console.log({ periodOrFormat, strftimeFormat });
     }
 
-    return timeFormat(strftimeFormat)(date);
+    return options.utc ? utcFormat(strftimeFormat)(date) : timeFormat(strftimeFormat)(date);
   }
 
   return formatDateWithLocale(
@@ -760,97 +800,107 @@ export function formatDateWithLocale(
     return preset[options.variant ?? 'default'];
   }
 
+  // Bound to a local so the narrowing above survives into the closures below (`date` is a
+  // reassigned parameter). `fmt`/`rng` exist to carry `utc` into every branch of the switch.
+  const dt = date;
+  const utcOptions = { utc: options.utc };
+  const fmt = (value: Date, format: CustomIntlDateTimeFormatOptions) =>
+    formatIntl(settings, value, format, utcOptions);
+  const rng = (weekStartsOn: DayOfWeek, format: CustomIntlDateTimeFormatOptions, biWeek?: 1 | 2) =>
+    range(settings, dt, weekStartsOn, format, biWeek, utcOptions);
+
   switch (periodType) {
     case PeriodType.Custom:
-      return formatIntl(settings, date, options.custom!);
+      return fmt(date, options.custom!);
 
     case PeriodType.Day:
-      return formatIntl(settings, date, rv(day!)!);
+      return fmt(date, rv(day!)!);
 
     case PeriodType.DayTime:
-      return formatIntl(settings, date, rv(dayTime!)!);
+      return fmt(date, rv(dayTime!)!);
 
     case PeriodType.TimeOnly:
-      return formatIntl(settings, date, rv(timeOnly!)!);
+      return fmt(date, rv(timeOnly!)!);
 
     case PeriodType.Hour:
-      return formatIntl(settings, date, rv(hour!)!);
+      return fmt(date, rv(hour!)!);
 
     case PeriodType.Minute:
-      return formatIntl(settings, date, rv(minute!)!);
+      return fmt(date, rv(minute!)!);
 
     case PeriodType.Second:
-      return formatIntl(settings, date, rv(second!)!);
+      return fmt(date, rv(second!)!);
 
     case PeriodType.Millisecond:
-      return formatIntl(settings, date, rv(millisecond!)!);
+      return fmt(date, rv(millisecond!)!);
 
     case PeriodType.Week: //Should never happen, but to make types happy
     case PeriodType.WeekSun:
-      return range(settings, date, 0, rv(week!)!);
+      return rng(0, rv(week!)!);
     case PeriodType.WeekMon:
-      return range(settings, date, 1, rv(week!)!);
+      return rng(1, rv(week!)!);
     case PeriodType.WeekTue:
-      return range(settings, date, 2, rv(week!)!);
+      return rng(2, rv(week!)!);
     case PeriodType.WeekWed:
-      return range(settings, date, 3, rv(week!)!);
+      return rng(3, rv(week!)!);
     case PeriodType.WeekThu:
-      return range(settings, date, 4, rv(week!)!);
+      return rng(4, rv(week!)!);
     case PeriodType.WeekFri:
-      return range(settings, date, 5, rv(week!)!);
+      return rng(5, rv(week!)!);
     case PeriodType.WeekSat:
-      return range(settings, date, 6, rv(week!)!);
+      return rng(6, rv(week!)!);
 
     case PeriodType.Month:
-      return formatIntl(settings, date, rv(month!)!);
+      return fmt(date, rv(month!)!);
 
     case PeriodType.MonthYear:
-      return formatIntl(settings, date, rv(monthsYear!)!);
+      return fmt(date, rv(monthsYear!)!);
 
     case PeriodType.Quarter:
       return [
-        formatIntl(settings, startOfInterval('quarter', date), rv(month!)!),
-        formatIntl(settings, endOfInterval('quarter', date), rv(monthsYear!)!),
+        fmt(startOfInterval(options.utc ? 'utcQuarter' : 'quarter', date), rv(month!)!),
+        fmt(endOfInterval(options.utc ? 'utcQuarter' : 'quarter', date), rv(monthsYear!)!),
       ].join(' - ');
 
     case PeriodType.CalendarYear:
-      return formatIntl(settings, date, rv(year!)!);
+      return fmt(date, rv(year!)!);
 
     case PeriodType.FiscalYearOctober:
-      const fDate = new Date(getFiscalYear(date), 0, 1);
-      return formatIntl(settings, fDate, rv(year!)!);
+      const fiscalYear = getFiscalYear(date, utcOptions);
+      const fDate = options.utc ? new Date(Date.UTC(fiscalYear, 0, 1)) : new Date(fiscalYear, 0, 1);
+      return fmt(fDate, rv(year!)!);
 
     case PeriodType.BiWeek1: //Should never happen, but to make types happy
     case PeriodType.BiWeek1Sun:
-      return range(settings, date, 0, rv(week!)!, 1);
+      return rng(0, rv(week!)!, 1);
     case PeriodType.BiWeek1Mon:
-      return range(settings, date, 1, rv(week!)!, 1);
+      return rng(1, rv(week!)!, 1);
     case PeriodType.BiWeek1Tue:
-      return range(settings, date, 2, rv(week!)!, 1);
+      return rng(2, rv(week!)!, 1);
     case PeriodType.BiWeek1Wed:
-      return range(settings, date, 3, rv(week!)!, 1);
+      return rng(3, rv(week!)!, 1);
     case PeriodType.BiWeek1Thu:
-      return range(settings, date, 4, rv(week!)!, 1);
+      return rng(4, rv(week!)!, 1);
     case PeriodType.BiWeek1Fri:
-      return range(settings, date, 5, rv(week!)!, 1);
+      return rng(5, rv(week!)!, 1);
     case PeriodType.BiWeek1Sat:
-      return range(settings, date, 6, rv(week!)!, 1);
+      return rng(6, rv(week!)!, 1);
 
     case PeriodType.BiWeek2: //Should never happen, but to make types happy
     case PeriodType.BiWeek2Sun:
-      return range(settings, date, 0, rv(week!)!, 2);
+      return rng(0, rv(week!)!, 2);
     case PeriodType.BiWeek2Mon:
-      return range(settings, date, 1, rv(week!)!, 2);
+      return rng(1, rv(week!)!, 2);
     case PeriodType.BiWeek2Tue:
-      return range(settings, date, 2, rv(week!)!, 2);
+      return rng(2, rv(week!)!, 2);
     case PeriodType.BiWeek2Wed:
-      return range(settings, date, 3, rv(week!)!, 2);
+      return rng(3, rv(week!)!, 2);
     case PeriodType.BiWeek2Thu:
-      return range(settings, date, 4, rv(week!)!, 2);
+      return rng(4, rv(week!)!, 2);
     case PeriodType.BiWeek2Fri:
-      return range(settings, date, 5, rv(week!)!, 2);
+      return rng(5, rv(week!)!, 2);
     case PeriodType.BiWeek2Sat:
-      return range(settings, date, 6, rv(week!)!, 2);
+      return rng(6, rv(week!)!, 2);
 
     default:
       return date.toISOString();
