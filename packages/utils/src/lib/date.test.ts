@@ -1145,6 +1145,20 @@ describe('utcToLocalDate()', () => {
     const localDate = utcToLocalDate(utcDate);
     expect(localDate.toISOString()).equal('2023-11-21T08:00:00.000Z');
   });
+
+  it('keeps the year when the local date falls in the previous UTC year', () => {
+    // Regression: `setUTCFullYear()` was applied to a date built from *local* fields. Late on
+    // Dec 31 in this zone the constructed date has already rolled into the next UTC year, so
+    // forcing the UTC year back to 2026 pulled the local date back to Dec 31 2025.
+    const localDate = utcToLocalDate(new Date('2026-12-31T23:59:59.999Z'));
+    expect(localDate.getFullYear()).equal(2026);
+    expect(localDate.getMonth()).equal(11);
+    expect(localDate.getDate()).equal(31);
+  });
+
+  it('preserves milliseconds', () => {
+    expect(utcToLocalDate(new Date('2023-11-21T00:00:00.123Z')).getMilliseconds()).equal(123);
+  });
 });
 
 describe('localToUtcDate()', () => {
@@ -1164,6 +1178,10 @@ describe('localToUtcDate()', () => {
     const localDate = '2023-11-21T04:00:00';
     const utcDate = localToUtcDate(localDate);
     expect(utcDate.toISOString()).equal('2023-11-21T04:00:00.000Z');
+  });
+
+  it('preserves milliseconds', () => {
+    expect(localToUtcDate(new Date('2023-11-21T00:00:00.123Z')).getUTCMilliseconds()).equal(123);
   });
 });
 

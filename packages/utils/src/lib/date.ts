@@ -865,9 +865,15 @@ export function utcToLocalDate(date: Date | string | null | undefined) {
     date.getUTCDate(),
     date.getUTCHours(),
     date.getUTCMinutes(),
-    date.getUTCSeconds()
+    date.getUTCSeconds(),
+    date.getUTCMilliseconds()
   );
-  d.setUTCFullYear(date.getUTCFullYear());
+  // `new Date(year, ...)` maps years 0-99 onto 1900-1999; restore the intended year.
+  // Must be `setFullYear`, not `setUTCFullYear`: `d` was built from *local* fields, so near a
+  // year boundary its UTC year differs from its local year and setting the UTC one shifts the
+  // date by a full year (e.g. `2024-01-01T00:00Z` -> Jan 1 2025 in Asia/Tokyo, and
+  // `2026-12-31T23:59:59.999Z` -> Dec 31 2025 in America/New_York).
+  d.setFullYear(date.getUTCFullYear());
   return d;
 }
 
@@ -886,9 +892,13 @@ export function localToUtcDate(date: Date | string | null | undefined) {
       date.getDate(),
       date.getHours(),
       date.getMinutes(),
-      date.getSeconds()
+      date.getSeconds(),
+      date.getMilliseconds()
     )
   );
+  // `Date.UTC` applies the same 0-99 year mapping as `new Date(year, ...)`. Here `d` is built
+  // from UTC fields, so `setUTCFullYear` is the correct counterpart to `utcToLocalDate`.
+  d.setUTCFullYear(date.getFullYear());
   return d;
 }
 
