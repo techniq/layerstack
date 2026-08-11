@@ -16,6 +16,14 @@ import {
   timeThursday,
   timeFriday,
   timeSaturday,
+  utcDay,
+  utcHour,
+  utcMillisecond,
+  utcMinute,
+  utcMonth,
+  utcSecond,
+  utcWeek,
+  utcYear,
 } from 'd3-time';
 import { timeFormat, timeParse } from 'd3-time-format';
 import { min, max } from 'd3-array';
@@ -1000,7 +1008,34 @@ export const timeQuarter = d3TimeInterval(
   (date) => date.getMonth() // TODO: what should this be?
 );
 
-/** Get a time interval function by name */
+/**
+ * Custom time interval for quarters, in UTC.
+ *
+ * The UTC counterpart of {@link timeQuarter} — d3-time has no quarter interval of either
+ * kind, so this mirrors the local implementation using the UTC accessors.
+ */
+export const utcQuarter = d3TimeInterval(
+  // floor
+  (date) => {
+    date.setUTCMonth(date.getUTCMonth() - (date.getUTCMonth() % 3), 1);
+    date.setUTCHours(0, 0, 0, 0);
+  },
+  // offset
+  (date, step) => date.setUTCMonth(date.getUTCMonth() + step * 3, 1),
+  // count
+  (start, end) => (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30 * 3),
+  // field
+  (date) => date.getUTCMonth() // TODO: what should this be?
+);
+
+/**
+ * Get a time interval function by name.
+ *
+ * Every interval has a `utc`-prefixed counterpart (`'utcDay'`, `'utcMonth'`, ...) that floors
+ * and offsets on UTC boundaries instead of local ones, so it is unaffected by the ambient
+ * timezone or by DST. Because these are plain names, they work anywhere an interval name is
+ * accepted — `startOfInterval('utcDay', date)`, `intervalOffset('utcMonth', date, -1)`, etc.
+ */
 export function timeInterval(name: TimeIntervalType) {
   switch (name) {
     case 'millisecond':
@@ -1021,6 +1056,25 @@ export function timeInterval(name: TimeIntervalType) {
       return timeQuarter;
     case 'year':
       return timeYear;
+
+    case 'utcMillisecond':
+      return utcMillisecond;
+    case 'utcSecond':
+      return utcSecond;
+    case 'utcMinute':
+      return utcMinute;
+    case 'utcHour':
+      return utcHour;
+    case 'utcDay':
+      return utcDay;
+    case 'utcWeek':
+      return utcWeek;
+    case 'utcMonth':
+      return utcMonth;
+    case 'utcQuarter':
+      return utcQuarter;
+    case 'utcYear':
+      return utcYear;
   }
 }
 

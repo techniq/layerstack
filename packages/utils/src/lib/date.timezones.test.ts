@@ -1,8 +1,17 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { localToUtcDate, utcToLocalDate } from './date.js';
+import {
+  endOfInterval,
+  intervalOffset,
+  localToUtcDate,
+  startOfInterval,
+  timeInterval,
+  utcToLocalDate,
+} from './date.js';
+import type { TimeIntervalType } from './date_types.js';
 
 /**
- * Timezone-independent invariants for `utcToLocalDate()` / `localToUtcDate()`.
+ * Timezone-independent invariants: the `utcToLocalDate()` / `localToUtcDate()` pair, and the
+ * `utc*` time intervals.
  *
  * The assertions in `date.test.ts` are written against the single offset the suite runs under
  * (`TZ=UTC+4`, which POSIX inverts to UTC-4), so they can only ever exercise one side of the
@@ -87,6 +96,88 @@ describe.each(TIMEZONES)('TZ=%s', (timeZone) => {
     it.each(INSTANTS)('utcToLocalDate(localToUtcDate(d)) === d (%s)', (iso) => {
       const date = new Date(iso);
       expect(utcToLocalDate(localToUtcDate(date)).getTime()).equal(date.getTime());
+    });
+  });
+
+  describe('utc intervals', () => {
+    // The whole point of the `utc*` names: identical results in every zone.
+    const date = new Date('2026-08-10T17:43:12.500Z');
+
+    it('startOfInterval() floors to the UTC boundary', () => {
+      expect(startOfInterval('utcDay', date).toISOString()).equal('2026-08-10T00:00:00.000Z');
+      expect(startOfInterval('utcMonth', date).toISOString()).equal('2026-08-01T00:00:00.000Z');
+      expect(startOfInterval('utcQuarter', date).toISOString()).equal('2026-07-01T00:00:00.000Z');
+      expect(startOfInterval('utcYear', date).toISOString()).equal('2026-01-01T00:00:00.000Z');
+    });
+
+    it('endOfInterval() returns the last ms of the UTC interval', () => {
+      expect(endOfInterval('utcDay', date).toISOString()).equal('2026-08-10T23:59:59.999Z');
+      expect(endOfInterval('utcMonth', date).toISOString()).equal('2026-08-31T23:59:59.999Z');
+      expect(endOfInterval('utcQuarter', date).toISOString()).equal('2026-09-30T23:59:59.999Z');
+      expect(endOfInterval('utcYear', date).toISOString()).equal('2026-12-31T23:59:59.999Z');
+    });
+
+    it('intervalOffset() shifts by whole UTC intervals', () => {
+      const utcMidnight = new Date('2026-08-10T00:00:00.000Z');
+      expect(intervalOffset('utcDay', utcMidnight, -6).toISOString()).equal(
+        '2026-08-04T00:00:00.000Z'
+      );
+      // `offset` shifts, it does not floor — the day of month is preserved.
+      expect(intervalOffset('utcMonth', utcMidnight, 1).toISOString()).equal(
+        '2026-09-10T00:00:00.000Z'
+      );
+    });
+
+    it('offsets across a DST transition without shifting the time of day', () => {
+      // `'day'` crosses *local* day boundaries, so a local DST transition inside the range
+      // moves the UTC time of day. `'utcDay'` must not.
+      const beforeSpringForward = new Date('2026-03-05T00:00:00.000Z');
+      expect(intervalOffset('utcDay', beforeSpringForward, 7).toISOString()).equal(
+        '2026-03-12T00:00:00.000Z'
+      );
+    });
+
+    it.each([
+      ['millisecond', 'utcMillisecond'],
+      ['second', 'utcSecond'],
+      ['minute', 'utcMinute'],
+      ['hour', 'utcHour'],
+      ['day', 'utcDay'],
+      ['week', 'utcWeek'],
+      ['month', 'utcMonth'],
+      ['quarter', 'utcQuarter'],
+      ['year', 'utcYear'],
+    ] as [TimeIntervalType, TimeIntervalType][])(
+      'timeInterval() resolves both %s and %s',
+      (local, utc) => {
+        expect(timeInterval(local)).toBeDefined();
+        expect(timeInterval(utc)).toBeDefined();
+      }
+    );
+
+    it.each([
+      'utcMinute',
+      'utcHour',
+      'utcDay',
+      'utcWeek',
+      'utcMonth',
+      'utcQuarter',
+      'utcYear',
+    ] as TimeIntervalType[])('timeInterval(%s) is distinct from its local counterpart', (utc) => {
+      // `utcMillisecond`/`utcSecond` are excluded: d3 aliases them to the local intervals,
+      // since those boundaries don't depend on the timezone.
+      const local = (utc.charAt(3).toLowerCase() + utc.slice(4)) as TimeIntervalType;
+      expect(timeInterval(utc)).not.toBe(timeInterval(local));
+    });
+
+    it.each([
+      ['utcDay', '2026-08-10T00:00:00.000Z'],
+      ['utcWeek', '2026-08-09T00:00:00.000Z'], // d3 weeks start Sunday
+      ['utcMonth', '2026-08-01T00:00:00.000Z'],
+      ['utcQuarter', '2026-07-01T00:00:00.000Z'],
+      ['utcYear', '2026-01-01T00:00:00.000Z'],
+    ] as [TimeIntervalType, string][])('%s floors to %s in every zone', (interval, expected) => {
+      expect(startOfInterval(interval, date).toISOString()).equal(expected);
     });
   });
 });
