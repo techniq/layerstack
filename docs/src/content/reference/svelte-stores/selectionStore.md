@@ -1,7 +1,7 @@
 ---
 title: selectionStore
 description: Manage item selection state including toggling values, selecting all, and clear or reset selection
-related: [components/MultiSelect, components/Selection]
+related: [ui/MultiSelect, ui/Selection]
 ---
 
 ## Basic
@@ -10,16 +10,16 @@ related: [components/MultiSelect, components/Selection]
 
 ## Initial selection
 
-:example{name="initial-selection" showCode}
+:example{name="initial-selection"}
 
 ## Select all
 
-:example{name="select-all" showCode}
+:example{name="select-all"}
 
 ## Single
 
-:example{name="single" showCode}
+:example{name="single"}
 
 ## Max
 
-:example{name="max" showCode}
+:example{name="max"}

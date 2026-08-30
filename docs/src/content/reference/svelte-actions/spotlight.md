@@ -1,6 +1,6 @@
 ---
 title: spotlight
-related: [components/Shine]
+related: [ui/Shine]
 ---
 
 ## Usage
@@ -11,12 +11,12 @@ import { spotlight } from '@layerstack/svelte-actions';
 
 ## Using global context and options
 
-:example{name="global-context-and-options" showCode}
+:example{component="action-spotlight" name="global-context-and-options" showCode}
 
 ## Using global context and CSS variables
 
-:example{name="global-context-and-css-variables"}
+:example{component="action-spotlight" name="global-context-and-css-variables"}
 
 ## Line example
 
-:example{name="line"}
+:example{component="action-spotlight" name="line"}

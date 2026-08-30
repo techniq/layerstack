@@ -1,7 +1,7 @@
 ---
 title: sticky
 description: Sticky positioning actions — `sticky` and `stickyContext`
-related: [components/Table, svelte-table/actions/table]
+related: [ui/Table, svelte-table/actions/table]
 ---
 
 ## Usage

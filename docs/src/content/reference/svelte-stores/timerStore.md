@@ -1,7 +1,7 @@
 ---
 title: timerStore
 description: Manage interval ticks, useful for timely updates and countdowns
-related: [components/Duration, components/ScrollingValue]
+related: [ui/Duration, ui/ScrollingValue]
 ---
 
 ## Usage
@@ -16,4 +16,4 @@ const timer = timerStore();
 
 ## Tick count
 
-:example{name="tick-count" showCode}
+:example{name="tick-count"}

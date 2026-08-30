@@ -45,6 +45,22 @@ export function createThemeStore(options: ThemeStoreOptions): ThemeStore {
     };
   }
 
+  // With no themes configured there is nothing to manage, and touching `<html>` would be actively
+  // harmful — the fallback settings used outside a `settings()` provider are built this way, and
+  // would otherwise strip the `dark` class the real store had just applied
+  const managed = options.light.length > 0 || options.dark.length > 0;
+  if (!managed) {
+    return {
+      subscribe: store.subscribe,
+      setTheme: (themeName: string) => {
+        store.set(new CurrentTheme(themeName, options.dark.includes(themeName)));
+      },
+    };
+  }
+
+  const isKnown = (themeName: string) =>
+    options.light.includes(themeName) || options.dark.includes(themeName);
+
   let darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 
   function resolveSystemTheme({ matches }: { matches: boolean }) {
@@ -86,8 +102,10 @@ export function createThemeStore(options: ThemeStoreOptions): ThemeStore {
     }
   }
 
-  let savedTheme = localStorage.getItem('theme') || 'system';
-  setTheme(savedTheme);
+  // Ignore a stored theme this app does not define, rather than applying a `data-theme` we cannot
+  // classify as light or dark — that leaves the palette dark while `dark:` utilities stay light
+  const savedTheme = localStorage.getItem('theme');
+  setTheme(savedTheme && isKnown(savedTheme) ? savedTheme : 'system');
 
   return {
     subscribe: store.subscribe,

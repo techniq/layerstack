@@ -42,6 +42,8 @@
     return null;
   });
 
+  // Initial value only — toggling is local to this component
+  // svelte-ignore state_referenced_locally
   let codeVisible = $state(showCode);
 </script>
 

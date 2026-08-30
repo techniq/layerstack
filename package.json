@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "pnpm clean && pnpm --filter @layerstack/utils --filter @layerstack/tailwind --filter @layerstack/docs build && pnpm --parallel --filter @layerstack/docs --filter @layerstack/docs-site --if-present dev",
+    "dev": "pnpm build:packages && pnpm --parallel --filter @layerstack/ui --filter @layerstack/docs --filter @layerstack/docs-site --if-present dev",
     "test:unit": "pnpm -r test:unit",
     "clean": "rimraf packages/*/dist",
     "build": "pnpm clean && pnpm -r build",

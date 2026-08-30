@@ -33,4 +33,4 @@ Convenient presets (Tailwind defaults) — `smScreen`, `mdScreen`, `lgScreen`, `
 
 ## Example
 
-:example{name="basic"}
+:example{name="basic" showCode}

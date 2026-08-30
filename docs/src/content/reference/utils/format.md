@@ -24,25 +24,25 @@ format(123.456, 'decimal');
 
 ### format (default settings)
 
-:example{name="numbers-default" showCode}
+:example{name="numbers-default"}
 
 ### format (additional options)
 
 You can customize numbers with the 3rd arg that is an enhanced `Intl.NumberFormatOptions` type.
 
-:example{name="numbers-options" showCode}
+:example{name="numbers-options"}
 
 ### config
 
 You can customize numbers with a config option.
 
-:example{name="numbers-config" showCode}
+:example{name="numbers-config"}
 
 ## Dates
 
 ### Custom format
 
-:example{name="dates-custom" showCode}
+:example{name="dates-custom"}
 
 ### Period types
 

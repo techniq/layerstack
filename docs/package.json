@@ -8,6 +8,7 @@
   "version": "1.1.0-next.7",
   "scripts": {
     "dev": "vite dev --port 3004",
+    "prebuild": "pnpm generate:api",
     "build": "vite build",
     "preview": "vite preview",
     "package": "svelte-package",
@@ -15,7 +16,12 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate:api": "layerstack-docs generate-api ../packages/ui/src/lib/components generated/api",
+    "generate:catalog": "layerstack-docs generate-catalog ../packages/ui/src/lib/components src/examples/components src/examples/catalog",
+    "generate:screenshots": "layerstack-docs generate-screenshots src/examples/components static/screenshots",
+    "generate:releases": "layerstack-docs generate-releases techniq/layerstack generated/releases",
+    "generate:all": "pnpm generate:api && pnpm generate:screenshots && pnpm generate:catalog && pnpm generate:releases"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.4",
@@ -35,9 +41,9 @@
     "mdsx": "^0.0.7",
     "posthog-js": "^1.239.0",
     "prettier": "^3.5.3",
-    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-svelte": "^3.5.2",
     "rehype-slug": "^6.0.0",
-    "svelte": "^5.28.2",
+    "svelte": "^5.29.0",
     "svelte-check": "^4.1.6",
     "svelte-ux": "2.0.0-next.22",
     "svelte2tsx": "^0.7.36",
@@ -54,15 +60,18 @@
     "@fortawesome/fontawesome-common-types": "^6.7.2",
     "@layerstack/docs": "workspace:*",
     "@layerstack/svelte-actions": "workspace:*",
+    "@layerstack/svelte-attachments": "workspace:*",
     "@layerstack/svelte-state": "workspace:*",
     "@layerstack/svelte-stores": "workspace:*",
     "@layerstack/svelte-table": "workspace:*",
     "@layerstack/tailwind": "workspace:*",
+    "@layerstack/ui": "workspace:*",
     "@layerstack/utils": "workspace:*",
     "@mdi/js": "^7.4.47",
     "clsx": "^2.1.1",
     "d3-array": "^3.2.4",
-    "tailwind-merge": "^3.2.0"
+    "tailwind-merge": "^3.2.0",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "svelte": "^3.56.0 || ^4.0.0 || ^5.0.0-next.120"

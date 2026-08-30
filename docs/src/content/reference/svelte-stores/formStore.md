@@ -1,7 +1,7 @@
 ---
 title: formStore
 description: Manage form state via immer draft and zod schema, with undo history
-related: [components/Form]
+related: [ui/Form]
 ---
 
 ## Usage

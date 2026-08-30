@@ -1,7 +1,7 @@
 ---
 title: uniqueStore
 description: Store to manage unique values using `Set` with improved ergonomics and better control of updates
-related: [svelte-stores/selectionStore, svelte-stores/mapStore, components/MultiSelect]
+related: [svelte-stores/selectionStore, svelte-stores/mapStore, ui/MultiSelect]
 ---
 
 ## Usage

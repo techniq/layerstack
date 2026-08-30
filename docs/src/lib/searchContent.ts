@@ -1,4 +1,4 @@
-import { allReferences, allGuides } from 'content-collections';
+import { allReferences, allGuides, allComponents } from 'content-collections';
 import { buildSearchEntries, type SearchEntry } from '@layerstack/docs/search';
 
 const topLevelPages: SearchEntry[] = [
@@ -16,6 +16,11 @@ const guides = allGuides.filter((g) => !g.draft);
 export const searchContent: SearchEntry[] = [
   ...topLevelPages,
   ...buildSearchEntries(guides, { type: 'guide', slugPrefix: 'docs/guides' }),
+  ...buildSearchEntries(allComponents, {
+    type: 'component',
+    slugPrefix: 'docs/ui',
+    category: () => 'ui',
+  }),
   ...buildSearchEntries(allReferences, {
     type: 'reference',
     slugPrefix: 'docs',

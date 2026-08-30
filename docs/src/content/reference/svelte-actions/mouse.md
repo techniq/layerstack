@@ -13,22 +13,22 @@ import { longpress, movable } from '@layerstack/svelte-actions';
 
 Dispatch event after element has been pressed for a duration of time
 
-:example{name="longpress"}
+:example{component="action-mouse" name="longpress" showCode}
 
 ## movable
 
 Track mouse position changes from mouse down on node to mouse up
 
-:example{name="movable"}
+:example{component="action-mouse" name="movable"}
 
 ### With pixel steps / snapping
 
-:example{name="movable-step"}
+:example{component="action-mouse" name="movable-step"}
 
 ### With percentage of parent steps / snapping
 
-:example{name="movable-step-percent"}
+:example{component="action-mouse" name="movable-step-percent"}
 
 ### x-axis only
 
-:example{name="movable-x-axis"}
+:example{component="action-mouse" name="movable-x-axis"}

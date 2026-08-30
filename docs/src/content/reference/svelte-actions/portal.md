@@ -1,7 +1,7 @@
 ---
 title: portal
 description: Render component outside current DOM hierarchy
-related: [components/Dialog, components/Drawer, components/Backdrop]
+related: [ui/Dialog, ui/Drawer, ui/Backdrop]
 ---
 
 ## Usage
@@ -14,20 +14,20 @@ import { portal } from '@layerstack/svelte-actions';
 
 ### basic
 
-:example{name="basic" showCode}
+:example{component="action-portal" name="basic" showCode}
 
 ### first/sibling `.PortalTarget`
 
-:example{name="first-sibling-portal-target"}
+:example{component="action-portal" name="first-sibling-portal-target"}
 
 ### ancestor `.PortalTarget`
 
-:example{name="ancestor-portal-target"}
+:example{component="action-portal" name="ancestor-portal-target"}
 
 ### custom target
 
-:example{name="custom-target"}
+:example{component="action-portal" name="custom-target"}
 
 ### Destroyable
 
-:example{name="destroyable"}
+:example{component="action-portal" name="destroyable"}

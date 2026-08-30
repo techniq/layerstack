@@ -1,7 +1,7 @@
 ---
 title: observer
 description: Actions for ResizeObserver, IntersectionObserver, and MutationObserver
-related: [components/InfiniteScroll, components/Lazy]
+related: [ui/InfiniteScroll, ui/Lazy]
 ---
 
 ## Usage
@@ -14,25 +14,25 @@ import { resize, intersection, mutate } from '@layerstack/svelte-actions';
 
 ### Basic
 
-:example{name="basic" showCode}
+:example{component="action-observer" name="basic" showCode}
 
 ### Full coordinates (using `getBoundingClientRect()`)
 
-:example{name="full-coordinates" showCode}
+:example{component="action-observer" name="full-coordinates"}
 
 ### Setting CSS variable
 
-:example{name="setting-css-variable" showCode}
+:example{component="action-observer" name="setting-css-variable"}
 
 ## use:intersection
 
 ### Adding class when fully visible
 
-:example{name="adding-class-when-fully-visible" showCode}
+:example{component="action-observer" name="adding-class-when-fully-visible"}
 
 ### Show header on scroll away
 
-:example{name="show-header-on-scroll-away" showCode}
+:example{component="action-observer" name="show-header-on-scroll-away"}
 
 ## use:mutate
 
