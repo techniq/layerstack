@@ -1,5 +1,11 @@
 # @layerstack/svelte-stores
 
+## 1.0.2-next.20
+
+### Patch Changes
+
+- fix(exports): Add a `default` condition to package exports so bundlers and runtimes that do not apply the `svelte` condition (plain rolldown, esbuild, Node) can resolve the package and its subpaths ([#109](https://github.com/techniq/layerstack/pull/109))
+
 ## 1.0.2-next.19
 
 ### Patch Changes

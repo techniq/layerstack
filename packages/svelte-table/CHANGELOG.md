@@ -1,5 +1,14 @@
 # @layerstack/svelte-table
 
+## 1.0.1-next.20
+
+### Patch Changes
+
+- fix(exports): Add a `default` condition to package exports so bundlers and runtimes that do not apply the `svelte` condition (plain rolldown, esbuild, Node) can resolve the package and its subpaths ([#109](https://github.com/techniq/layerstack/pull/109))
+
+- Updated dependencies [[`fd13169`](https://github.com/techniq/layerstack/commit/fd131695a9d1942ff8d8115cbf598575e081dc36)]:
+  - @layerstack/svelte-actions@1.0.1-next.20
+
 ## 1.0.1-next.19
 
 ### Patch Changes
