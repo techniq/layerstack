@@ -4,22 +4,44 @@ import { clamp, formatNumber, formatNumberWithLocale, round, step } from './numb
 import { createLocaleSettings } from './locale.js';
 
 describe('clamp()', () => {
-  it('no change', () => {
-    const original = 15;
-    const actual = clamp(original, 10, 20);
-    expect(actual).equal(15);
+  describe('number', () => {
+    it('no change', () => {
+      const original = 15;
+      const actual = clamp(original, 10, 20);
+      expect(actual).equal(15);
+    });
+
+    it('clamp min', () => {
+      const original = 5;
+      const actual = clamp(original, 10, 20);
+      expect(actual).equal(10);
+    });
+
+    it('clamp max', () => {
+      const original = 25;
+      const actual = clamp(original, 10, 20);
+      expect(actual).equal(20);
+    });
   });
 
-  it('clamp min', () => {
-    const original = 5;
-    const actual = clamp(original, 10, 20);
-    expect(actual).equal(10);
-  });
+  describe('Date', () => {
+    it('no change', () => {
+      const original = new Date(2020, 0, 15);
+      const actual = clamp(original, new Date(2020, 0, 10), new Date(2020, 0, 20));
+      expect(actual).toEqual(original);
+    });
 
-  it('clamp max', () => {
-    const original = 25;
-    const actual = clamp(original, 10, 20);
-    expect(actual).equal(20);
+    it('clamp min', () => {
+      const original = new Date(2020, 0, 5);
+      const actual = clamp(original, new Date(2020, 0, 10), new Date(2020, 0, 20));
+      expect(actual).toEqual(new Date(2020, 0, 10));
+    });
+
+    it('clamp max', () => {
+      const original = new Date(2020, 0, 25);
+      const actual = clamp(original, new Date(2020, 0, 10), new Date(2020, 0, 20));
+      expect(actual).toEqual(new Date(2020, 0, 20));
+    });
   });
 });
 

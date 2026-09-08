@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { addHours, subHours } from 'date-fns';
+import { intervalOffset } from './date.js';
 
 import { expireObject, omit, omitNil, pick } from './object.js';
 
 describe('expireObject', () => {
   it('simple value not expired', () => {
     const original = 123;
-    const expiry = addHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), 1);
 
     const actual = expireObject(original, expiry);
     expect(actual).equal(original);
@@ -14,7 +14,7 @@ describe('expireObject', () => {
 
   it('simple value expired', () => {
     const original = 123;
-    const expiry = subHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), -1);
 
     const actual = expireObject(original, expiry);
     expect(actual).toBeNull();
@@ -22,7 +22,7 @@ describe('expireObject', () => {
 
   it('Date not expired', () => {
     const original = new Date();
-    const expiry = addHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), 1);
 
     const actual = expireObject(original, expiry);
     expect(actual).equal(original);
@@ -30,7 +30,7 @@ describe('expireObject', () => {
 
   it('Date expired', () => {
     const original = new Date();
-    const expiry = subHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), -1);
 
     const actual = expireObject(original, expiry);
     expect(actual).toBeNull();
@@ -42,7 +42,7 @@ describe('expireObject', () => {
       two: 2,
       three: 3,
     };
-    const expiry = addHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), 1);
 
     const actual = expireObject(original, expiry);
     expect(actual).equal(original);
@@ -54,7 +54,7 @@ describe('expireObject', () => {
       two: 2,
       three: 3,
     };
-    const expiry = subHours(new Date(), 1);
+    const expiry = intervalOffset('hour', new Date(), -1);
 
     const actual = expireObject(original, expiry);
     expect(actual).toBeNull();
@@ -67,7 +67,7 @@ describe('expireObject', () => {
       three: 3,
     };
     const expiry = {
-      two: subHours(new Date(), 1),
+      two: intervalOffset('hour', new Date(), -1),
     };
 
     const actual = expireObject(original, expiry);
@@ -89,9 +89,9 @@ describe('expireObject', () => {
       three: 3,
     };
     const expiry = {
-      one: subHours(new Date(), 3),
-      two: addHours(new Date(), 1),
-      $default: subHours(new Date(), 1),
+      one: intervalOffset('hour', new Date(), -3),
+      two: intervalOffset('hour', new Date(), 1),
+      $default: intervalOffset('hour', new Date(), -1),
     };
 
     const actual = expireObject(original, expiry);
@@ -112,9 +112,9 @@ describe('expireObject', () => {
       three: 3,
     };
     const expiry = {
-      one: subHours(new Date(), 3),
-      two: addHours(new Date(), 1),
-      four: subHours(new Date(), 1),
+      one: intervalOffset('hour', new Date(), -3),
+      two: intervalOffset('hour', new Date(), 1),
+      four: intervalOffset('hour', new Date(), -1),
     };
 
     const actual = expireObject(original, expiry);
@@ -139,8 +139,8 @@ describe('expireObject', () => {
       three: 3,
     };
     const expiry = {
-      one: subHours(new Date(), 3),
-      two: addHours(new Date(), 1),
+      one: intervalOffset('hour', new Date(), -3),
+      two: intervalOffset('hour', new Date(), 1),
     };
 
     const actual = expireObject(original, expiry);
@@ -166,9 +166,9 @@ describe('expireObject', () => {
     };
     const expiry = {
       one: {
-        foo: subHours(new Date(), 3),
+        foo: intervalOffset('hour', new Date(), -3),
       },
-      two: addHours(new Date(), 1),
+      two: intervalOffset('hour', new Date(), 1),
     };
 
     const actual = expireObject(original, expiry);
@@ -188,8 +188,8 @@ describe('expireObject', () => {
 
   it('removes $default expiry if expired', () => {
     const expiry = {
-      one: addHours(new Date(), 1),
-      $default: subHours(new Date(), 1),
+      one: intervalOffset('hour', new Date(), 1),
+      $default: intervalOffset('hour', new Date(), -1),
     };
 
     // Test cleaning up expiry

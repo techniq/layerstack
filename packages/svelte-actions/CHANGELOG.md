@@ -1,5 +1,161 @@
 # @layerstack/svelte-actions
 
+## 1.0.1-next.20
+
+### Patch Changes
+
+- fix(exports): Add a `default` condition to package exports so bundlers and runtimes that do not apply the `svelte` condition (plain rolldown, esbuild, Node) can resolve the package and its subpaths ([#109](https://github.com/techniq/layerstack/pull/109))
+
+## 1.0.1-next.19
+
+### Patch Changes
+
+- Updated dependencies [[`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c), [`f039759`](https://github.com/techniq/layerstack/commit/f039759eca12df0588ea7d3c7625fed780307b2c)]:
+  - @layerstack/utils@2.0.0-next.19
+
+## 1.0.1-next.18
+
+### Patch Changes
+
+- Add more get string syntax ([#95](https://github.com/techniq/layerstack/pull/95))
+
+- Updated dependencies [[`c60cae2`](https://github.com/techniq/layerstack/commit/c60cae27e12fb01d2cd6708468d61571d8ead65b)]:
+  - @layerstack/utils@2.0.0-next.18
+
+## 1.0.1-next.17
+
+### Patch Changes
+
+- Remove lodash-es dependency ([#93](https://github.com/techniq/layerstack/pull/93))
+
+- Updated dependencies [[`5469634`](https://github.com/techniq/layerstack/commit/546963401fdea830b8eb8a4ced10299de14fe2c0)]:
+  - @layerstack/utils@2.0.0-next.17
+
+## 1.0.1-next.16
+
+### Patch Changes
+
+- Updated dependencies [[`d43c010`](https://github.com/techniq/layerstack/commit/d43c010d45681df2c78693e59de4915ce57b3dd9), [`73c58ed`](https://github.com/techniq/layerstack/commit/73c58edd94931b5774262fed1ecfbd8ba3bd087a), [`73c58ed`](https://github.com/techniq/layerstack/commit/73c58edd94931b5774262fed1ecfbd8ba3bd087a)]:
+  - @layerstack/utils@2.0.0-next.16
+
+## 1.0.1-next.15
+
+### Patch Changes
+
+- Updated dependencies [[`b7f39f7`](https://github.com/techniq/layerstack/commit/b7f39f7cfd3b58bf12e51f75e0b8bfda7a833899)]:
+  - @layerstack/utils@2.0.0-next.15
+
+## 1.0.1-next.14
+
+### Patch Changes
+
+- Updated dependencies [[`28027b3`](https://github.com/techniq/layerstack/commit/28027b3f71014e7926e779554a1d9cbd0ad65e07)]:
+  - @layerstack/utils@2.0.0-next.14
+
+## 1.0.1-next.13
+
+### Patch Changes
+
+- Updated dependencies [[`e366ee7`](https://github.com/techniq/layerstack/commit/e366ee7f43cc1340aafeff7021eee2714b590733)]:
+  - @layerstack/utils@2.0.0-next.13
+
+## 1.0.1-next.12
+
+### Patch Changes
+
+- chore: Remove unused deps ([#76](https://github.com/techniq/layerstack/pull/76))
+
+- Updated dependencies [[`49ccf88`](https://github.com/techniq/layerstack/commit/49ccf8863b5f6402eb4caa72b53380611ae80ad1), [`1ebd4db`](https://github.com/techniq/layerstack/commit/1ebd4db5b1fb3d3d820312aa1aa5a84d7926200e)]:
+  - @layerstack/utils@2.0.0-next.12
+
+## 1.0.1-next.11
+
+### Patch Changes
+
+- Updated dependencies [[`ad4c34f`](https://github.com/techniq/layerstack/commit/ad4c34f8db8e67a702a317e0056559ac98ac61d5), [`7c986f8`](https://github.com/techniq/layerstack/commit/7c986f8401575c99709788f2feca6070fdee44b8)]:
+  - @layerstack/utils@2.0.0-next.11
+
+## 1.0.1-next.10
+
+### Patch Changes
+
+- Updated dependencies [[`32eb536`](https://github.com/techniq/layerstack/commit/32eb5367e8a9e545026c6254827547b374d1db94)]:
+  - @layerstack/utils@2.0.0-next.10
+
+## 1.0.1-next.9
+
+### Patch Changes
+
+- refactor: Replace `date-fns` usage with new date utils (based on d3-time) to reduce bundle size ([#71](https://github.com/techniq/layerstack/pull/71))
+
+- Updated dependencies [[`abd845a`](https://github.com/techniq/layerstack/commit/abd845a53b4b1cdc3a61a6503b6cb4fd144d35a5), [`abd845a`](https://github.com/techniq/layerstack/commit/abd845a53b4b1cdc3a61a6503b6cb4fd144d35a5)]:
+  - @layerstack/utils@2.0.0-next.9
+
+## 1.0.1-next.8
+
+### Patch Changes
+
+- Updated dependencies [[`e47ed35`](https://github.com/techniq/layerstack/commit/e47ed359ae04ce24d70f3ab5369366f77cdc93d6)]:
+  - @layerstack/utils@2.0.0-next.8
+
+## 1.0.1-next.7
+
+### Patch Changes
+
+- Updated dependencies [[`a6df412`](https://github.com/techniq/layerstack/commit/a6df412a42636fead1b1ce4f92d114ecc6b1d727)]:
+  - @layerstack/utils@2.0.0-next.7
+
+## 1.0.1-next.6
+
+### Patch Changes
+
+- Updated dependencies [[`23651ad`](https://github.com/techniq/layerstack/commit/23651adc92ef675c3fedb4fbc6fa3d976df57cb4)]:
+  - @layerstack/utils@2.0.0-next.6
+
+## 1.0.1-next.5
+
+### Patch Changes
+
+- Updated dependencies [[`7642289`](https://github.com/techniq/layerstack/commit/7642289e1a99cf8092f2695491fd78b35a796bff)]:
+  - @layerstack/utils@2.0.0-next.5
+
+## 1.0.1-next.4
+
+### Patch Changes
+
+- Updated dependencies [[`ab0bb08`](https://github.com/techniq/layerstack/commit/ab0bb086257e281aa10ef13a3296aedf95c777f9), [`48b0aea`](https://github.com/techniq/layerstack/commit/48b0aead52ca6aeb2135a5297f5d774c8b510e12), [`38c4443`](https://github.com/techniq/layerstack/commit/38c44438c2454d3ffe328be15c1077987f64ee24), [`eaca635`](https://github.com/techniq/layerstack/commit/eaca6356ccd5288950aca64b8082ef18df2757ec)]:
+  - @layerstack/utils@2.0.0-next.4
+
+## 1.0.1-next.3
+
+### Patch Changes
+
+- Updated dependencies [[`4ed65a7`](https://github.com/techniq/layerstack/commit/4ed65a76562db9af2d18a196a2ba9e58f959aa5c)]:
+  - @layerstack/utils@2.0.0-next.3
+
+## 1.0.1-next.2
+
+### Patch Changes
+
+- Updated dependencies [[`955e07b`](https://github.com/techniq/layerstack/commit/955e07b5aed62acd8afba10f9eaa68b90d72bb74)]:
+  - @layerstack/utils@1.1.0-next.2
+
+## 1.0.1-next.1
+
+### Patch Changes
+
+- Update dependencies ([#31](https://github.com/techniq/layerstack/pull/31))
+
+- Updated dependencies [[`b7ca80b`](https://github.com/techniq/layerstack/commit/b7ca80b6a8a07c53ec4a99864ec6b9fd1ecab0b4)]:
+  - @layerstack/utils@1.1.0-next.1
+
+## 1.0.1-next.0
+
+### Patch Changes
+
+- Updated dependencies [[`6cdcb26`](https://github.com/techniq/layerstack/commit/6cdcb26cabd0539cee2885efbaa39e7787a34114), [`c6bb443`](https://github.com/techniq/layerstack/commit/c6bb443d12ee12bd69417dcfa5880b6bf78c9f09), [`c13e65e`](https://github.com/techniq/layerstack/commit/c13e65e059d690cbc282635f6e48a27d715e5997)]:
+  - @layerstack/utils@1.1.0-next.0
+
 ## 1.0.1
 
 ### Patch Changes

@@ -26,4 +26,10 @@ describe('isActive()', () => {
     const path = '/foo';
     expect(isActive(currentUrl, path)).false;
   });
+
+  it('path should not match if not at beginning', () => {
+    const currentUrl = new URL('http://localhost/foo/bar');
+    const path = '/bar';
+    expect(isActive(currentUrl, path)).false;
+  });
 });

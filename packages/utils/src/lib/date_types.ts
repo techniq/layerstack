@@ -1,4 +1,5 @@
 import type { DateRange } from './dateRange.js';
+import type { ValueOf } from './typeHelpers.js';
 
 export type SelectedDate = Date | Date[] | DateRange | null | undefined;
 
@@ -16,6 +17,10 @@ export enum PeriodType {
   Day = 10,
   DayTime = 11,
   TimeOnly = 15,
+  Hour = 16,
+  Minute = 17,
+  Second = 18,
+  Millisecond = 19,
 
   Week = 20, // will be replaced by WeekSun, WeekMon, etc depending on locale `weekStartsOn`
   WeekSun = 21,
@@ -50,6 +55,73 @@ export enum PeriodType {
   BiWeek2Fri = 86,
   BiWeek2Sat = 87,
 }
+
+export const periodTypeMappings = {
+  [PeriodType.Custom]: 'custom',
+  [PeriodType.Day]: 'day',
+  [PeriodType.DayTime]: 'daytime',
+  [PeriodType.TimeOnly]: 'time',
+  [PeriodType.Hour]: 'hour',
+  [PeriodType.Minute]: 'minute',
+  [PeriodType.Second]: 'second',
+  [PeriodType.Millisecond]: 'millisecond',
+
+  [PeriodType.WeekSun]: 'week-sun',
+  [PeriodType.WeekMon]: 'week-mon',
+  [PeriodType.WeekTue]: 'week-tue',
+  [PeriodType.WeekWed]: 'week-wed',
+  [PeriodType.WeekThu]: 'week-thu',
+  [PeriodType.WeekFri]: 'week-fri',
+  [PeriodType.WeekSat]: 'week-sat',
+  [PeriodType.Week]: 'week',
+
+  [PeriodType.Month]: 'month',
+  [PeriodType.MonthYear]: 'month-year',
+  [PeriodType.Quarter]: 'quarter',
+  [PeriodType.CalendarYear]: 'year',
+  [PeriodType.FiscalYearOctober]: 'fiscal-year-october',
+
+  [PeriodType.BiWeek1Sun]: 'biweek1-sun',
+  [PeriodType.BiWeek1Mon]: 'biweek1-mon',
+  [PeriodType.BiWeek1Tue]: 'biweek1-tue',
+  [PeriodType.BiWeek1Wed]: 'biweek1-wed',
+  [PeriodType.BiWeek1Thu]: 'biweek1-thu',
+  [PeriodType.BiWeek1Fri]: 'biweek1-fri',
+  [PeriodType.BiWeek1Sat]: 'biweek1-sat',
+  [PeriodType.BiWeek1]: 'biweek1',
+
+  [PeriodType.BiWeek2Sun]: 'biweek2-sun',
+  [PeriodType.BiWeek2Mon]: 'biweek2-mon',
+  [PeriodType.BiWeek2Tue]: 'biweek2-tue',
+  [PeriodType.BiWeek2Wed]: 'biweek2-wed',
+  [PeriodType.BiWeek2Thu]: 'biweek2-thu',
+  [PeriodType.BiWeek2Fri]: 'biweek2-fri',
+  [PeriodType.BiWeek2Sat]: 'biweek2-sat',
+  [PeriodType.BiWeek2]: 'biweek2',
+} as const;
+
+export type PeriodTypeCode = ValueOf<typeof periodTypeMappings>;
+
+/** Time intervals that floor and offset on *local* calendar boundaries. */
+export type LocalTimeIntervalType =
+  | 'millisecond'
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'quarter'
+  | 'year';
+
+/**
+ * UTC counterparts of {@link LocalTimeIntervalType}, floored and offset on UTC boundaries and
+ * so unaffected by the ambient timezone or by DST. Use these for values keyed on a UTC
+ * calendar date. Named to match d3-time's exports (`utcDay`, `utcMonth`, ...).
+ */
+export type UtcTimeIntervalType = `utc${Capitalize<LocalTimeIntervalType>}`;
+
+export type TimeIntervalType = LocalTimeIntervalType | UtcTimeIntervalType;
 
 export enum DayOfWeek {
   Sunday = 0,
@@ -136,6 +208,11 @@ export type FormatDateOptions = {
   weekStartsOn?: DayOfWeek;
   variant?: DateFormatVariant | 'custom';
   custom?: CustomIntlDateTimeFormatOptions;
+  /**
+   * Render the date's UTC calendar fields rather than the local ones — pair with `utc` on
+   * `getDateFuncsByPeriodType()` so period math and display agree.
+   */
+  utc?: boolean;
 };
 
 export interface FormatDateLocaleOptions {
@@ -145,6 +222,10 @@ export interface FormatDateLocaleOptions {
     day?: DateFormatVariantPreset;
     dayTime?: DateFormatVariantPreset;
     timeOnly?: DateFormatVariantPreset;
+    hour?: DateFormatVariantPreset;
+    minute?: DateFormatVariantPreset;
+    second?: DateFormatVariantPreset;
+    millisecond?: DateFormatVariantPreset;
     week?: DateFormatVariantPreset;
     month?: DateFormatVariantPreset;
     monthsYear?: DateFormatVariantPreset;
