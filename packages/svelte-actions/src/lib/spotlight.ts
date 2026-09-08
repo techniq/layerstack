@@ -1,89 +1,79 @@
 import type { Action } from 'svelte/action';
 
+import { injectStyles } from './injectStyles.js';
+import { spotlightStyles } from './spotlightStyles.js';
+
+type SpotlightColorOptions = {
+  radius?: string;
+  borderWidth?: string;
+  borderColorStops?: string;
+  surfaceColorStops?: string;
+};
+
 type SpotlightOptions =
-  | {
-      radius?: string;
-      borderWidth?: string;
-      borderColorStops?: string;
-      surfaceColorStops?: string;
-      hover?: {
-        radius?: string;
-        borderWidth?: string;
-        borderColorStops?: string;
-        surfaceColorStops?: string;
-      };
-    }
+  | (SpotlightColorOptions & {
+      /** Values to use while the element is hovered */
+      hover?: SpotlightColorOptions;
+    })
   | undefined;
 
+const PROPERTIES = {
+  radius: 'radius',
+  borderWidth: 'border-width',
+  borderColorStops: 'border-color-stops',
+  surfaceColorStops: 'surface-color-stops',
+} as const;
+
+/**
+ * Render a spotlight (a radial gradient that follows the pointer) behind an element.
+ *
+ * Self-contained — the rule for the `::before` that draws the gradients is injected on first use.
+ *
+ * Previously this added the Tailwind utilities that draw the gradients directly to the element.
+ * Tailwind only emits utilities it finds while scanning source files, and a class added from a
+ * library's JavaScript is never scanned, so under Tailwind v4 none of them existed and the
+ * spotlight was invisible.
+ */
 export const spotlight: Action<HTMLElement, SpotlightOptions> = (node, options) => {
-  if (options?.radius) {
-    node.style.setProperty('--default-spotlight-radius', options.radius);
-  }
-  if (options?.borderWidth) {
-    node.style.setProperty('--default-spotlight-border-width', options.borderWidth);
-  }
-  if (options?.borderColorStops) {
-    node.style.setProperty('--default-spotlight-border-color-stops', options.borderColorStops);
-  }
-  if (options?.surfaceColorStops) {
-    node.style.setProperty('--default-spotlight-surface-color-stops', options.surfaceColorStops);
+  const appliedProperties: string[] = [];
+
+  function apply(options: SpotlightOptions) {
+    appliedProperties.forEach((property) => node.style.removeProperty(property));
+    appliedProperties.length = 0;
+
+    for (const [option, property] of Object.entries(PROPERTIES)) {
+      const value = options?.[option as keyof SpotlightColorOptions];
+      if (value) {
+        node.style.setProperty(`--default-spotlight-${property}`, value);
+        appliedProperties.push(`--default-spotlight-${property}`);
+      }
+
+      const hoverValue = options?.hover?.[option as keyof SpotlightColorOptions];
+      if (hoverValue) {
+        node.style.setProperty(`--hover-spotlight-${property}`, hoverValue);
+        appliedProperties.push(`--hover-spotlight-${property}`);
+      }
+    }
   }
 
-  if (options?.hover?.radius) {
-    node.style.setProperty('--hover-spotlight-radius', options.hover.radius);
-  }
-  if (options?.hover?.borderWidth) {
-    node.style.setProperty('--hover-spotlight-border-width', options.hover.borderWidth);
-  }
-  if (options?.hover?.borderColorStops) {
-    node.style.setProperty('--hover-spotlight-border-color-stops', options.hover.borderColorStops);
-  }
-  if (options?.hover?.surfaceColorStops) {
-    node.style.setProperty(
-      '--hover-spotlight-surface-color-stops',
-      options.hover.surfaceColorStops
-    );
-  }
+  injectStyles(node, 'spotlight', spotlightStyles);
 
-  node.classList.add(
-    ...[
-      'relative',
-      'isolate',
+  node.setAttribute('data-spotlight', '');
+  const position = getComputedStyle(node).position;
+  if (!position || position === 'static') {
+    node.style.position = 'relative';
+  }
+  node.style.isolation = 'isolate';
 
-      options?.radius ? '[--spotlight-radius:var(--default-spotlight-radius)]' : '',
-      options?.borderWidth
-        ? '[--spotlight-border-width:var(--default-spotlight-border-width)]'
-        : '',
-      options?.borderColorStops
-        ? '[--spotlight-border-color-stops:var(--default-spotlight-border-color-stops)]'
-        : '',
-      options?.surfaceColorStops
-        ? '[--spotlight-surface-color-stops:var(--default-spotlight-surface-color-stops)]'
-        : '',
-
-      options?.hover?.radius ? 'hover:[--spotlight-radius:var(--hover-spotlight-radius)]' : '',
-      options?.hover?.borderWidth
-        ? 'hover:[--spotlight-border-width:var(--hover-spotlight-border-width)]'
-        : '',
-      options?.hover?.borderColorStops
-        ? 'hover:[--spotlight-border-color-stops:var(--hover-spotlight-border-color-stops)]'
-        : '',
-      options?.hover?.surfaceColorStops
-        ? 'hover:[--spotlight-surface-color-stops:var(--hover-spotlight-surface-color-stops)]'
-        : '',
-
-      // Spotlight applied as :after element with 2 background gradients.  padding-box for surface, and border-box for border
-      'before:absolute',
-      'before:inset-0',
-      'before:z-[-1]',
-      'before:[border:var(--spotlight-border-width)_solid_transparent]',
-      'before:[background:fixed_padding-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-surface-color-stops)),fixed_border-box_radial-gradient(var(--spotlight-radius)_at_var(--x,0px)_var(--y,0px),var(--spotlight-border-color-stops))]',
-    ].filter((cls) => cls)
-  );
+  apply(options);
 
   return {
+    update: apply,
     destroy() {
-      //
+      node.removeAttribute('data-spotlight');
+      node.style.removeProperty('position');
+      node.style.removeProperty('isolation');
+      appliedProperties.forEach((property) => node.style.removeProperty(property));
     },
   };
 };

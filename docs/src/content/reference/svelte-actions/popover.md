@@ -1,8 +1,11 @@
 ---
 title: popover
 description: Svelte action for floating-ui with simplier setup, especially for middlware
-related: [components/Popover]
+related: [ui/Popover]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

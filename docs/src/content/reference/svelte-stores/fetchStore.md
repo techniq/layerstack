@@ -2,7 +2,10 @@
 title: fetchStore
 description: Fetch request as a store, with support for body parsing (json, text, arrayBuffer, etc), out of order responses, context configuration, and global errors
 related: [svelte-stores/graphStore]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`FetchState`](/docs/svelte-state/FetchState) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## Usage
 

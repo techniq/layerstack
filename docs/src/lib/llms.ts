@@ -1,12 +1,20 @@
-import { allReferences, allGuides, type Reference } from 'content-collections';
+import {
+  allReferences,
+  allGuides,
+  allComponents,
+  type Reference,
+  type Component as ComponentDoc,
+} from 'content-collections';
 import { sortCollection } from '@layerstack/docs/collections';
 import {
+  generateApiTable,
   generateGuideMarkdown as generateGuideMarkdownContent,
   generateReferenceMarkdown as generateReferenceMarkdownDoc,
   groupBySlugSegment,
   linkListSection,
   type ExampleSourceResolver,
 } from '@layerstack/docs/llms';
+import type { ComponentAPI } from '@layerstack/docs/api';
 
 const exampleSources = import.meta.glob<string>('/src/examples/**/*.svelte', {
   eager: true,
@@ -36,6 +44,32 @@ export function generateReferenceMarkdown(doc: Reference): string {
     inlineExamples: true,
     resolveSource: resolveExampleSource,
     defaultComponent: doc.slug.split('/').pop(),
+  });
+}
+
+/** Render the generated API tables for a component doc as a markdown section. */
+function generateApiSection(doc: ComponentDoc): string {
+  const apis = ((doc.apis ?? []) as (ComponentAPI & { label: string })[]).filter(
+    (api) => api.properties?.length
+  );
+  if (!apis.length) return '';
+
+  const sections = ['## API Reference'];
+  for (const api of apis) {
+    // Only label individual tables for compound components (e.g. `Tooltip.Root`, `Tooltip.Item`)
+    if (apis.length > 1) sections.push(`### ${api.label}`);
+    sections.push(generateApiTable(api));
+  }
+  return sections.join('\n\n');
+}
+
+/** LLM-optimized markdown for a component doc (examples inlined, API tables appended). */
+export function generateComponentMarkdown(doc: ComponentDoc): string {
+  return generateReferenceMarkdownDoc(doc, {
+    inlineExamples: true,
+    resolveSource: resolveExampleSource,
+    defaultComponent: doc.slug,
+    extraSections: [generateApiSection(doc)],
   });
 }
 
@@ -70,6 +104,20 @@ This file links to LLM-optimized documentation in markdown format. Append \`/llm
     );
   }
 
+  const components = sortCollection(allComponents);
+  if (components.length) {
+    sections.push(
+      linkListSection(
+        'ui',
+        components.map((c) => ({
+          name: c.name,
+          url: `${baseUrl}/docs/ui/${c.slug}/llms.txt`,
+          description: c.description,
+        }))
+      )
+    );
+  }
+
   for (const [pkg, docs] of referencesByPackage()) {
     sections.push(
       linkListSection(
@@ -95,6 +143,15 @@ export function generateFullLlmsTxt(baseUrl: string): string {
 
 This file contains the complete LLM-optimized documentation. Index: [/llms.txt](${baseUrl}/llms.txt).`,
   ];
+
+  const components = sortCollection(allComponents);
+  if (components.length) {
+    sections.push('---');
+    sections.push('# ui');
+    for (const doc of components) {
+      sections.push(generateComponentMarkdown(doc));
+    }
+  }
 
   for (const [pkg, docs] of referencesByPackage()) {
     sections.push('---');

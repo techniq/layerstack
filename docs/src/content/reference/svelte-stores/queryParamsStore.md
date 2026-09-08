@@ -3,7 +3,10 @@ title: Query params
 description: Manage query params as a store, with multiple serialization strategies
 hideUsage: true
 sourceFile: svelte-stores/src/lib/queryParamsStore.ts
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`QueryParamsState`](/docs/svelte-state/QueryParamsState) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## queryParamStore()
 
