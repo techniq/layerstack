@@ -2,7 +2,10 @@
 title: layout
 description: Layout actions — `remainingViewportHeight`, `remainingViewportWidth`, and `overflow`
 related: [ui/Overflow]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

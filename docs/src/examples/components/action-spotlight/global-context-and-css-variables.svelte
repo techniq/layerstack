@@ -22,11 +22,12 @@
         'border p-4 transition-shadow hover:shadow-md rounded-lg before:rounded-lg',
         '[--spotlight-radius:200px]',
         '[--spotlight-border-width:1px]',
-        '[--spotlight-border-color-stops:--var(--color-surface-content/50%),--var(--color-surface-content/50%),transparent]',
+        '[--spotlight-border-color-stops:var(--border_base),var(--border_base),transparent]',
+        '[--border_base:color-mix(in_oklab,var(--color-surface-content)_50%,transparent)]',
         '[--spotlight-surface-color-stops:var(--color-surface-200),var(--color-surface-200)]',
         'hover:[--spotlight-border-width:2px]',
         'hover:[--spotlight-border-color-stops:var(--color-primary)_5%,var(--color-secondary)]',
-        'hover:[--spotlight-surface-color-stops:--var(--color-surface-100/90%),var(--color-surface-100)]'
+        'hover:[--spotlight-surface-color-stops:color-mix(in_oklab,var(--color-surface-100)_90%,transparent),var(--color-surface-100)]'
       )}
     >
       {item}

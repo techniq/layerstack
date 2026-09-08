@@ -1,6 +1,6 @@
 {
   "name": "@layerstack/svelte-actions",
-  "description": "TODO",
+  "description": "Deprecated — use @layerstack/svelte-attachments instead. Svelte actions for DOM behaviors",
   "author": "Sean Lynch <techniq35@gmail.com>",
   "license": "MIT",
   "repository": "techniq/layerstack",

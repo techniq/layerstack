@@ -1,6 +1,9 @@
 ---
 title: scroll
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`scroll`](/docs/svelte-attachments/scroll) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

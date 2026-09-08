@@ -242,6 +242,13 @@ Three gotchas that cost real debugging time:
   with conditional content still means `children !== undefined`, so a component's "no children"
   branch never runs. Use a second harness that omits the snippet entirely. Likewise, a
   `<label for>` wrapping a real control re-dispatches clicks to it, so click handlers fire twice.
+- **`$effect` in a class constructor passes in a node environment and throws in a browser one.**
+  Under the default node environment a `.svelte.ts` module is compiled for the server, where
+  `$effect` is a no-op; add `// @vitest-environment happy-dom` and the same code raises
+  `effect_orphan` unless it is constructed during component initialization. A state class that must
+  also work from a plain module should expose an explicit `dispose()` rather than registering its
+  own cleanup effect — `FetchState` does. `TimerState` still registers one, which is why its tests
+  are the only ones in `@layerstack/svelte-state` without the `happy-dom` docblock.
 
 ### Bridging actions that are not migrated yet
 
@@ -290,6 +297,118 @@ the page name: `:example{component="action-input" name="auto-focus"}`.
 - the API table is generated from the props type; do not hand-write it
 
 ## Breaking changes
+
+### `@layerstack/svelte-actions` → `@layerstack/svelte-attachments`
+
+Every action is now an attachment factory: it takes its options and returns the attachment, so
+`use:thing={options}` becomes `{@attach thing(options)}`.
+
+```diff
+- <div use:sticky={{ top: true }}>
++ <div {@attach sticky({ top: true })}>
+```
+
+Two consequences follow from attachments running inside an effect:
+
+- **There is no `update()`.** An attachment re-runs whenever the state it reads changes, and its
+  cleanup runs first. Anything an action did in `update` to undo the previous run now belongs in the
+  returned cleanup.
+- **Cleanup is expected, not optional.** Several actions never removed what they applied, because
+  the element was usually being destroyed anyway. The attachments do, so re-running is safe.
+
+Custom events are replaced by callback options (`on:resize` → `onResize`), matching the callback
+convention used by components.
+
+**An attachment must not apply a Tailwind class of its own.** Tailwind only emits utilities it finds
+while **scanning source files**, and a class added from a library's JavaScript is never scanned, so
+the rule simply does not exist in the output. Utilities that happen to appear somewhere in the app
+work by luck, which is what makes this so easy to miss.
+
+Under Tailwind v3 this was hidden: apps listed `./node_modules/svelte-ux/**/*` in `content`, so the
+package's own source was scanned. v4's `@source` does not cover installed packages by default, and
+`spotlight` (which drew its gradients entirely from `before:*` utilities) and `scrollShadow` (the
+same with `after:*`) both went silently invisible.
+
+Where the effect needs a pseudo-element — which cannot be styled inline — the attachment ships the
+rule itself, via `injectStyles(node, id, css)`:
+
+- injected once per document (or shadow root) on first use, as a constructable stylesheet with a
+  `<style>` fallback. No stylesheet import, and nothing tied to a CSS framework
+- wrapped in `@layer layerstack`, so any style the app writes wins without a specificity fight
+- the attachment marks the element with a **data attribute** (`data-spotlight`,
+  `data-scroll-shadow`) and passes options through inline custom properties
+- users keep the expressive path, because `[--spotlight-radius:100px]` and
+  `hover:[--spotlight-radius:50px]` are written in _their_ markup, which is scanned normally
+
+Defining the rule as a custom `@utility` does **not** work either — those are emitted on demand too,
+so a name that is never scanned yields nothing.
+
+Anything expressible inline should just be set inline. `scrollFade` sets `overflow` and its mask
+directly and injects nothing, and both scroll attachments only set `position`/`overflow` when the
+element does not already have them, so an app managing that itself is left alone.
+
+Two are dropped rather than ported, because the language now covers them:
+
+| Dropped                   | Replacement                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `multi`                   | attachments compose natively — put several `{@attach}` on one element, or `createAttachmentKey` to pass them through a component's props |
+| `DomTracker`'s action map | `tracker.addAttachment(...)`, which folds another attachment's cleanup into the tracker                                                  |
+
+`DomTracker` itself is ported. Its purpose narrows: an action instance persisted across `update()`
+calls, so the tracker could keep state between them, whereas an attachment re-runs from scratch.
+What remains useful — recording DOM changes so exactly those can be reversed, leaving changes made
+by anything else alone — is what `sticky` and `spotlight` now use it for.
+
+### `@layerstack/svelte-stores` → `@layerstack/svelte-state`
+
+Every store is now a class whose properties are reactive. Construct it with `new`, and drop the `$`
+prefix:
+
+```diff
+- const pagination = paginationStore({ total: 100 });
+- {$pagination.page}
++ const pagination = new PaginationState({ total: 100 });
++ {pagination.page}
+```
+
+| Store                  | Replacement                                              |
+| ---------------------- | -------------------------------------------------------- |
+| `debounceStore`        | `DebouncedState`                                         |
+| `fetchStore`           | `FetchState`                                             |
+| `formStore`            | `FormState`                                              |
+| `graphStore`           | `GraphState`                                             |
+| `localStore`           | `LocalState`                                             |
+| `matchMedia` + presets | `MediaQueryPresets`, over Svelte's `MediaQuery`          |
+| `paginationStore`      | `PaginationState`                                        |
+| `promiseStore`         | `PromiseState`                                           |
+| `queryParamsStore`     | `QueryParamsState` (and `QueryParamState` for one param) |
+| `selectionStore`       | `SelectionState`                                         |
+| `themeStore`           | `ThemeState`                                             |
+| `timerStore`           | `TimerState`                                             |
+| `uniqueStore`          | `UniqueState`                                            |
+
+Three are dropped rather than ported, because runes cover them directly:
+
+| Dropped       | Replacement                                                                       |
+| ------------- | --------------------------------------------------------------------------------- |
+| `changeStore` | `$effect` with the previous value captured outside it                             |
+| `dirtyStore`  | `$derived` comparing against the initial value — `!isEqual(initial, current)`     |
+| `mapStore`    | `SvelteMap` from `svelte/reactivity`, which is reactive on `set`/`delete`/`clear` |
+
+Where the store took another store, the class takes a **getter**, so the dependency is tracked:
+
+```diff
+- const debounced = debounceStore(value);
++ const debounced = new DebouncedState(() => value);
+```
+
+`QueryParamsState` takes `page` from `$app/state` rather than the `$app/stores` readable, and
+forwards `gotoOptions` to `goto`. The store passed the whole page object as `goto`'s second
+argument, which is its options position.
+
+Cleanup that a store did when its last subscriber went away has no equivalent, since nothing
+subscribes. `FetchState.dispose()` is explicit — wire it up with `$effect(() => state.dispose)`
+where a shared `FetchErrors` collection needs pruning.
 
 ### Settings and formatting are no longer stores
 

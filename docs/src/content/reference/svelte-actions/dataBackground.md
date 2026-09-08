@@ -2,7 +2,10 @@
 title: dataBackground
 description: Set background gradient based on data, similar to Excel.  Typically used within a table
 related: [ui/Table, svelte-table/actions/table]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`dataBackground`](/docs/svelte-attachments/dataBackground) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

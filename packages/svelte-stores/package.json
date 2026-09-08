@@ -1,6 +1,6 @@
 {
   "name": "@layerstack/svelte-stores",
-  "description": "TODO",
+  "description": "Deprecated — use @layerstack/svelte-state instead. Svelte stores for common state patterns",
   "author": "Sean Lynch <techniq35@gmail.com>",
   "license": "MIT",
   "repository": "techniq/layerstack",

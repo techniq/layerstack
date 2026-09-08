@@ -1,7 +1,10 @@
 ---
 title: spotlight
 related: [ui/Shine]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`spotlight`](/docs/svelte-attachments/spotlight) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

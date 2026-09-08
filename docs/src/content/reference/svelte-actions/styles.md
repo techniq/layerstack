@@ -1,7 +1,10 @@
 ---
 title: styles
 description: Actions to conveniently work with CSS styles
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`styles`](/docs/svelte-attachments/styles) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

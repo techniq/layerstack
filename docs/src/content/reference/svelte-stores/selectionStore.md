@@ -2,7 +2,10 @@
 title: selectionStore
 description: Manage item selection state including toggling values, selecting all, and clear or reset selection
 related: [ui/MultiSelect, ui/Selection]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`SelectionState`](/docs/svelte-state/SelectionState) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## Basic
 

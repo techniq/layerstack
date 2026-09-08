@@ -1,7 +1,10 @@
 ---
 title: mouse
 description: Mouse interaction actions — `longpress` (press-and-hold) and `movable` (drag tracking)
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

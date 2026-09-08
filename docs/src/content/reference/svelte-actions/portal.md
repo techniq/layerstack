@@ -2,7 +2,10 @@
 title: portal
 description: Render component outside current DOM hierarchy
 related: [ui/Dialog, ui/Drawer, ui/Backdrop]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

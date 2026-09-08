@@ -2,7 +2,10 @@
 title: input
 description: Input element actions — `autoFocus`, `autoHeight`, `blurOnEscape`, `selectOnFocus`, and `debounceEvent`
 related: [ui/TextField, ui/Input]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`input`](/docs/svelte-attachments/input) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 

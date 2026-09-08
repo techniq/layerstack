@@ -1,13 +1,14 @@
 export * from './dataBackground.svelte.js';
+export * from './domTracker.js';
 export * from './focus.js';
+export * from './injectStyles.js';
 export * from './input.js';
 export * from './layout.js';
 export * from './mouse.js';
-// export * from './multi.js';
 export * from './observer.js';
 export * from './popover.js';
 export * from './portal.js';
 export * from './scroll.js';
-// export * from './spotlight.js';
-// export * from './sticky.js';
-// export * from './styles.js';
+export * from './spotlight.js';
+export * from './sticky.js';
+export * from './styles.js';

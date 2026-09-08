@@ -2,7 +2,10 @@
 title: observer
 description: Actions for ResizeObserver, IntersectionObserver, and MutationObserver
 related: [ui/InfiniteScroll, ui/Lazy]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 
