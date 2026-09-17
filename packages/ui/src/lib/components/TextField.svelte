@@ -85,6 +85,10 @@
     accept?: string | RegExp;
     /** https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize */
     autocapitalize?: InputProps['autocapitalize'];
+    /** Safari only.  https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#autocorrect */
+    autocorrect?: InputProps['autocorrect'];
+    /** https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck */
+    spellcheck?: InputProps['spellcheck'];
     role?: AriaRole;
 
     /** see: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#min */
@@ -167,6 +171,8 @@
     replace,
     accept,
     autocapitalize,
+    autocorrect,
+    spellcheck,
     role,
     min,
     max,
@@ -442,6 +448,8 @@
             {/if}
 
             {#if multiline}
+              <!-- `autocorrect` is spread because `svelte/elements` types it for `<input>` alone,
+                   while Safari honours it on a `<textarea>` as well -->
               <textarea
                 {id}
                 {name}
@@ -451,6 +459,8 @@
                 {disabled}
                 value={inputValue}
                 {autocapitalize}
+                {spellcheck}
+                {...{ autocorrect }}
                 bind:this={inputEl}
                 oninput={handleInput}
                 {onfocus}
@@ -475,6 +485,8 @@
                 {replace}
                 {accept}
                 {autocapitalize}
+                {autocorrect}
+                {spellcheck}
                 {min}
                 {max}
                 step={resolvedStep}

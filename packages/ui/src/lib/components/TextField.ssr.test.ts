@@ -22,6 +22,26 @@ describe('TextField (SSR)', () => {
     expect(body).not.toContain('<input');
   });
 
+  it('passes the keyboard attributes to the input', () => {
+    const { body } = render(TextField, {
+      props: { autocapitalize: 'off', autocorrect: 'off', spellcheck: false },
+    });
+
+    expect(body).toMatch(/<input[^>]*autocapitalize="off"/);
+    expect(body).toMatch(/<input[^>]*autocorrect="off"/);
+    expect(body).toMatch(/<input[^>]*spellcheck="false"/);
+  });
+
+  it('passes the keyboard attributes to the textarea', () => {
+    const { body } = render(TextField, {
+      props: { multiline: true, autocapitalize: 'off', autocorrect: 'off', spellcheck: false },
+    });
+
+    expect(body).toMatch(/<textarea[^>]*autocapitalize="off"/);
+    expect(body).toMatch(/<textarea[^>]*autocorrect="off"/);
+    expect(body).toMatch(/<textarea[^>]*spellcheck="false"/);
+  });
+
   it('renders the initial value', () => {
     const { body } = render(TextField, { props: { value: 'hello' } });
 
