@@ -1,5 +1,5 @@
 import { entries, fromEntries, type Prettify } from './typeHelpers.js';
-import { defaultsDeep } from 'lodash-es';
+import { defaultsDeep } from './mergeWith.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import {
   DateToken,
@@ -92,6 +92,10 @@ const defaultLocaleSettings: LocaleSettings = {
       Day: 'Day',
       DayTime: 'Day Time',
       Time: 'Time',
+      Hour: 'Hour',
+      Minute: 'Minute',
+      Second: 'Second',
+      Millisecond: 'Millisecond',
       Week: 'Week',
       BiWeek: 'Bi-Week',
       Month: 'Month',
@@ -195,6 +199,41 @@ const defaultLocaleSettings: LocaleSettings = {
             DateToken.MiliSecond_3,
           ],
         },
+        hour: {
+          short: [DateToken.Hour_numeric],
+          default: [DateToken.Hour_numeric],
+          long: [DateToken.Hour_2Digit],
+        },
+        minute: {
+          short: [DateToken.Hour_numeric, DateToken.Minute_numeric],
+          default: [DateToken.Hour_numeric, DateToken.Minute_numeric],
+          long: [DateToken.Hour_2Digit, DateToken.Minute_2Digit],
+        },
+        second: {
+          short: [DateToken.Hour_numeric, DateToken.Minute_numeric, DateToken.Second_numeric],
+          default: [DateToken.Hour_numeric, DateToken.Minute_numeric, DateToken.Second_numeric],
+          long: [DateToken.Hour_2Digit, DateToken.Minute_2Digit, DateToken.Second_2Digit],
+        },
+        millisecond: {
+          short: [
+            DateToken.Hour_numeric,
+            DateToken.Minute_numeric,
+            DateToken.Second_numeric,
+            DateToken.MiliSecond_3,
+          ],
+          default: [
+            DateToken.Hour_numeric,
+            DateToken.Minute_numeric,
+            DateToken.Second_numeric,
+            DateToken.MiliSecond_3,
+          ],
+          long: [
+            DateToken.Hour_2Digit,
+            DateToken.Minute_2Digit,
+            DateToken.Second_2Digit,
+            DateToken.MiliSecond_3,
+          ],
+        },
 
         week: {
           short: [DateToken.DayOfMonth_numeric, DateToken.Month_numeric],
@@ -203,8 +242,8 @@ const defaultLocaleSettings: LocaleSettings = {
         },
         month: {
           short: DateToken.Month_short,
-          default: DateToken.Month_short,
-          long: DateToken.Month_long,
+          default: DateToken.Month_long,
+          long: [DateToken.Month_long, DateToken.Year_numeric],
         },
         monthsYear: {
           short: [DateToken.Month_short, DateToken.Year_2Digit],

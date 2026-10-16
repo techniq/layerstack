@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
 import type { ComponentEvents } from 'svelte';
-import { isFunction } from 'lodash-es';
 import { index } from 'd3-array';
 
 import { sortFunc } from '@layerstack/utils';
@@ -78,7 +77,7 @@ function createState(column: ColumnDef, props?: TableOrderProps, prevState?: Tab
         : 'asc';
 
   let handler: SortFunc | undefined = undefined;
-  if (isFunction(column.orderBy)) {
+  if (typeof column.orderBy === 'function') {
     handler = column.orderBy;
   } else if (typeof column.orderBy === 'string') {
     handler = sortFunc(column.orderBy, direction);

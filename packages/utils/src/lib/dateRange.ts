@@ -1,6 +1,12 @@
-import { startOfDay, isLeapYear, isAfter, isBefore, subYears } from 'date-fns';
-
-import { getDateFuncsByPeriodType, updatePeriodTypeWithWeekStartsOn } from './date.js';
+import {
+  getDateFuncsByPeriodType,
+  intervalOffset,
+  isLeapYear,
+  isDateAfter,
+  isDateBefore,
+  startOfInterval,
+  updatePeriodTypeWithWeekStartsOn,
+} from './date.js';
 import { PeriodType } from './date_types.js';
 import type { LocaleSettings } from './locale.js';
 
@@ -29,12 +35,19 @@ function formatMsg(
       : settings.dictionary.Date[type].LastX.replace('{0}', lastX.toString());
 }
 
+/**
+ * Build the "last X periods" presets for a period type.
+ *
+ * @param options.utc Derive the presets from UTC boundaries instead of local ones — "today"
+ *   becomes the current UTC day, and every period is floored/offset in UTC.
+ */
 export function getDateRangePresets(
   settings: LocaleSettings,
-  periodType: PeriodType
+  periodType: PeriodType,
+  options?: { utc?: boolean }
 ): { label: string; value: DateRange }[] {
   let now = new Date();
-  const today = startOfDay(now);
+  const today = startOfInterval(options?.utc ? 'utcDay' : 'day', now);
 
   if (settings) {
     periodType =
@@ -42,7 +55,7 @@ export function getDateRangePresets(
       periodType;
   }
 
-  const { start, end, add } = getDateFuncsByPeriodType(settings, periodType);
+  const { start, end, add } = getDateFuncsByPeriodType(settings, periodType, options);
 
   switch (periodType) {
     case PeriodType.Day: {
@@ -201,12 +214,12 @@ export function getPreviousYearPeriodOffset(
       // if year before reference date is a leap year and is before 2/29
       const adjustForLeapYear = options?.referenceDate
         ? (isLeapYear(options?.referenceDate) &&
-            isAfter(
+            isDateAfter(
               options?.referenceDate,
               new Date(options?.referenceDate.getFullYear(), /*Feb*/ 1, 28)
             )) ||
-          (isLeapYear(subYears(options?.referenceDate, 1)) &&
-            isBefore(
+          (isLeapYear(intervalOffset('year', options?.referenceDate, -1)) &&
+            isDateBefore(
               options?.referenceDate,
               new Date(options?.referenceDate.getFullYear(), /*Feb*/ 1, 29)
             ))
@@ -260,7 +273,8 @@ export type PeriodComparison = 'prevPeriod' | 'prevYear' | 'fiftyTwoWeeksAgo';
 export function getPeriodComparisonOffset(
   settings: LocaleSettings,
   view: PeriodComparison,
-  period: DateRange | undefined
+  period: DateRange | undefined,
+  options?: { utc?: boolean }
 ) {
   if (period == null || period.from == null || period.to == null || period.periodType == null) {
     throw new Error('Period must be defined to calculate offset');
@@ -268,8 +282,9 @@ export function getPeriodComparisonOffset(
 
   switch (view) {
     case 'prevPeriod':
-      const dateFuncs = getDateFuncsByPeriodType(settings, period.periodType);
-      return dateFuncs.difference(period.from, period.to) - 1; // Difference counts full days, need additoinal offset
+      const dateFuncs = getDateFuncsByPeriodType(settings, period.periodType, options);
+      // return dateFuncs.difference(period.from, period.to) - 1; // Difference counts full days, need additional offset
+      return dateFuncs.difference(period.to, period.from); // Difference counts full days, need additional offset
 
     case 'prevYear':
       return getPreviousYearPeriodOffset(period.periodType, {

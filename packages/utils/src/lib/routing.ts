@@ -35,7 +35,7 @@ export function isActive(currentUrl: URL, path: string) {
     // home must be direct match (otherwise matches all)
     return currentUrl.pathname === path;
   } else {
-    // Matches full path next character is `/`
-    return currentUrl.pathname.match(path + '($|\\/)') != null;
+    // Matches path at start of pathname, followed by end or slash
+    return currentUrl.pathname.match('^' + path + '($|\\/)') != null;
   }
 }

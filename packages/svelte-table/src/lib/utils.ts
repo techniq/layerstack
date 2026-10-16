@@ -1,7 +1,4 @@
-import { isFunction, get } from 'lodash-es';
-import { parseISO } from 'date-fns';
-
-import { PeriodType } from '@layerstack/utils';
+import { PeriodType, parseDate, get } from '@layerstack/utils';
 
 import type { ColumnDef } from './types.js';
 
@@ -100,7 +97,7 @@ export function getCellHeader(column: ColumnDef) {
 
 export function getCellValue(column: ColumnDef, rowData: any, rowIndex?: number) {
   let value = undefined;
-  if (isFunction(column.value)) {
+  if (typeof column.value === 'function') {
     value = column.value?.(rowData, rowIndex);
   }
 
@@ -110,7 +107,7 @@ export function getCellValue(column: ColumnDef, rowData: any, rowIndex?: number)
 
   if (
     typeof value === 'string' &&
-    !isFunction(column.format) &&
+    typeof column.format !== 'function' &&
     (column.format ?? 'none') in PeriodType
   ) {
     // Convert date string to Date instance
@@ -118,7 +115,7 @@ export function getCellValue(column: ColumnDef, rowData: any, rowIndex?: number)
     // TODO: Should we handle date-only strings different?
     // value = new Date(value);
     // console.log({ column: column.name, value });
-    value = parseISO(value);
+    value = parseDate(value);
   }
 
   return value;

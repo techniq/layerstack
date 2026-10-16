@@ -1,5 +1,5 @@
 import type { Action } from 'svelte/action';
-import { merge } from 'lodash-es';
+import { merge } from '@layerstack/utils';
 import { extent, max, min } from 'd3-array';
 
 import type { tableOrderStore } from './stores.js';

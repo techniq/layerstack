@@ -1,10 +1,9 @@
 import { derived, get, type Readable } from 'svelte/store';
 import type { Page } from '@sveltejs/kit';
-import { isEqual } from 'lodash-es';
 
 import * as Serialize from '@layerstack/utils/serialize';
 import rollup from '@layerstack/utils/rollup';
-import { entries, type ValueOf } from '@layerstack/utils';
+import { entries, isEqual, type ValueOf } from '@layerstack/utils';
 
 // Matches $app/navigation's goto without dependency - https://kit.svelte.dev/docs/modules#$app-navigation-goto
 type Goto = (url: string | URL, opts?: any) => any;

@@ -1,15 +1,30 @@
 // top-level exports
 export { flatten, unique, greatestAbs } from './array.js';
-export { formatDate, getDateFuncsByPeriodType } from './date.js';
+export {
+  formatDate,
+  parseDate,
+  timeInterval,
+  startOfInterval,
+  endOfInterval,
+  intervalOffset,
+  isSameInterval,
+  intervalDifference,
+  isLeapYear,
+  isDateBefore,
+  isDateAfter,
+  isDateWithin,
+  getDateFuncsByPeriodType,
+} from './date.js';
 export { PeriodType, DayOfWeek, DateToken } from './date_types.js';
 export * from './date_types.js';
 export * from './dom.js';
-export { getDuration, humanizeDuration, DurationUnits } from './duration.js';
+export { Duration, DurationUnits } from './duration.js';
 export * from './file.js';
 export {
   format,
   formatWithLocale,
   type FormatType,
+  type FormatConfig,
   type FormatFunction,
   type FormatFunctionProperties,
   type FormatFunctions,
@@ -18,7 +33,11 @@ export {
 export * from './json.js';
 export * from './logger.js';
 export { round, clamp, randomInteger } from './number.js';
+export { get } from './get.js';
+export { set } from './set.js';
+export { isEqual } from './isEqual.js';
 export { isEmptyObject, isLiteralObject, omit, pick } from './object.js';
+export { mergeWith, merge, defaultsDeep } from './mergeWith.js';
 export * from './promise.js';
 export * from './sort.js';
 export * from './string.js';

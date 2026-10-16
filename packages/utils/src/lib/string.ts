@@ -1,53 +1,80 @@
 import { entries } from './typeHelpers.js';
 
+// any combination of spaces and punctuation characters - http://stackoverflow.com/a/25575009
+const wordSeparatorsRegEx = /[\s\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]+/;
+
+const uppercaseChars = '[A-Z\u00C0-\u00DC\u00D9-\u00DD]'; // includes accented characters
+const capitalsRegEx = new RegExp(uppercaseChars, 'g');
+const allCapitalsRegEx = new RegExp(`^${uppercaseChars}+$`);
+
+const camelCaseRegEx = /^[a-z\u00E0-\u00FCA-Z\u00C0-\u00DC][\d|a-z\u00E0-\u00FCA-Z\u00C0-\u00DC]*$/;
+
 /**
  * Check if str only contians upper case letters
  */
 export function isUpperCase(str: string) {
-  return /^[A-Z]*$/.test(str);
+  return /^[A-Z ]*$/.test(str);
 }
 
 /**
  * Returns string with the first letter of each word converted to uppercase (and remainder as lowercase)
  */
 export function toTitleCase(str: string, ignore = ['a', 'an', 'is', 'the']) {
-  return str
-    .toLowerCase()
-    .split(' ')
+  const withSpaces = isUpperCase(str) ? str : str.replace(/([A-Z])/g, ' $1').trim();
+  return withSpaces
+    .split(wordSeparatorsRegEx)
     .map((word, index) => {
-      if (index > 0 && ignore.includes(word)) {
+      if (index !== 0 && ignore.includes(word)) {
         return word;
       } else {
-        return word.charAt(0).toUpperCase() + word.slice(1);
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       }
     })
     .join(' ');
 }
 
-/**
- * Generates a unique Id, with prefix if provided
- */
-const idMap = new Map<string, number>();
-export function uniqueId(prefix = '') {
-  let id = (idMap.get(prefix) ?? 0) + 1;
-  idMap.set(prefix, id);
-  return prefix + id;
+/** Convert string to camel case */
+export function toCamelCase(str: string) {
+  const words = str.split(wordSeparatorsRegEx);
+  return words
+    .map((word, i) => {
+      if (word === '') {
+        return '';
+      }
+      const isCamelCase = camelCaseRegEx.test(word) && !allCapitalsRegEx.test(word);
+      let firstLetter = word[0];
+      firstLetter = i > 0 ? firstLetter.toUpperCase() : firstLetter.toLowerCase();
+      return firstLetter + (!isCamelCase ? word.slice(1).toLowerCase() : word.slice(1));
+    })
+    .join('');
 }
 
-/**
- * Truncate text with option to keep a number of characters on end.  Inserts ellipsis between parts
- */
-export function truncate(text: string, totalChars: number, endChars: number = 0) {
-  endChars = Math.min(endChars, totalChars);
+/** Convert string to snake case */
+export function toSnakeCase(str: string) {
+  // Replace capitals with space + lower case equivalent for later parsing
+  return str
+    .replace(capitalsRegEx, (match) => ' ' + (match.toLowerCase() || match))
+    .split(wordSeparatorsRegEx)
+    .join('_');
+}
 
-  const start = text.slice(0, totalChars - endChars);
-  const end = endChars > 0 ? text.slice(-endChars) : '';
+/** Convert string to kebab case */
+export function toKebabCase(str: string) {
+  return str
+    .replace(capitalsRegEx, (match) => '-' + (match.toLowerCase() || match))
+    .split(wordSeparatorsRegEx)
+    .join('-');
+}
 
-  if (start.length + end.length < text.length) {
-    return start + '…' + end;
-  } else {
-    return text;
-  }
+/** Convert string to pascal case */
+export function toPascalCase(str: string) {
+  return (
+    str
+      .split(wordSeparatorsRegEx)
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      // .map((word) => toTitleCase(word, []))
+      .join('')
+  );
 }
 
 /** Get the roman numeral for the given value */
@@ -78,4 +105,30 @@ export function romanize(value: number) {
   }
 
   return result;
+}
+
+/**
+ * Truncate text with option to keep a number of characters on end.  Inserts ellipsis between parts
+ */
+export function truncate(text: string, totalChars: number, endChars: number = 0) {
+  endChars = Math.min(endChars, totalChars);
+
+  const start = text.slice(0, totalChars - endChars);
+  const end = endChars > 0 ? text.slice(-endChars) : '';
+
+  if (start.length + end.length < text.length) {
+    return start + '…' + end;
+  } else {
+    return text;
+  }
+}
+
+/**
+ * Generates a unique Id, with prefix if provided
+ */
+const idMap = new Map<string, number>();
+export function uniqueId(prefix = '') {
+  let id = (idMap.get(prefix) ?? 0) + 1;
+  idMap.set(prefix, id);
+  return prefix + id;
 }
