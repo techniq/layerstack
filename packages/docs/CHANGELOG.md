@@ -1,5 +1,11 @@
 # @layerstack/docs
 
+## 1.0.0-next.6
+
+### Patch Changes
+
+- feat(generate-catalog): Add per-example `createdAt` / `updatedAt` from git history ([#111](https://github.com/techniq/layerstack/pull/111))
+
 ## 1.0.0-next.5
 
 ### Patch Changes
