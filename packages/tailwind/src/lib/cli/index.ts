@@ -1,6 +1,6 @@
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { format } from 'prettier';
+import { format, resolveConfig } from 'prettier';
 
 import { entries } from '@layerstack/utils';
 import { mapKeys } from '@layerstack/utils/object';
@@ -8,6 +8,7 @@ import { mapKeys } from '@layerstack/utils/object';
 import { colorNames, themeStylesString, type Colors, type SupportedColorSpace } from './utils.js';
 import { themes as daisyThemes } from './daisy.js';
 import { themes as skeletonThemes } from './skeleton.js';
+import { getThemeNames } from '../theme.js';
 
 /**
  * Build theme CSS variables
@@ -78,3 +79,61 @@ const allThemes = {
 };
 const allThemesCss = await buildThemesCss(allThemes, 'hsl');
 writeFile('src/lib/css/themes/generated/all.css', allThemesCss);
+
+/*
+  Derive the `dark:` variant from the themes themselves.
+
+  A theme declares its own darkness with `color-scheme: dark`, so that is the one source of truth.
+  Keying the variant on `<html class="dark">` alone means any bug that sets `data-theme` without the
+  class — or the window before JS runs at all — renders a dark palette with light `dark:` utilities
+  on top.  Listing the dark themes here makes the two impossible to desync.
+*/
+const basicCss = readFileSync('src/lib/css/themes/basic.css', 'utf-8');
+const darkThemes = [
+  ...new Set([...getThemeNames(allThemesCss).dark, ...getThemeNames(basicCss).dark]),
+].sort();
+
+const darkSelectors = [
+  '.dark',
+  '.dark *',
+  ...darkThemes.flatMap((theme) => [`[data-theme='${theme}']`, `[data-theme='${theme}'] *`]),
+].join(',\n      ');
+
+const darkVariant = `@custom-variant dark {
+  /* An explicit selection — the class, or a theme that declares itself dark */
+  &:where(
+      ${darkSelectors}
+    ) {
+    @slot;
+  }
+
+  /* Otherwise follow the system, exactly as the palettes on \`:root\` do */
+  @media (prefers-color-scheme: dark) {
+    &:where(html:not([data-theme]), html:not([data-theme]) *) {
+      @slot;
+    }
+  }
+}`;
+
+const corePath = 'src/lib/css/core.css';
+const coreCss = readFileSync(corePath, 'utf-8');
+const START = '/* @generated dark-variant — see cli/index.ts */';
+const END = '/* @end generated dark-variant */';
+const startIndex = coreCss.indexOf(START);
+const endIndex = coreCss.indexOf(END);
+if (startIndex === -1 || endIndex === -1) {
+  throw new Error(`Missing generated dark-variant markers in ${corePath}`);
+}
+// Format with the repo's own prettier config, so the rewritten file still passes `pnpm lint`
+const prettierConfig = await resolveConfig(corePath);
+writeFile(
+  corePath,
+  await format(
+    coreCss.slice(0, startIndex + START.length) +
+      '\n' +
+      darkVariant +
+      '\n' +
+      coreCss.slice(endIndex),
+    { ...prettierConfig, parser: 'css' }
+  )
+);

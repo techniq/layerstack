@@ -4,7 +4,7 @@
     "incremental": true,
     "outDir": "./dist",
     "target": "esnext",
-    "lib": ["es2021", "DOM"],
+    "lib": ["es2021", "DOM", "DOM.Iterable"],
     "sourceMap": true,
     "alwaysStrict": true,
     "strict": true,

@@ -109,3 +109,24 @@ describe('SelectionState', () => {
     expect(selectionState.isDisabled('c')).toBe(true);
   });
 });
+
+describe('SelectionState.all reactivity', () => {
+  it('re-evaluates `isAllSelected` when `all` changes', () => {
+    const state = new SelectionState<string>({ initial: ['a', 'b'], all: ['a', 'b'] });
+    expect(state.isAllSelected()).toBe(true);
+
+    state.all = ['a', 'b', 'c'];
+    expect(state.isAllSelected()).toBe(false);
+
+    state.all = ['a'];
+    expect(state.isAllSelected()).toBe(true);
+  });
+
+  it('re-evaluates `isAnySelected` when `all` changes', () => {
+    const state = new SelectionState<string>({ initial: ['a'], all: ['a'] });
+    expect(state.isAnySelected()).toBe(true);
+
+    state.all = ['x', 'y'];
+    expect(state.isAnySelected()).toBe(false);
+  });
+});

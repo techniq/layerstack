@@ -22,7 +22,7 @@ export class TimerState<T = any> {
   #initial: T | null;
   #current: T | null = $state(null);
   #intervalId: ReturnType<typeof setInterval> | null = null;
-  #delay: number;
+  #delay = $state(1000);
   #disabled: boolean;
   #running = $state(false);
   #tick: (current: T | null) => any;
@@ -71,7 +71,9 @@ export class TimerState<T = any> {
   }
 
   start = () => {
-    stop();
+    // `this.stop()`, not the global `window.stop()` — the latter aborts in-flight page loads and
+    // leaves the previous interval running
+    this.stop();
     this.#intervalId = setInterval(() => {
       this.#current = this.#tick(this.#current) ?? new Date();
     }, this.#delay);

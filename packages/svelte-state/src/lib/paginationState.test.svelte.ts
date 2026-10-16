@@ -137,3 +137,36 @@ describe('PaginationState', () => {
     expect(paginationState.slice(data)).toEqual([1, 2, 3, 4, 5]); // clamped
   });
 });
+
+describe('PaginationState reactivity', () => {
+  it('re-derives when `total` changes', () => {
+    const state = new PaginationState({ perPage: 5, total: 10 });
+    const totalPages = $derived(state.totalPages);
+
+    expect(totalPages).toBe(2);
+
+    state.total = 26;
+    expect(totalPages).toBe(6);
+  });
+
+  it('re-derives when `perPage` changes', () => {
+    const state = new PaginationState({ perPage: 10, total: 100 });
+    const totalPages = $derived(state.totalPages);
+
+    expect(totalPages).toBe(10);
+
+    state.perPage = 25;
+    expect(totalPages).toBe(4);
+  });
+
+  it('re-derives the slice when `page` changes', () => {
+    const data = [0, 1, 2, 3, 4, 5];
+    const state = new PaginationState({ perPage: 2, total: data.length });
+    const pageData = $derived(state.slice(data));
+
+    expect(pageData).toEqual([0, 1]);
+
+    state.nextPage();
+    expect(pageData).toEqual([2, 3]);
+  });
+});

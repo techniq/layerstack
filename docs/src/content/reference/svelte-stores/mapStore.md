@@ -2,7 +2,10 @@
 title: mapStore
 description: Store to wrap `Map` to simplify syncing state (set, delete, clear) with Svelte
 related: [svelte-stores/uniqueStore]
+status: deprecated
 ---
+
+> **Dropped** — runes cover this directly: use [`SvelteMap`](https://svelte.dev/docs/svelte/svelte-reactivity#SvelteMap) from `svelte/reactivity`.
 
 ## Usage
 

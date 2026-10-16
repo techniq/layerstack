@@ -54,6 +54,10 @@ Reference a Svelte example from markdown with the `:example` directive:
 :example{name="basic" showCode}
 ```
 
+Only the _first_ example on a page carries `showCode` — it doubles as the "here is how you use
+this" sample. Every later example starts collapsed behind a **Show code** button, so the page reads
+as a gallery rather than a wall of source.
+
 The `name` resolves to `src/examples/components/<item>/<name>.svelte`. Supported props:
 `name`, `component`, `path`, `showCode`, `highlight` (e.g. `"7"` or `"7-9"`), and `class`.
 The example's `?raw` source powers both the show-code toggle and the inlined `llms.txt`

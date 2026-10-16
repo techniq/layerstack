@@ -1,8 +1,11 @@
 ---
 title: layout
 description: Layout actions — `remainingViewportHeight`, `remainingViewportWidth`, and `overflow`
-related: [components/Overflow]
+related: [ui/Overflow]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 
@@ -30,4 +33,4 @@ Set `width` or `max-width` to viewport width excluding node's current viewport l
 
 Watch for overflow changes (x or y) and dispatch `overflow` event with amount
 
-:example{name="overflow" showCode}
+:example{component="action-layout" name="overflow" showCode}

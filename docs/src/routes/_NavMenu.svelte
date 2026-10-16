@@ -1,6 +1,6 @@
 <script lang="ts">
   import { NavItem, type IconProp } from 'svelte-ux';
-  import { allReferences, allGuides } from 'content-collections';
+  import { allReferences, allGuides, allComponents } from 'content-collections';
   import { sortCollection } from '@layerstack/docs/collections';
   import { page } from '$app/state';
   import { cls } from '@layerstack/tailwind';
@@ -15,10 +15,45 @@
   import IconPalette from '~icons/lucide/palette';
   import IconParentheses from '~icons/lucide/parentheses';
   import IconPackage from '~icons/lucide/package';
+  import IconPaperclip from '~icons/lucide/paperclip';
+  import IconComponent from '~icons/lucide/component';
 
   let { onItemClick, class: className }: { onItemClick?: () => void; class?: string } = $props();
 
   const guides = sortCollection(allGuides.filter((g) => !g.draft));
+  const components = sortCollection(allComponents);
+
+  /** Component groups, in nav order.  Mirrors the grouping Svelte UX's docs used */
+  const componentCategories = [
+    'app',
+    'elements',
+    'inputs',
+    'navigation',
+    'layout',
+    'overlays',
+    'feedback',
+    'visualization',
+    'date',
+    'state',
+    'motion',
+    'effects',
+    'utility',
+  ];
+
+  const componentsByCategory = (() => {
+    const byCategory = new Map<string, typeof components>();
+    for (const component of components) {
+      const category = component.category ?? '';
+      if (!byCategory.has(category)) byCategory.set(category, []);
+      byCategory.get(category)!.push(component);
+    }
+    // Known categories first, in the order above; anything unrecognized falls to the end
+    return [...byCategory.entries()].sort(([a], [b]) => {
+      const ai = componentCategories.indexOf(a);
+      const bi = componentCategories.indexOf(b);
+      return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi) || a.localeCompare(b);
+    });
+  })();
 
   // Group guides by sub-directory (top-level guides have no category, listed first)
   const guidesByCategory = (() => {
@@ -33,6 +68,7 @@
 
   const packageIcons: Record<string, typeof IconHome> = {
     'svelte-actions': IconZap,
+    'svelte-attachments': IconPaperclip,
     'svelte-state': IconActivity,
     'svelte-stores': IconDatabase,
     'svelte-table': IconTable,
@@ -86,6 +122,26 @@
             {/each}
           </div>
         {/if}
+      {/each}
+    </section>
+  {/if}
+
+  {#if components.length}
+    <section>
+      <h2 class="flex gap-2 items-center mb-4 text-base font-semibold">
+        <IconComponent class="size-4 text-surface-content/70" /> ui
+      </h2>
+      {#each componentsByCategory as [category, items] (category)}
+        <div class="ml-2 mb-6 last:mb-0">
+          {#if category}
+            <h3 class="text-surface-content/80 mb-3 text-sm font-medium capitalize">{category}</h3>
+          {/if}
+          <div class="border-l border-surface-content/10">
+            {#each items as component (component.slug)}
+              {@render navItem({ label: component.name, path: `/docs/ui/${component.slug}` })}
+            {/each}
+          </div>
+        </div>
       {/each}
     </section>
   {/if}

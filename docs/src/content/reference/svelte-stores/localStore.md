@@ -1,7 +1,10 @@
 ---
 title: localStore
 description: Read and write to localStorage with expiration support
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`LocalState`](/docs/svelte-state/LocalState) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## Usage
 

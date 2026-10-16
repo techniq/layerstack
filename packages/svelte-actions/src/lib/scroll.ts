@@ -2,6 +2,9 @@ import type { Action, ActionReturn } from 'svelte/action';
 import { isVisibleInScrollParent, scrollIntoView as scrollIntoViewUtil } from '@layerstack/utils';
 import type { EventWithTarget } from '@layerstack/utils';
 
+import { injectStyles } from './injectStyles.js';
+import { scrollShadowStyles } from './scrollShadowStyles.js';
+
 export type ScrollIntoViewOptions = {
   condition: boolean | ((node: HTMLElement) => boolean);
   /** Only scroll if needed (not visible in scroll parent).  Similar to non-standard `scrollIntoViewIfNeeded()` */
@@ -113,24 +116,24 @@ export const scrollShadow: Action<HTMLElement, ScrollShadowOptions | undefined> 
       shadows.push(`inset -${offset}px 0px ${blur}px ${spread}px ${color}`);
     }
 
-    node.style.setProperty('--shadow', shadows.join(', '));
-
-    // Apply box-shadow to :after pseudo element so it's rendered on top of content
-    node.classList.add(
-      'relative',
-      'overflow-auto',
-
-      'after:block',
-      'after:h-full',
-      'after:w-full',
-      'after:sticky',
-      'after:top-0',
-      'after:left-0',
-      'after:mt-[-9999px]',
-      'after:pointer-events-none',
-      'after:[box-shadow:var(--shadow)]'
-    );
+    node.style.setProperty('--scroll-shadow', shadows.join(', '));
   }
+
+  // The shadows are painted by a sticky `::after`, which cannot be expressed inline.  Previously
+  // this added the Tailwind utilities directly; Tailwind only emits utilities it finds while
+  // scanning source files, so a class added from a library is never generated and the shadows
+  // never appeared.  The rule is injected on first use instead.
+  injectStyles(node, 'scroll-shadow', scrollShadowStyles);
+  node.setAttribute('data-scroll-shadow', '');
+
+  const computed = getComputedStyle(node);
+  if (!computed.position || computed.position === 'static') {
+    node.style.position = 'relative';
+  }
+  if (!computed.overflow || computed.overflow === 'visible') {
+    node.style.overflow = 'auto';
+  }
+
   node.addEventListener('scroll', onScroll, { passive: true });
 
   // Update if transitions are used (ex. children with `animate:flip`)
@@ -226,7 +229,11 @@ export const scrollFade: Action<HTMLElement, ScrollFadeOptions | undefined> = (n
     node.style.webkitMaskImage = gradient ?? '';
     node.style.maskImage = gradient ?? '';
   }
-  node.classList.add('overflow-auto');
+  // Set directly rather than relying on Tailwind having generated an `overflow-auto` class
+  const fadeOverflow = getComputedStyle(node).overflow;
+  if (!fadeOverflow || fadeOverflow === 'visible') {
+    node.style.overflow = 'auto';
+  }
   node.addEventListener('scroll', onScroll, { passive: true });
 
   // Update if transitions are used (ex. children with `animate:flip`)

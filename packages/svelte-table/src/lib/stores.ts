@@ -39,11 +39,14 @@ export function tableOrderStore(props?: TableOrderProps) {
 
   const state = writable(initialState);
 
-  // type HeaderClickEvent = ComponentEvents<Table<unknown>>['headerClick'];
-  type HeaderClickEvent = any;
+  /**
+   * Either `{ column }` (the `onHeaderClick` callback prop of `@layerstack/ui`'s `Table`) or a
+   * `CustomEvent`-shaped `{ detail: { column } }` (Svelte UX's `on:headerClick` event).
+   */
+  type HeaderClickEvent = { column: ColumnDef } | { detail: { column: ColumnDef } };
 
   function onHeaderClick(e: HeaderClickEvent) {
-    const column = e.detail.column;
+    const column = 'detail' in e ? e.detail.column : e.column;
 
     if (column.orderBy === false) {
       // ignore

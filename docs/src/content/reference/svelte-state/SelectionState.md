@@ -1,7 +1,7 @@
 ---
 title: SelectionState
 description: Manage item selection state including toggling values, selecting all, and clear or reset selection
-related: [svelte-state/UniqueState, components/MultiSelect, components/Selection]
+related: [svelte-state/UniqueState, ui/MultiSelect, ui/Selection]
 ---
 
 ## Usage
@@ -24,20 +24,20 @@ state.toggle(value);
 
 ## Initial selection
 
-:example{name="initial-selection" showCode}
+:example{name="initial-selection"}
 
 ## Max
 
-:example{name="max" showCode}
+:example{name="max"}
 
 ## Select all
 
-:example{name="select-all" showCode}
+:example{name="select-all"}
 
 ## Single
 
-:example{name="single" showCode}
+:example{name="single"}
 
 ## Set selection
 
-:example{name="set-selection" showCode}
+:example{name="set-selection"}

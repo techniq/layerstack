@@ -1,8 +1,11 @@
 ---
 title: dataBackground
 description: Set background gradient based on data, similar to Excel.  Typically used within a table
-related: [components/Table, svelte-table/actions/table]
+related: [ui/Table, svelte-table/actions/table]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`dataBackground`](/docs/svelte-attachments/dataBackground) in [`@layerstack/svelte-attachments`](/docs/svelte-attachments).
 
 ## Usage
 
@@ -12,8 +15,8 @@ import { dataBackground } from '@layerstack/svelte-actions';
 
 ## Basic
 
-:example{name="basic" showCode}
+:example{component="action-dataBackground" name="basic" showCode}
 
 ## Tailwind gradient
 
-:example{name="tailwind-gradient" showCode}
+:example{component="action-dataBackground" name="tailwind-gradient"}

@@ -18,7 +18,8 @@ export class SelectionState<T, S extends boolean = false> {
   #initial: T[];
   #selected: UniqueState<T>;
 
-  all: Array<T>;
+  /** Reactive so `isAllSelected()`/`isAnySelected()` re-evaluate when the set of values changes */
+  all = $state<Array<T>>([]);
   single: S;
   max: number | undefined;
 

@@ -120,31 +120,8 @@
 </div>
 
 <style>
-  :global(.shiki) {
-    background-color: transparent !important;
-  }
-
-  :global(html.dark .shiki),
-  :global(html.dark .shiki span) {
-    color: var(--shiki-dark) !important;
-    /* background-color: var(--shiki-dark-bg) !important; */
-    font-style: var(--shiki-dark-font-style) !important;
-    font-weight: var(--shiki-dark-font-weight) !important;
-    text-decoration: var(--shiki-dark-text-decoration) !important;
-  }
-
-  /* Line highlighting */
-  :global(.shiki .line.highlighted) {
-    background-color: rgba(101, 117, 133, 0.16);
-    margin: 0 -1rem;
-    padding: 0 1rem;
-    display: inline-block;
-    width: calc(100% + 2rem);
-  }
-
-  :global(html.dark .shiki .line.highlighted) {
-    background-color: rgba(142, 150, 170, 0.14);
-  }
+  /* Shiki colors live in `styles.css`, where Tailwind can process the `dark:` variant —
+     Svelte's <style> block is compiled by Svelte, not Tailwind. */
 
   /* Line numbers */
   .show-line-numbers :global(.shiki code) {
