@@ -19,6 +19,7 @@
  * // docs/src/examples/catalog/Rect.json
  * // docs/src/examples/catalog/Area.json
  */
+import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 let COMPONENTS_DIR = '';
@@ -100,9 +101,108 @@ function extractModuleExports(filePath) {
   return result;
 }
 /**
- * Get all examples for a specific component
+ * Read created/updated dates for every example file from git history.
+ *
+ * Runs a single `git log` over the examples directory (newest first) and maps renames
+ * back to the file's current path.  Returns `Map<relativePath, { createdAt, updatedAt }>`
+ * keyed by `<Component>/<example>.svelte`, or `null` when git is unavailable or the
+ * repository is a shallow clone (where history is truncated and dates would be wrong).
  */
-function getComponentExamples(componentName, allComponents) {
+export function getExampleGitDates(examplesDir) {
+  const git = (args) =>
+    execFileSync('git', args, {
+      cwd: examplesDir,
+      encoding: 'utf-8',
+      maxBuffer: 256 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+
+  let output;
+  try {
+    if (git(['rev-parse', '--is-shallow-repository']).trim() !== 'false') {
+      return null;
+    }
+    // `-z` avoids path quoting, `--relative` makes paths relative to `examplesDir`,
+    // and `--date-order` guarantees children are listed before their parents
+    output = git([
+      'log',
+      '-z',
+      '--date-order',
+      '--format=%x01%ct',
+      '--name-status',
+      '-M',
+      '--relative',
+      '--',
+      '.',
+    ]);
+  } catch (error) {
+    return null;
+  }
+
+  /** @type {Map<string, { created: number, updated: number }>} */
+  const timestamps = new Map();
+  // Historical path -> current path (`null` once that path's lineage has ended)
+  const aliases = new Map();
+  const resolve = (p) => (aliases.has(p) ? aliases.get(p) : p);
+  const record = (p, time) => {
+    if (p == null) return;
+    const entry = timestamps.get(p);
+    if (entry) {
+      entry.created = Math.min(entry.created, time);
+      entry.updated = Math.max(entry.updated, time);
+    } else {
+      timestamps.set(p, { created: time, updated: time });
+    }
+  };
+
+  const tokens = output.split('\0');
+  let time = 0;
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i].replace(/^\n+/, '');
+    if (!token) continue;
+    if (token.startsWith('\x01')) {
+      time = Number(token.slice(1)) * 1000;
+      continue;
+    }
+    const status = token[0];
+    if (status === 'R' || status === 'C') {
+      const from = tokens[++i];
+      const to = tokens[++i];
+      const current = resolve(to);
+      record(current, time);
+      // Older history at `to` belongs to a different file
+      aliases.set(to, null);
+      if (status === 'R') {
+        aliases.set(from, current);
+      }
+    } else {
+      const file = tokens[++i];
+      record(resolve(file), time);
+      if (status === 'A' || status === 'D') {
+        // Anything older at this path was a previous file that has since been removed
+        aliases.set(file, null);
+      }
+    }
+  }
+
+  const dates = new Map();
+  for (const [file, { created, updated }] of timestamps) {
+    dates.set(file, {
+      createdAt: new Date(created).toISOString(),
+      updatedAt: new Date(updated).toISOString(),
+    });
+  }
+  return dates;
+}
+
+/**
+ * Get all examples for a specific component
+ *
+ * @param gitDates - result of `getExampleGitDates()`, or `null`/`undefined` if unavailable
+ * @param existingExamples - examples from the previously generated catalog, used to keep
+ *   existing dates when git history is unavailable (or the file has not been committed yet)
+ */
+function getComponentExamples(componentName, allComponents, gitDates, existingExamples = []) {
   const componentExamplesDir = path.join(EXAMPLES_DIR, componentName);
   const examples = [];
   // Check if the component examples directory exists
@@ -130,6 +230,15 @@ function getComponentExamples(componentName, allComponents) {
       }
       if (moduleExports.tags?.length) {
         info.tags = moduleExports.tags;
+      }
+      const dates =
+        gitDates?.get(`${componentName}/${entry.name}`) ??
+        existingExamples.find((e) => e.name === exampleName);
+      if (dates?.createdAt) {
+        info.createdAt = dates.createdAt;
+      }
+      if (dates?.updatedAt) {
+        info.updatedAt = dates.updatedAt;
       }
       examples.push(info);
     }
@@ -187,35 +296,49 @@ function ensureDir(dirPath) {
   }
 }
 /**
- * Generate catalog for a single component
+ * Strip git-derived dates from examples so they don't count as catalog content changes
  */
-export function generateComponentCatalog(componentName, catalogPath, allComponents) {
+function withoutDates(examples) {
+  return Array.isArray(examples)
+    ? examples.map(({ createdAt, updatedAt, ...rest }) => rest)
+    : examples;
+}
+/**
+ * Generate catalog for a single component
+ *
+ * @param gitDates - result of `getExampleGitDates()`.  When `null`/`undefined`, example
+ *   dates are carried over from the existing catalog file.
+ */
+export function generateComponentCatalog(componentName, catalogPath, allComponents, gitDates) {
   console.log(`Processing ${componentName}...`);
-  const examples = getComponentExamples(componentName, allComponents);
-  const usage = findComponentUsage(componentName);
-  // Check if catalog file exists and read it
-  let existingUpdatedAt;
+  // Read existing catalog (if any)
+  let existingCatalog;
   if (fs.existsSync(catalogPath)) {
     try {
-      const existingContent = fs.readFileSync(catalogPath, 'utf-8');
-      const existingCatalog = JSON.parse(existingContent);
-      // Check if content has changed (excluding updatedAt field)
-      const contentUnchanged =
-        existingCatalog.component === componentName &&
-        JSON.stringify(existingCatalog.examples) === JSON.stringify(examples) &&
-        JSON.stringify(existingCatalog.usage) === JSON.stringify(usage);
-      if (contentUnchanged) {
-        existingUpdatedAt = existingCatalog.updatedAt;
-      }
+      existingCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
     } catch (error) {
       // If we can't read or parse, treat as new file
     }
   }
+  const examples = getComponentExamples(
+    componentName,
+    allComponents,
+    gitDates,
+    Array.isArray(existingCatalog?.examples) ? existingCatalog.examples : []
+  );
+  const usage = findComponentUsage(componentName);
+  // Check if content has changed (excluding updatedAt field and example dates, which follow
+  // git history and would otherwise bump `updatedAt` again after every commit)
+  const contentUnchanged =
+    existingCatalog?.component === componentName &&
+    JSON.stringify(withoutDates(existingCatalog.examples)) ===
+      JSON.stringify(withoutDates(examples)) &&
+    JSON.stringify(existingCatalog.usage) === JSON.stringify(usage);
   return {
     component: componentName,
     examples,
     usage,
-    updatedAt: existingUpdatedAt ?? new Date().toISOString(),
+    updatedAt: (contentUnchanged && existingCatalog.updatedAt) || new Date().toISOString(),
   };
 }
 export async function writeExampleCatalogs({
@@ -234,6 +357,12 @@ export async function writeExampleCatalogs({
   // Get all components
   const components = getComponents(componentsDir);
   logger.log(`Found ${components.length} components\n`);
+  const gitDates = getExampleGitDates(examplesDir);
+  if (!gitDates) {
+    logger.log(
+      'Git history unavailable (no git or shallow clone), keeping existing example dates\n'
+    );
+  }
   let processedCount = 0;
   let totalExamples = 0;
   let totalUsages = 0;
@@ -241,7 +370,7 @@ export async function writeExampleCatalogs({
   for (const componentName of components) {
     // Write catalog file
     const catalogPath = path.join(catalogDir, `${componentName}.json`);
-    const catalog = generateComponentCatalog(componentName, catalogPath, components);
+    const catalog = generateComponentCatalog(componentName, catalogPath, components, gitDates);
     fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
     logger.log(`  ✓ Examples: ${catalog.examples.length}`);
     logger.log(`  ✓ Usages: ${catalog.usage.length}`);

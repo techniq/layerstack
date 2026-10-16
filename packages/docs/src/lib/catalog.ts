@@ -33,6 +33,10 @@ export interface ExampleInfo {
   path: string;
   /** All components used in this example */
   components: ComponentUsageInExample[];
+  /** ISO timestamp of the commit that first added the example file (following renames) */
+  createdAt?: string;
+  /** ISO timestamp of the last commit that changed the example file */
+  updatedAt?: string;
 }
 
 /**
@@ -61,6 +65,6 @@ export interface ComponentCatalog {
   examples: ExampleInfo[];
   /** All places where this component is used across all examples */
   usage: UsageInfo[];
-  /** ISO timestamp when the catalog was last updated */
+  /** ISO timestamp when the catalog content last changed (example dates are not counted as content) */
   updatedAt: string;
 }
