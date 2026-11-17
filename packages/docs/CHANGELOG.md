@@ -1,5 +1,11 @@
 # @layerstack/docs
 
+## 1.0.0-next.7
+
+### Patch Changes
+
+- fix(generate-screenshots): Capture examples in nested component folders (ex. `webgl/Points`), emulate reduced motion, and recover from a failed example without failing the rest ([#113](https://github.com/techniq/layerstack/pull/113))
+
 ## 1.0.0-next.6
 
 ### Patch Changes
