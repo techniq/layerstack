@@ -1,7 +1,7 @@
 import clsx, { type ClassValue } from 'clsx';
 import { extendTailwindMerge } from 'tailwind-merge';
 import { range } from 'd3-array';
-import { mergeWith } from 'lodash-es';
+import { mergeWith } from '@layerstack/utils';
 
 /**
  * Wrapper around `tailwind-merge` and `clsx`

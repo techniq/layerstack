@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-import { isFunction } from 'lodash-es';
 
 import { parse, stringify } from '@layerstack/utils';
 import { browser } from '@layerstack/utils/env';
@@ -42,10 +41,11 @@ function localStore<Value>(key: string, initialValue: Value, options?: LocalStor
           ? expireObject(previousExpiry, previousExpiry)
           : previousExpiry;
 
-        const expiry = isFunction(options?.expiry)
-          ? // @ts-expect-error
-            options?.expiry(prunedPreviousExpiry) // Update expiry on write
-          : options?.expiry;
+        const expiry =
+          typeof options?.expiry === 'function'
+            ? // @ts-expect-error
+              options?.expiry(prunedPreviousExpiry) // Update expiry on write
+            : options?.expiry;
         previousExpiry = expiry;
 
         localStorage.setItem(key, stringify({ value: val, expiry }));

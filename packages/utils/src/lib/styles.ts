@@ -1,4 +1,5 @@
 import { entries } from './typeHelpers.js';
+import { toKebabCase } from './string.js';
 
 /**
  * Convert object to style string
@@ -8,7 +9,7 @@ export function objectToString(styleObj: { [key: string]: string }) {
     .map(([key, value]) => {
       if (value) {
         // Convert camelCase into kaboob-case (ex.  (transformOrigin => transform-origin))
-        const propertyName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        const propertyName = toKebabCase(key);
         return `${propertyName}: ${value};`;
       } else {
         return null;

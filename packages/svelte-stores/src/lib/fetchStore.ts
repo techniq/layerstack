@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import { get, writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
-import { merge } from 'lodash-es';
+import { merge } from '@layerstack/utils';
 
 type BodyMethods = 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text';
 
