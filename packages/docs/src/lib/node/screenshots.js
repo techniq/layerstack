@@ -9,6 +9,7 @@
  * - Cleaning up orphaned screenshots from renamed/moved/deleted examples
  * - Using MD5 checksums to detect file changes and regenerate screenshots when needed
  * - Navigating to /example/[componentName]/[exampleName]
+ * - Including components nested a folder (or more) down, named by their path (e.g. `webgl/Points`)
  * - Capturing screenshots in both light and dark mode
  * - Saving as WebP in multiple sizes for responsive loading:
  *   docs/static/screenshots/[componentName]/[exampleName]-{light|dark}-{800|400|240}w.webp
@@ -96,31 +97,29 @@ function hasExampleChanged(component, example, filePath, checksums) {
   return !previousChecksum || previousChecksum !== currentChecksum;
 }
 /**
- * Get all example files from the examples directory
+ * Get all example files from the examples directory.
+ *
+ * Any folder holding `.svelte` files is a component, named by its path from `dir` (e.g. `Area`,
+ * or `webgl/Points` for a package whose components are grouped a folder down)
  */
-function getExampleFiles(dir) {
+function getExampleFiles(dir, prefix = '') {
   const examples = [];
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      // This is a component directory (e.g., Area, BarChart)
-      const componentName = entry.name;
-      const componentDir = fullPath;
-      // Get all .svelte files in this component directory
-      const exampleFiles = fs.readdirSync(componentDir, { withFileTypes: true });
-      for (const exampleFile of exampleFiles) {
-        if (exampleFile.isFile() && exampleFile.name.endsWith('.svelte')) {
-          // Remove .svelte extension and convert filename to URL-friendly format
-          const exampleName = exampleFile.name.replace('.svelte', '');
-          examples.push({
-            component: componentName,
-            example: exampleName,
-            filePath: path.join(componentDir, exampleFile.name),
-          });
-        }
+    if (!entry.isDirectory()) continue;
+    const componentName = prefix + entry.name;
+    const componentDir = path.join(dir, entry.name);
+    const exampleFiles = fs.readdirSync(componentDir, { withFileTypes: true });
+    for (const exampleFile of exampleFiles) {
+      if (exampleFile.isFile() && exampleFile.name.endsWith('.svelte')) {
+        examples.push({
+          component: componentName,
+          example: exampleFile.name.replace('.svelte', ''),
+          filePath: path.join(componentDir, exampleFile.name),
+        });
       }
     }
+    examples.push(...getExampleFiles(componentDir, `${componentName}/`));
   }
   return examples.sort((a, b) => {
     const compA = `${a.component}/${a.example}`;
@@ -237,45 +236,59 @@ function cleanupOrphanedScreenshots(validExamples) {
     console.log('No screenshots directory found, skipping cleanup.\n');
     return;
   }
-  // Read all component directories in screenshots
-  const screenshotEntries = fs.readdirSync(SCREENSHOTS_DIR, { withFileTypes: true });
-  for (const entry of screenshotEntries) {
-    // Skip non-directories and special files
-    if (!entry.isDirectory() || entry.name.startsWith('.')) {
-      continue;
-    }
-    const componentName = entry.name;
-    const componentDir = path.join(SCREENSHOTS_DIR, componentName);
-    // Check if this component still exists
-    if (!validComponents.has(componentName)) {
-      console.log(`  ✗ Removing orphaned component directory: ${componentName}/`);
-      fs.rmSync(componentDir, { recursive: true, force: true });
-      removedDirs++;
-      continue;
-    }
-    // Check files within the component directory
-    const files = fs.readdirSync(componentDir);
-    for (const file of files) {
-      // Skip non-WebP/PNG files and hidden files (PNG for legacy cleanup)
-      if ((!file.endsWith('.webp') && !file.endsWith('.png')) || file.startsWith('.')) {
+  // Folders holding a nested component (e.g. `webgl` for `webgl/Points`), kept and walked into
+  const parentDirs = new Set(
+    [...validComponents].flatMap((name) =>
+      name
+        .split('/')
+        .slice(0, -1)
+        .map((_, i, parts) => parts.slice(0, i + 1).join('/'))
+    )
+  );
+  // Walk the component directories in screenshots (a folder down for nested components)
+  function cleanupDir(dir, prefix) {
+    const screenshotEntries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of screenshotEntries) {
+      // Skip non-directories and special files
+      if (!entry.isDirectory() || entry.name.startsWith('.')) {
         continue;
       }
-      const relativePath = `${componentName}/${file}`;
-      if (!validPaths.has(relativePath)) {
-        const filePath = path.join(componentDir, file);
-        console.log(`  ✗ Removing orphaned screenshot: ${relativePath}`);
-        fs.unlinkSync(filePath);
-        removedFiles++;
+      const componentName = prefix + entry.name;
+      const componentDir = path.join(dir, entry.name);
+      const isComponent = validComponents.has(componentName);
+      // Check if this component (or a component nested in it) still exists
+      if (!isComponent && !parentDirs.has(componentName)) {
+        console.log(`  ✗ Removing orphaned component directory: ${componentName}/`);
+        fs.rmSync(componentDir, { recursive: true, force: true });
+        removedDirs++;
+        continue;
+      }
+      // Check files within the component directory
+      const files = isComponent ? fs.readdirSync(componentDir) : [];
+      for (const file of files) {
+        // Skip non-WebP/PNG files and hidden files (PNG for legacy cleanup)
+        if ((!file.endsWith('.webp') && !file.endsWith('.png')) || file.startsWith('.')) {
+          continue;
+        }
+        const relativePath = `${componentName}/${file}`;
+        if (!validPaths.has(relativePath)) {
+          const filePath = path.join(componentDir, file);
+          console.log(`  ✗ Removing orphaned screenshot: ${relativePath}`);
+          fs.unlinkSync(filePath);
+          removedFiles++;
+        }
+      }
+      cleanupDir(componentDir, `${componentName}/`);
+      // Remove component directory if it's now empty
+      const remainingFiles = fs.readdirSync(componentDir);
+      if (remainingFiles.length === 0) {
+        console.log(`  ✗ Removing empty directory: ${componentName}/`);
+        fs.rmdirSync(componentDir);
+        removedDirs++;
       }
     }
-    // Remove component directory if it's now empty
-    const remainingFiles = fs.readdirSync(componentDir);
-    if (remainingFiles.length === 0) {
-      console.log(`  ✗ Removing empty directory: ${componentName}/`);
-      fs.rmdirSync(componentDir);
-      removedDirs++;
-    }
   }
+  cleanupDir(SCREENSHOTS_DIR, '');
   if (removedFiles === 0 && removedDirs === 0) {
     console.log('  ✓ No orphaned screenshots found\n');
   } else {
@@ -317,10 +330,17 @@ export async function generateScreenshots(options) {
   const browser = await chromium.launch();
   const context = await browser.newContext({
     viewport: VIEWPORT,
+    // Screenshots are stills, so examples that animate on their own can settle (and stop
+    // redrawing) rather than keep the page too busy to capture
+    reducedMotion: 'reduce',
   });
-  const page = await context.newPage();
-  // Set default timeout to avoid long waits
-  page.setDefaultTimeout(5000);
+  async function newPage() {
+    const page = await context.newPage();
+    // Set default timeout to avoid long waits
+    page.setDefaultTimeout(5000);
+    return page;
+  }
+  let page = await newPage();
   let processedCount = 0;
   let skippedCount = 0;
   let errorCount = 0;
@@ -378,6 +398,10 @@ export async function generateScreenshots(options) {
       if (checksums[`${component}/${exampleName}`]) {
         updatedChecksums[`${component}/${exampleName}`] = checksums[`${component}/${exampleName}`];
       }
+      // Start the next example on a fresh page, as one left busy (or mid-navigation) would
+      // fail the examples after it too
+      await page.close().catch(() => {});
+      page = await newPage();
     }
   }
   // Close browser
