@@ -1,7 +1,10 @@
 ---
 title: matchMedia
 description: Store to monitor media query matching, including screen width/height, orientation, print media, prefers dark/light scheme, and prefers reduced motion
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`MediaQueryPresets`](/docs/svelte-state/MediaQueryPresets) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## Usage
 
@@ -33,4 +36,4 @@ Convenient presets (Tailwind defaults) — `smScreen`, `mdScreen`, `lgScreen`, `
 
 ## Example
 
-:example{name="basic"}
+:example{name="basic" showCode}

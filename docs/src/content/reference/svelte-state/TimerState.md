@@ -1,7 +1,7 @@
 ---
 title: TimerState
 description: Manage interval ticks, useful for timely updates and countdowns
-related: [components/Duration, components/ScrollingValue]
+related: [ui/Duration, ui/ScrollingValue]
 ---
 
 ## Usage

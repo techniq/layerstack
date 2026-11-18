@@ -1,5 +1,14 @@
 import { MediaQuery } from 'svelte/reactivity';
 
+// Matches tailwind defaults (https://tailwindcss.com/docs/responsive-design)
+export const breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  xxl: 1536,
+};
+
 export class MediaQueryPresets {
   width(width: number) {
     return new MediaQuery(`(min-width: ${width}px)`);
@@ -9,12 +18,11 @@ export class MediaQueryPresets {
     return new MediaQuery(`(min-height: ${height}px)`);
   }
 
-  // Matches tailwind defaults (https://tailwindcss.com/docs/responsive-design)
-  smScreen = this.width(640);
-  mdScreen = this.width(768);
-  lgScreen = this.width(1024);
-  xlScreen = this.width(1280);
-  xxlScreen = this.width(1536);
+  smScreen = this.width(breakpoints.sm);
+  mdScreen = this.width(breakpoints.md);
+  lgScreen = this.width(breakpoints.lg);
+  xlScreen = this.width(breakpoints.xl);
+  xxlScreen = this.width(breakpoints.xxl);
 
   screen = new MediaQuery('screen and (min-width: 0)'); // workaround for https://github.com/sveltejs/svelte/issues/15930
   print = new MediaQuery('print and (min-width: 0)'); // workaround for https://github.com/sveltejs/svelte/issues/15930

@@ -1,8 +1,11 @@
 ---
 title: timerStore
 description: Manage interval ticks, useful for timely updates and countdowns
-related: [components/Duration, components/ScrollingValue]
+related: [ui/Duration, ui/ScrollingValue]
+status: deprecated
 ---
+
+> **Deprecated** — replaced by [`TimerState`](/docs/svelte-state/TimerState) in [`@layerstack/svelte-state`](/docs/svelte-state).
 
 ## Usage
 
@@ -16,4 +19,4 @@ const timer = timerStore();
 
 ## Tick count
 
-:example{name="tick-count" showCode}
+:example{name="tick-count"}

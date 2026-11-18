@@ -14,10 +14,41 @@
  * components and the Shiki (`rehype-pretty-code`) code blocks.
  */
 
-/* Shiki light/dark theming */
+/*
+  Shiki light/dark theming.
+  Covers both paths: `rehype-pretty-code` blocks (which carry `data-theme` on the `<code>`) and the
+  `Code` component's runtime highlighting (`.shiki`).  Both emit the light color inline and the dark
+  one as `--shiki-dark`, so dark mode is a swap — driven by the same `dark:` variant as everything
+  else, rather than a hand-written `html.dark` selector that can drift from it.
+*/
 code[data-theme*=' '],
 code[data-theme*=' '] span {
   @apply text-(--shiki-light) dark:text-(--shiki-dark);
+}
+
+.shiki {
+  background-color: transparent !important;
+}
+
+/*
+  The `Code` component highlights at runtime, which emits the light color as an *inline* style with
+  the dark one alongside as `--shiki-dark`.  Overriding an inline style needs `!important`.
+*/
+@variant dark {
+  :is(.shiki, .shiki span) {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+.shiki .line.highlighted {
+  @apply bg-[rgba(101,117,133,0.16)] dark:bg-[rgba(142,150,170,0.14)];
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  display: inline-block;
+  width: calc(100% + 2rem);
 }
 
 /* Inline code styling */

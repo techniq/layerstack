@@ -1,7 +1,7 @@
 ---
 title: Duration
 description: Calculate and format the duration between two dates or from a duration object
-related: [components/Duration]
+related: [ui/Duration]
 ---
 
 ## Usage
