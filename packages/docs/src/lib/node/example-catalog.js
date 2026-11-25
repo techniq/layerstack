@@ -27,7 +27,7 @@ let EXAMPLES_DIR = '';
 /**
  * Get all canonical component files from the components directory (recursively).
  *
- * Skips per-layer variants (`*.svg.svelte`, `*.canvas.svelte`, `*.html.svelte`)
+ * Skips per-layer variants (`*.svg.svelte`, `*.canvas.svelte`, `*.html.svelte`, `*.webgl.svelte`)
  * and the shared base impl (`*.base.svelte`) — only the canonical
  * `<Name>.svelte` is treated as a public component.
  */
@@ -37,7 +37,7 @@ function getComponents(dir) {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isFile() && entry.name.endsWith('.svelte')) {
-      if (/\.(svg|canvas|html|base)\.svelte$/.test(entry.name)) continue;
+      if (/\.(svg|canvas|html|webgl|base)\.svelte$/.test(entry.name)) continue;
       // Remove .svelte extension to get component name
       const componentName = entry.name.replace('.svelte', '');
       components.push(componentName);
