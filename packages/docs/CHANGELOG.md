@@ -1,5 +1,11 @@
 # @layerstack/docs
 
+## 1.0.0-next.8
+
+### Patch Changes
+
+- fix: Skip `*.webgl.svelte` layer variants (as `*.svg.svelte`, `*.canvas.svelte`, and `*.html.svelte` are) when generating component APIs and example catalogs ([#115](https://github.com/techniq/layerstack/pull/115))
+
 ## 1.0.0-next.7
 
 ### Patch Changes
