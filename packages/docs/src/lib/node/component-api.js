@@ -46,7 +46,7 @@ import ts from 'typescript';
 /**
  * Get all canonical .svelte files in a directory (recursively).
  *
- * Skips per-layer variants (`*.svg.svelte`, `*.canvas.svelte`, `*.html.svelte`)
+ * Skips per-layer variants (`*.svg.svelte`, `*.canvas.svelte`, `*.html.svelte`, `*.webgl.svelte`)
  * and the shared base impl (`*.base.svelte`) — the canonical `<Name>.svelte`
  * delegator re-exports the public Props type, which is what docs reference.
  */
@@ -59,7 +59,7 @@ export function getSvelteFiles(dir) {
       // Recursively scan subdirectories (charts, layers, tooltip)
       files.push(...getSvelteFiles(fullPath));
     } else if (entry.isFile() && entry.name.endsWith('.svelte')) {
-      if (/\.(svg|canvas|html|base)\.svelte$/.test(entry.name)) continue;
+      if (/\.(svg|canvas|html|webgl|base)\.svelte$/.test(entry.name)) continue;
       files.push(fullPath);
     }
   }
