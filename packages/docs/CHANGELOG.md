@@ -1,5 +1,11 @@
 # @layerstack/docs
 
+## 1.0.0-next.9
+
+### Minor Changes
+
+- feat: Component APIs list the props another component's Props contribute (ex. `Omit<Without<CircleProps, ...>>`), each with `inheritedFrom`, resolving imports and the `$lib` alias; `llms` API tables name them after a component's own ([#117](https://github.com/techniq/layerstack/pull/117))
+
 ## 1.0.0-next.8
 
 ### Patch Changes
