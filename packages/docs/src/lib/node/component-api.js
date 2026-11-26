@@ -163,15 +163,79 @@ function extractPropertiesFromType(typeNode, checker, sourceFile) {
     // Handle type references (e.g., CommonStyleProps)
     const typeName = typeNode.typeName.getText();
     // Try to find the type definition in the same file
+    let found = false;
     ts.forEachChild(sourceFile, (node) => {
       if (ts.isTypeAliasDeclaration(node) && node.name.text === typeName) {
+        found = true;
         properties = properties.concat(extractPropertiesFromType(node.type, checker, sourceFile));
       } else if (ts.isInterfaceDeclaration(node) && node.name.text === typeName) {
+        found = true;
         properties = properties.concat(extractProperties(node, checker));
       }
     });
+    // Else one imported from another file (ex. `DataDrivenStyleProps`), resolved by the checker
+    if (!found) properties = properties.concat(extractResolvedProperties(typeNode, checker));
   }
   return properties;
+}
+/**
+ * Each property once, in the order first named: its own declaration over one inherited from another
+ * component (ex. a chart's `series`, over `Chart`'s), with a description and default from
+ * whichever declaration has them
+ */
+function mergeDuplicates(properties) {
+  const byName = new Map();
+  for (const prop of properties) {
+    const kept = byName.get(prop.name);
+    if (!kept) {
+      byName.set(prop.name, prop);
+      continue;
+    }
+    const [own, other] = kept.inheritedFrom && !prop.inheritedFrom ? [prop, kept] : [kept, prop];
+    byName.set(prop.name, {
+      ...own,
+      ...(own.description == null && other.description != null
+        ? { description: other.description }
+        : {}),
+      ...(own.default == null && other.default != null ? { default: other.default } : {}),
+    });
+  }
+  return [...byName.values()];
+}
+/**
+ * The properties of a type defined elsewhere (imported, or a utility type over one), resolved by
+ * the type checker: those declared in the project's own types, not DOM/SVG attributes or
+ * anything else from `node_modules` or the TypeScript libs
+ */
+function extractResolvedProperties(typeNode, checker) {
+  const type = checker.getTypeFromTypeNode(typeNode);
+  const properties = [];
+  for (const symbol of checker.getPropertiesOfType(type)) {
+    const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
+    if (!declaration || !ts.isPropertySignature(declaration)) continue;
+    const file = declaration.getSourceFile().fileName;
+    if (file.includes('/node_modules/') || /\/lib\.[\w.]*\.d\.ts$/.test(file)) continue;
+    const from = componentOf(declaration);
+    properties.push({
+      name: symbol.getName(),
+      type: getTypeString(declaration.type, checker),
+      required: !declaration.questionToken,
+      ...extractJsDoc(declaration),
+      ...(from ? { inheritedFrom: from } : {}),
+    });
+  }
+  return properties;
+}
+/**
+ * The component a property is declared for, when its type is a component's Props in that
+ * component's own file (ex. `PathPropsWithoutHTML` in `Path.shared.svelte.ts` is `Path`), rather
+ * than a shared set of props (ex. `DataDrivenStyleProps` in a utils file)
+ */
+function componentOf(declaration) {
+  const match = /^([A-Z]\w*?)Props(?:WithoutHTML)?$/.exec(declaringTypeName(declaration) ?? '');
+  if (!match) return undefined;
+  const file = path.basename(declaration.getSourceFile().fileName);
+  return file.startsWith(`${match[1]}.`) ? match[1] : undefined;
 }
 /** Type utilities a component's Props may wrap another component's Props in */
 const WRAPPERS = new Set(['Omit', 'Without', 'Pick', 'Partial', 'Required', 'Readonly']);
@@ -462,7 +526,7 @@ ${moduleScript}
     // Find the PropsWithoutHTML type for properties
     ts.forEachChild(sourceFile, (node) => {
       if (ts.isTypeAliasDeclaration(node) && node.name.text === propsTypeName) {
-        properties = extractPropertiesFromType(node.type, checker, sourceFile);
+        properties = mergeDuplicates(extractPropertiesFromType(node.type, checker, sourceFile));
       }
     });
     // Also look for the full Props type to extract extended types
