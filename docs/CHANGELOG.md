@@ -1,5 +1,12 @@
 # @layerstack/docs
 
+## 1.1.0-next.13
+
+### Patch Changes
+
+- Updated dependencies [[`ea61162`](https://github.com/techniq/layerstack/commit/ea611620014e1df321ce48aabfcfd835299f801c)]:
+  - @layerstack/docs@1.0.0-next.10
+
 ## 1.1.0-next.12
 
 ### Patch Changes
