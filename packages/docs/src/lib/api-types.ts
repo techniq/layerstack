@@ -10,6 +10,11 @@ export interface PropertyInfo {
   default?: string;
   tags?: Record<string, string>;
   properties?: PropertyInfo[];
+  /**
+   * The component it's inherited from, for a prop another component's Props contribute (ex.
+   * `Circle` for the `z` that `Points` passes on to each circle)
+   */
+  inheritedFrom?: string;
 }
 
 export interface ExtendedType {
@@ -20,6 +25,8 @@ export interface ExtendedType {
   elementType?: string;
   /** Whether this is a known library type that should be documented separately */
   isLibraryType?: boolean;
+  /** Another component's Props, whose props are listed (with `inheritedFrom`) in `properties` */
+  inherited?: boolean;
 }
 
 export interface ComponentAPI {

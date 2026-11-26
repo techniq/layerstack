@@ -173,6 +173,60 @@ function extractPropertiesFromType(typeNode, checker, sourceFile) {
   }
   return properties;
 }
+/** Type utilities a component's Props may wrap another component's Props in */
+const WRAPPERS = new Set(['Omit', 'Without', 'Pick', 'Partial', 'Required', 'Readonly']);
+/**
+ * The component Props type an intersection member refers to, through any utility types wrapping
+ * it (ex. `Omit<Without<CircleProps, PointsPropsWithoutHTML>, 'ref'>` is `CircleProps`), or
+ * `undefined` when it isn't another component's Props
+ */
+function wrappedPropsName(typeNode) {
+  if (!ts.isTypeReferenceNode(typeNode)) return undefined;
+  const name = typeNode.typeName.getText();
+  if (WRAPPERS.has(name)) {
+    const [first] = typeNode.typeArguments ?? [];
+    return first ? wrappedPropsName(first) : undefined;
+  }
+  return /Props$/.test(name) ? name : undefined;
+}
+/** The type alias or interface a property is declared in (ex. `CirclePropsWithoutHTML`) */
+function declaringTypeName(declaration) {
+  for (let node = declaration.parent; node; node = node.parent) {
+    if (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) return node.name.text;
+  }
+  return undefined;
+}
+/**
+ * The properties another component's Props contribute through an intersection member (ex. the
+ * `Circle` props `Points` passes on to each circle), resolved by the type checker across files.
+ * Only the component's own props: not DOM/SVG attributes (from `svelte/elements` or the DOM
+ * typings), nor those `known` already lists.  Each is marked with the component it's from.
+ */
+function extractInheritedProperties(typeNode, checker, known) {
+  const propsName = wrappedPropsName(typeNode);
+  if (!propsName) return [];
+  const from = propsName.replace(/Props$/, '');
+  const type = checker.getTypeFromTypeNode(typeNode);
+  const properties = [];
+  for (const symbol of checker.getPropertiesOfType(type)) {
+    const name = symbol.getName();
+    if (known.has(name)) continue;
+    const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
+    if (!declaration || !ts.isPropertySignature(declaration)) continue;
+    const file = declaration.getSourceFile().fileName;
+    if (file.includes('/node_modules/') || /\/lib\.[\w.]*\.d\.ts$/.test(file)) continue;
+    // Its own props, not attributes a Props type took from `svelte/elements`
+    if (!/Props/.test(declaringTypeName(declaration) ?? '')) continue;
+    properties.push({
+      name,
+      type: getTypeString(declaration.type, checker),
+      required: !declaration.questionToken,
+      ...extractJsDoc(declaration),
+      inheritedFrom: from,
+    });
+  }
+  return properties;
+}
 /**
  * Extract element type from generic types like SVGAttributes<SVGRectElement>
  */
@@ -190,8 +244,11 @@ function parseExtendedTypes(typeNode, sourceFile) {
   }
   for (const type of typeNode.types) {
     const typeText = type.getText(sourceFile);
-    // Skip the base PropsWithoutHTML type (but not Without<> that contains PropsWithoutHTML)
-    if (!typeText.startsWith('Without<') && typeText.includes('PropsWithoutHTML')) {
+    // Skip the base PropsWithoutHTML type itself (not a wrapper naming it, ex. `Without<..., XPropsWithoutHTML>`)
+    if (
+      ts.isTypeReferenceNode(type) &&
+      type.typeName.getText(sourceFile).endsWith('PropsWithoutHTML')
+    ) {
       continue;
     }
     // Check if this is a Without<> wrapper (used to exclude props)
@@ -214,6 +271,17 @@ function parseExtendedTypes(typeNode, sourceFile) {
         fullType: typeText,
         elementType,
         isLibraryType: true,
+      });
+      continue;
+    }
+    // Another component's Props, wrapped (ex. `Omit<Without<CircleProps, ...>, 'ref'>`)
+    const wrapped = wrappedPropsName(type);
+    if (wrapped && WRAPPERS.has(type.typeName.getText(sourceFile))) {
+      extendedTypes.push({
+        name: wrapped,
+        fullType: typeText,
+        isLibraryType: false,
+        inherited: true,
       });
       continue;
     }
@@ -293,6 +361,15 @@ function resolveSharedReExports(filePath, moduleScript) {
   }
   return combined;
 }
+/** `$lib` mapped to the SvelteKit library a file is in (its nearest `src/lib`), if any */
+function libPaths(filePath) {
+  for (let dir = path.dirname(filePath); dir !== path.dirname(dir); dir = path.dirname(dir)) {
+    if (path.basename(dir) === 'lib' && path.basename(path.dirname(dir)) === 'src') {
+      return { paths: { $lib: [dir], '$lib/*': [`${dir}/*`] } };
+    }
+  }
+  return {};
+}
 /**
  * Extract component API from a Svelte file
  */
@@ -367,6 +444,13 @@ ${moduleScript}
     const program = ts.createProgram([tempPath], {
       target: ts.ScriptTarget.ES2020,
       module: ts.ModuleKind.ESNext,
+      // Following its imports (ex. `../Circle/Circle.shared.svelte.js` to its `.ts`), so another
+      // component's Props it's composed of resolve
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+      noEmit: true,
+      skipLibCheck: true,
+      // SvelteKit's `$lib` alias (ex. `Without` from `$lib/utils/types.js`), else what uses it is `any`
+      ...libPaths(filePath),
     });
     const sourceFile = program.getSourceFile(tempPath);
     if (!sourceFile) {
@@ -397,9 +481,16 @@ ${moduleScript}
               extendedTypes.push(extType);
             }
           }
+          // Props another component's Props contribute (ex. `Points`' `Circle` props)
+          if (ts.isIntersectionTypeNode(node.type)) {
+            for (const member of node.type.types) {
+              const known = new Set(properties.map((p) => p.name));
+              properties.push(...extractInheritedProperties(member, checker, known));
+            }
+          }
           // Extract properties from non-library extended types (like CommonEvents)
           for (const extType of extendedTypes) {
-            if (!extType.isLibraryType) {
+            if (!extType.isLibraryType && !extType.inherited) {
               // Find this type definition and extract its properties
               ts.forEachChild(sourceFile, (typeNode) => {
                 if (ts.isTypeAliasDeclaration(typeNode) && typeNode.name.text === extType.name) {
