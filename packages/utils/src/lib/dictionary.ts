@@ -10,6 +10,10 @@ export type DictionaryMessagesOptions = {
     Day?: string;
     DayTime?: string;
     Time?: string;
+    Hour?: string;
+    Minute?: string;
+    Second?: string;
+    Millisecond?: string;
     Week?: string;
     BiWeek?: string;
     Month?: string;

@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - sites/docs/**
+      - docs/**
       - packages/**
 
 jobs:
@@ -36,5 +36,5 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: layerstack
           directory: ./.svelte-kit/cloudflare
-          workingDirectory: sites/docs
+          workingDirectory: docs
           deploymentName: Production
