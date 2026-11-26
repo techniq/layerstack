@@ -32,7 +32,18 @@ function escapeMarkdown(text: string): string {
 export function generateApiTable(api: ComponentAPI): string {
   if (!api.properties || api.properties.length === 0) return '';
 
-  const rows = api.properties.map((prop) => {
+  // Its own props in the table; those other components' Props contribute, named after it
+  const own = api.properties.filter((prop) => !prop.inheritedFrom);
+  const inherited = new Map<string, string[]>();
+  for (const prop of api.properties) {
+    if (!prop.inheritedFrom) continue;
+    inherited.set(prop.inheritedFrom, [...(inherited.get(prop.inheritedFrom) ?? []), prop.name]);
+  }
+  const inheritedLines = [...inherited].map(
+    ([from, names]) => `Also takes \`${from}\`'s ${names.map((name) => `\`${name}\``).join(', ')}.`
+  );
+
+  const rows = own.map((prop) => {
     const name = prop.required ? `**${prop.name}** (required)` : prop.name;
     const type = `\`${escapeMarkdown(prop.type)}\``;
     const defaultVal = prop.default ? `\`${escapeMarkdown(prop.default)}\`` : '-';
@@ -40,9 +51,12 @@ export function generateApiTable(api: ComponentAPI): string {
     return `| ${name} | ${type} | ${defaultVal} | ${description} |`;
   });
 
-  return `| Property | Type | Default | Description |
+  const table = rows.length
+    ? `| Property | Type | Default | Description |
 |----------|------|---------|-------------|
-${rows.join('\n')}`;
+${rows.join('\n')}`
+    : '';
+  return [table, ...inheritedLines].filter(Boolean).join('\n\n');
 }
 
 /** Resolve the raw source for an example, by component (optional) + name. */
