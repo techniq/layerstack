@@ -1,3 +1,12 @@
+/**
+ * @deprecated Use `@layerstack/svelte-state` instead.
+ *
+ * Svelte 5 runes replace stores.  Each store here has a state class equivalent read through
+ * properties rather than a `$` prefix — `paginationStore(...)` becomes `new PaginationState(...)`.
+ * `changeStore`, `dirtyStore`, and `mapStore` are dropped, as `$effect`, `$derived`, and
+ * `SvelteMap` cover them directly.
+ */
+
 export { default as changeStore } from './changeStore.js';
 export { default as debounceStore } from './debounceStore.js';
 export { default as dirtyStore } from './dirtyStore.js';

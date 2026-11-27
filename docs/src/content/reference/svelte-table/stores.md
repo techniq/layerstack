@@ -1,7 +1,7 @@
 ---
 title: stores
 description: Manage table column sorting selection and direction. Compliments Table component
-related: [svelte-table/actions, components/Table]
+related: [svelte-table/actions, ui/Table]
 ---
 
 ## Usage

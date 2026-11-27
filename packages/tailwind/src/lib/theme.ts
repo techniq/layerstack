@@ -33,31 +33,39 @@ export function getThemeNames(cssContent: string) {
   return { light, dark };
 }
 
-/** Return a script tag that will set the initial theme from localStorage. This allows setting
- * the theme before anything starts rendering, even when SSR is in use.
+/**
+ * Apply the stored theme (or the system preference) to `<html>`.
  *
- * This feels a bit weird compared to just placing the function directly in svelte:head,
- * but it's the only way to inject the `darkThemes` array into the function.
- **/
-export function createHeadSnippet(darkThemes: string[]) {
-  const applyInitialStyle = `
-  function applyInitialStyle(darkThemes) {
-    let theme = localStorage.getItem('theme');
-    // Ignore if no dark things registered (default 'dark' removed)
-    if (darkThemes.length > 0) {
-      if (theme) {
-        document.documentElement.dataset.theme = theme;
-        if (darkThemes.includes(theme)) {
-          document.documentElement.classList.add('dark');
-        }
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      }
+ * Sets `data-theme` for an explicitly chosen theme and toggles the `dark` class, which is what
+ * drives the `dark:` variant for an explicit selection.  The system case needs no class — the
+ * palettes and the `dark:` variant both follow `prefers-color-scheme` on their own.
+ */
+export function applyInitialTheme(darkThemes: string[]) {
+  const theme = localStorage.getItem('theme');
+  // Ignore if no dark themes are registered (default 'dark' removed)
+  if (darkThemes.length > 0) {
+    if (theme) {
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.classList.toggle('dark', darkThemes.includes(theme));
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
     }
   }
-  `;
+}
 
-  let darkThemeList = darkThemes.map((theme) => `'${theme}'`).join(', ');
+/**
+ * Return a script tag that applies the stored theme before anything renders, avoiding a flash of
+ * the wrong theme when SSR is in use.
+ *
+ * The function is serialized rather than referenced so `darkThemes` can be baked into it.
+ *
+ * Note this only runs when the markup is served by the server.  Injected client-side — through
+ * `{@html}` in `<svelte:head>` on a `ssr = false` app, say — the browser will not execute it, so
+ * call `applyInitialTheme` directly there instead.
+ */
+export function createHeadSnippet(darkThemes: string[]) {
+  const source = `(${applyInitialTheme.toString()})`;
+  const darkThemeList = darkThemes.map((theme) => `'${theme}'`).join(', ');
 
-  return `<script>${applyInitialStyle}([${darkThemeList}])</script>`;
+  return `<script>${source}([${darkThemeList}])<\/script>`;
 }

@@ -12,9 +12,11 @@ export type PaginationOptions = {
 };
 
 export class PaginationState {
-  #page: number;
-  #perPage: number;
-  #total: number;
+  // `$state` so `page`/`perPage`/`total` — and everything derived from them (`totalPages`,
+  // `from`, `to`, `hasNext`, ...) — are reactive when read in a template or `$derived`
+  #page = $state(1);
+  #perPage = $state(25);
+  #total = $state(0);
 
   constructor(options: PaginationOptions = {}) {
     this.#page = options.page ?? 1;
